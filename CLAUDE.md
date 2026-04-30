@@ -10,6 +10,8 @@ XianyuPlus (闲鱼Plus) is a campus second-hand goods trading platform — a cou
 
 ### Backend (Maven, Java 1.8)
 
+Key dependencies (managed in root pom): Spring Boot 2.7.18, MyBatis-Plus 3.5.3.1, Hutool 5.8.23, jjwt 0.9.1, Knife4j 4.3.0, Lombok 1.18.38. All modules use Lombok — entities/DTOs use `@Data`, services/controllers use `@RequiredArgsConstructor` for dependency injection.
+
 ```bash
 # Build entire project
 cd xianyu-plus && mvn clean package -DskipTests
@@ -79,6 +81,10 @@ xianyu-plus/
 
 - `service/src/main/resources/application.yml` — server port, datasource, Redis, file upload path, JWT secret/expiration
 - `service/src/main/resources/db/init.sql` — full schema + seed data
+- **API docs** (Knife4j/Swagger): http://localhost:8080/doc.html
+- **File uploads**: max 10MB per file, 20MB per request. Saved to `./uploads` directory, served at `/uploads/**`.
+- **SQL logging**: MyBatis-Plus prints all SQL to stdout (`StdOutImpl`), so you'll see every query in the backend console.
+- **Map underscore to camelCase**: Enabled — DB columns like `user_id` auto-map to Java `userId`.
 
 ### Frontend Structure
 
@@ -96,3 +102,6 @@ xianyuplus-web/src/
 - **Layout switching**: App.vue renders `<Layout>` for normal routes, `<AdminLayout>` for `/admin/*` routes.
 - **Route guards**: `beforeEach` checks `meta.auth` (requires login) and `meta.admin` (requires role=1). Logged-in users are redirected away from login/register.
 - **API proxy**: Vite dev server proxies `/api` → `http://localhost:8080`, `/ws` → `ws://localhost:8080`, `/uploads` → `http://localhost:8080`.
+- **Publish.vue** serves double-duty: `/publish` (create) and `/edit/:id` (edit) — the component detects an `id` route param to switch between create/edit mode.
+- **Toast utility** (`@/utils/toast`): Used for user-facing error/success messages. The Axios response interceptor in `request.js` automatically shows Toast errors for failed requests (unless `config.silent` is set).
+- **Silent requests**: Set `silent: true` on an Axios request config to suppress automatic error Toasts (useful for polling or background requests).
