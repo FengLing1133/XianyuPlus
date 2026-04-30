@@ -1,0 +1,4 @@
+com\xianyuplus\chat\handler\ChatHandshakeInterceptor.class
+com\xianyuplus\chat\config\WebSocketConfig.class
+com\xianyuplus\chat\handler\ChatWebSocketHandler.class
+com\xianyuplus\chat\service\ChatService.class

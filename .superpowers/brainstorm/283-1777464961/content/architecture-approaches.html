@@ -1,0 +1,49 @@
+<h2>项目架构方案对比</h2>
+<p class="subtitle">Vue 3 + Spring Boot + MySQL | 完整版功能</p>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>单体单模块 — 简洁实用</h3>
+      <p>单个 Spring Boot 项目 + 单个 Vue 项目，所有功能在一个模块内按包分层（controller/service/mapper）</p>
+      <div style="margin-top:8px;">
+        <span class="label">适合：</span>快速开发，逻辑集中，调试方便
+      </div>
+      <div class="pros-cons" style="margin-top:10px;">
+        <div class="pros"><h4>优点</h4><ul><li>项目结构简单清晰</li><li>开发调试快速</li><li>无需处理模块间依赖</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>代码量增大后难以维护</li><li>模块边界模糊</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>多模块分层 — 工程化推荐</h3>
+      <p>Maven 多模块：common（公共）、framework（框架）、service（业务）、chat（聊天）分离；前端 Pinia 状态管理</p>
+      <div style="margin-top:8px;">
+        <span class="label">适合：</span>毕设展示工程能力，模块职责清晰
+      </div>
+      <div class="pros-cons" style="margin-top:10px;">
+        <div class="pros"><h4>优点</h4><ul><li>模块职责清晰</li><li>利于答辩展示架构</li><li>websocket 独立部署友好</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>多模块配置稍复杂</li><li>需要管理模块间依赖</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>前后端全部拆分 — 过度设计</h3>
+      <p>后端拆分为多个独立服务；前端拆分为用户端 + 管理端两个独立项目</p>
+      <div style="margin-top:8px;">
+        <span class="label">适合：</span>大型生产项目，但对毕设来说成本过高
+      </div>
+      <div class="pros-cons" style="margin-top:10px;">
+        <div class="pros"><h4>优点</h4><ul><li>极致解耦</li></ul></div>
+        <div class="cons"><h4>缺点</h4><ul><li>开发和部署复杂度高</li><li>毕设场景过度设计</li><li>时间成本大</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

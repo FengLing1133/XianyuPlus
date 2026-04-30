@@ -1,0 +1,78 @@
+<h2>第二节：数据库设计</h2>
+<p class="subtitle">核心表结构与关系</p>
+
+<div class="section">
+  <h3>核心实体关系</h3>
+  <div style="text-align:center;padding:16px;background:#fafafa;border-radius:6px;font-family:monospace;font-size:13px;line-height:2;">
+    <span style="border:1px solid #409eff;padding:3px 8px;border-radius:3px;background:#ecf5ff;">user</span> ──1:N──▶ <span style="border:1px solid #67c23a;padding:3px 8px;border-radius:3px;background:#f0f9eb;">product</span> ◀──1:N── <span style="border:1px solid #e6a23c;padding:3px 8px;border-radius:3px;background:#fdf6ec;">product_image</span><br>
+    │<span style="color:#909399;font-size:11px;">1:N</span>│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#909399;font-size:11px;">N:1</span><br>
+    ▼<span style="color:#909399;font-size:11px;">1:N</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="border:1px solid #409eff;padding:3px 8px;border-radius:3px;background:#ecf5ff;">category</span><br>
+    <span style="border:1px solid #f56c6c;padding:3px 8px;border-radius:3px;background:#fef0f0;">favorite</span><br>
+    │<span style="color:#909399;font-size:11px;">1:N</span><br>
+    ▼<br>
+    <span style="border:1px solid #f56c6c;padding:3px 8px;border-radius:3px;background:#fef0f0;">orders</span> ◀──1:N── <span style="border:1px solid #909399;padding:3px 8px;border-radius:3px;background:#f5f5f5;">message</span>
+  </div>
+</div>
+
+<div class="section">
+  <h3>表结构</h3>
+
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#e8f4fd;">
+      <td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:700;" colspan="5">user 用户表</td>
+    </tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">字段</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">类型</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">说明</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">id</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">bigint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">主键，雪花ID</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">username</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">varchar(50)</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">学号/用户名</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">password</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">varchar(255)</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">BCrypt 加密</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">nickname</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">varchar(50)</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">昵称</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">avatar</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">varchar(255)</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">头像URL</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">phone</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">varchar(20)</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">手机号</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">role</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">tinyint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">0=普通用户, 1=管理员</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">status</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">tinyint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">0=正常, 1=封禁</td></tr>
+  </table>
+
+  <div style="height:12px;"></div>
+
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#e8f4fd;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:700;" colspan="5">category 分类表</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">id</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">bigint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">主键</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">name</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">varchar(50)</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">分类名称</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">parent_id</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">bigint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">父分类ID（支持两级）</td></tr>
+  </table>
+
+  <div style="height:12px;"></div>
+
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#e8f4fd;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:700;" colspan="5">product 商品表</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">id</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">bigint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">主键</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">title</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">varchar(100)</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">标题</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">description</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">text</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">描述</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">price</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">decimal(10,2)</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">价格</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">original_price</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">decimal(10,2)</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">原价（可空）</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">category_id</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">bigint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">分类ID</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">user_id</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">bigint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">卖家ID</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">condition</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">tinyint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">1=全新 2=几乎全新 3=轻微使用 4=明显痕迹</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">status</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">tinyint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">1=在售 2=已售出 3=已下架</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">view_count</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">int</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">浏览量</td></tr>
+  </table>
+
+  <div style="height:12px;"></div>
+
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#e8f4fd;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:700;" colspan="5">product_image 商品图片表</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">id</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">bigint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">主键</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">product_id</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">bigint</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">商品ID</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">url</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">varchar(255)</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">图片路径</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">sort_order</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">int</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">排序（首图为封面）</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>更多表（简化展示）</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">favorite 收藏表</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">id, user_id, product_id, created_at</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">orders 订单表</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">id, buyer_id, seller_id, product_id, amount, status(待付款/已付款/已完成/已取消), created_at</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">message 消息表</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">id, sender_id, receiver_id, product_id, content, is_read, created_at</td></tr>
+  </table>
+</div>

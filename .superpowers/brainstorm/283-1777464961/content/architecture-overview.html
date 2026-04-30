@@ -1,0 +1,49 @@
+<h2>第一节：系统架构总览</h2>
+<p class="subtitle">Vue 3 + Spring Boot 多模块 + MySQL + Redis</p>
+
+<div class="mockup">
+  <div class="mockup-header">系统架构图</div>
+  <div class="mockup-body" style="font-size:13px;line-height:1.4;padding:20px;">
+
+    <div style="text-align:center;margin-bottom:16px;color:#909399;font-size:12px;">用户端（浏览器） · 管理端（浏览器）</div>
+    <div style="display:flex;justify-content:center;gap:40px;margin-bottom:8px;">
+      <div style="border:1px solid #ddd;padding:12px 24px;border-radius:4px;background:#ecf5ff;">Vue 3 前端<br><small>Element Plus · Pinia · Axios</small></div>
+    </div>
+    <div style="text-align:center;margin:8px 0;color:#909399;">HTTP REST · WebSocket · JWT</div>
+    <div style="display:flex;justify-content:center;gap:16px;margin-bottom:8px;">
+      <div style="border:1px solid #ddd;padding:10px 18px;border-radius:4px;background:#f0f9eb;">service<br><small>商品·订单·用户</small></div>
+      <div style="border:1px solid #ddd;padding:10px 18px;border-radius:4px;background:#fdf6ec;">chat<br><small>WebSocket 聊天</small></div>
+      <div style="border:1px solid #ddd;padding:10px 18px;border-radius:4px;background:#fef0f0;">admin<br><small>管理后台接口</small></div>
+    </div>
+    <div style="text-align:center;margin:4px 0;font-size:11px;color:#909399;">common（公共类）· framework（安全/Redis/配置）</div>
+    <div style="text-align:center;margin:12px 0;color:#909399;">↓</div>
+    <div style="display:flex;justify-content:center;gap:40px;margin-bottom:12px;">
+      <div style="border:1px solid #ddd;padding:10px 20px;border-radius:4px;background:#f5f5f5;">MySQL 8.0</div>
+      <div style="border:1px solid #ddd;padding:10px 20px;border-radius:4px;background:#f5f5f5;">Redis</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>模块职责</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:14px;">
+    <tr style="background:#f5f7fa;"><td style="padding:8px 12px;border:1px solid #e4e7ed;font-weight:600;">common</td><td style="padding:8px 12px;border:1px solid #e4e7ed;">实体类、DTO、枚举、公共异常、工具类</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #e4e7ed;font-weight:600;">framework</td><td style="padding:8px 12px;border:1px solid #e4e7ed;">Spring Security + JWT、Redis 配置、WebSocket 配置、全局异常处理、跨域配置</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:8px 12px;border:1px solid #e4e7ed;font-weight:600;">service</td><td style="padding:8px 12px;border:1px solid #e4e7ed;">核心业务：用户、商品、收藏、订单、文件上传</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #e4e7ed;font-weight:600;">chat</td><td style="padding:8px 12px;border:1px solid #e4e7ed;">WebSocket 即时通讯，Redis 消息队列</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:8px 12px;border:1px solid #e4e7ed;font-weight:600;">admin</td><td style="padding:8px 12px;border:1px solid #e4e7ed;">管理后台接口：用户管理、商品审核、数据统计</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>技术选型总结</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:14px;">
+    <tr style="background:#f5f7fa;"><td style="padding:8px 12px;border:1px solid #e4e7ed;font-weight:600;">前端</td><td style="padding:8px 12px;border:1px solid #e4e7ed;">Vue 3 + Element Plus + Pinia + Vue Router + Axios</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #e4e7ed;font-weight:600;">后端</td><td style="padding:8px 12px;border:1px solid #e4e7ed;">Spring Boot 2.7 + MyBatis-Plus + Spring Security + JWT</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:8px 12px;border:1px solid #e4e7ed;font-weight:600;">数据库</td><td style="padding:8px 12px;border:1px solid #e4e7ed;">MySQL 8.0 + Redis</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #e4e7ed;font-weight:600;">聊天</td><td style="padding:8px 12px;border:1px solid #e4e7ed;">WebSocket（Spring WebSocket） + Redis 消息队列</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:8px 12px;border:1px solid #e4e7ed;font-weight:600;">图片存储</td><td style="padding:8px 12px;border:1px solid #e4e7ed;">本地文件系统（预留 OSS 接口）</td></tr>
+    <tr><td style="padding:8px 12px;border:1px solid #e4e7ed;font-weight:600;">构建工具</td><td style="padding:8px 12px;border:1px solid #e4e7ed;">Vite（前端） + Maven（后端）</td></tr>
+  </table>
+</div>

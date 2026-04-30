@@ -1,0 +1,76 @@
+<h2>第四节：前端结构与路由设计</h2>
+<p class="subtitle">Vue 3 + Element Plus + Pinia + Vue Router</p>
+
+<div class="section">
+  <h3>页面结构</h3>
+  <div style="display:flex;font-size:13px;line-height:1.7;">
+    <div style="flex:1;background:#fafafa;border:1px solid #e4e7ed;border-radius:6px;padding:14px;margin-right:10px;">
+      <div style="font-weight:700;color:#303133;margin-bottom:8px;">用户端</div>
+      <div>🏠 首页（商品瀑布流 + 搜索 + 分类导航）</div>
+      <div>📋 商品详情页（图片轮播 + 卖家信息 + 立即购买/联系卖家）</div>
+      <div>✏️ 发布商品页（表单 + 图片上传）</div>
+      <div>💬 聊天页（会话列表 + 聊天窗口，WebSocket实时）</div>
+      <div>❤️ 我的收藏</div>
+      <div>📦 订单管理（我买到的 / 我卖出的）</div>
+      <div>👤 个人中心（资料编辑 + 我的发布）</div>
+      <div>🔑 登录/注册</div>
+    </div>
+    <div style="flex:1;background:#fafafa;border:1px solid #e4e7ed;border-radius:6px;padding:14px;">
+      <div style="font-weight:700;color:#303133;margin-bottom:8px;">管理端（路由守卫分离）</div>
+      <div>📊 仪表盘（用户数、商品数、订单数统计卡片）</div>
+      <div>👥 用户管理（列表 + 封禁/解封）</div>
+      <div>📦 商品管理（列表 + 审核 + 下架）</div>
+      <div>📋 订单管理（全部订单查看）</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>路由表</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">路径</td><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">页面</td><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">权限</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">/</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">首页（商品列表）</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">公开</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">/product/:id</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">商品详情</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">公开</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">/login</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">登录</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">仅未登录</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">/register</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">注册</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">仅未登录</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">/publish</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">发布商品</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">需登录</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">/publish/:id</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">编辑商品</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">需登录</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">/chat</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">聊天（会话列表）</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">需登录</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">/chat/:userId</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">聊天窗口</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">需登录</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">/favorite</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">我的收藏</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">需登录</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">/order</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">订单管理</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">需登录</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">/profile</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">个人中心</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">需登录</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">/admin/*</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">管理后台</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">admin角色</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>前端项目结构</h3>
+  <pre style="background:#f5f7fa;padding:12px;border-radius:4px;font-size:12px;overflow-x:auto;">src/
+├── api/           # axios 封装 + 各模块 API 调用
+│   ├── request.js      # 拦截器（JWT注入、401处理）
+│   ├── auth.js         # 登录/注册
+│   ├── product.js      # 商品相关
+│   ├── order.js        # 订单
+│   └── message.js      # 聊天
+├── stores/        # Pinia 状态管理
+│   ├── user.js         # 用户信息 + token
+│   ├── chat.js         # WebSocket连接 + 消息
+│   └── notification.js # 未读消息数（轮询/WS推送）
+├── views/         # 页面组件
+├── components/    # 公共组件（ProductCard, ImageUploader等）
+├── router/        # 路由配置 + 守卫
+└── utils/         # 工具函数</pre>
+</div>
+
+<div class="section">
+  <h3>核心组件的设计取舍</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">组件</td><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">实现方式</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">图片上传</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">el-upload + 本地预览 + 拖拽排序，最多9张</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">商品卡片</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">瀑布流布局（CSS Grid）+ 懒加载图片</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">聊天窗口</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">WebSocket 连接管理 + 消息气泡 + 滚动到底部</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">路由守卫</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">beforeEach 检查 token 存在 + role 校验</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">状态持久化</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">pinia-plugin-persistedstate 将 token/user 持久化到 localStorage</td></tr>
+  </table>
+</div>

@@ -1,0 +1,73 @@
+<h2>第三节：API 接口设计</h2>
+<p class="subtitle">RESTful 风格 · JWT Bearer 鉴权 · 统一响应格式</p>
+
+<div class="section">
+  <h3>统一响应体</h3>
+  <pre style="background:#f5f7fa;padding:12px;border-radius:4px;font-size:12px;overflow-x:auto;">{
+  "code": 200,        // 业务状态码
+  "message": "success",
+  "data": { }         // 具体数据
+}</pre>
+</div>
+
+<div class="section">
+  <h3>认证模块 — /api/auth</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">POST</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/auth/register</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">注册（用户名+密码+昵称）</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">POST</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/auth/login</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">登录，返回JWT token，Redis缓存</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">GET</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/auth/info</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">获取当前用户信息（需认证）</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">PUT</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/auth/password</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">修改密码（需认证）</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>用户模块 — /api/user</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">GET</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/user/{id}</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">用户详情（发布的商品、信誉等）</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">PUT</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/user/profile</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">编辑个人资料（需认证）</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">POST</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/user/avatar</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">上传头像（需认证）</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>商品模块 — /api/product</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">GET</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/product</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">商品列表（分页+搜索+分类+价格排序）</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">GET</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/product/{id}</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">商品详情（含图片列表、卖家信息）</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">POST</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/product</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">发布商品（需认证，含图片上传）</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">PUT</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/product/{id}</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">编辑商品（仅发布者本人）</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">PUT</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/product/{id}/status</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">下架/重新上架（仅发布者）</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">GET</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/product/my</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">我的发布列表（需认证）</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>收藏 + 订单模块</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">POST</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/favorite/{productId}</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">收藏/取消收藏切换（需认证）</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">GET</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/favorite</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">我的收藏列表（需认证）</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">POST</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/order</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">创建订单/购买（需认证）</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">GET</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/order?type=buy|sell</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">我买到的/我卖出的（需认证）</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">PUT</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/order/{id}/status</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">更新订单状态（需认证）</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>文件 + 聊天 + 管理后台</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">POST</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/file/upload</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">上传图片，返回URL</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">ws</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/ws/chat/{userId}</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">WebSocket 连接点（需token参数）</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">GET</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/message/{userId}</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">获取与某用户的历史消息</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">GET</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/message/unread</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">未读消息数</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">—</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/admin/**</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">管理接口（需 admin 角色），含用户管理、商品审核、数据概览</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">GET</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">/api/category</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">分类列表（树形）</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>认证说明</h3>
+  <p style="font-size:13px;color:#606266;">
+    所有 <strong>需认证</strong> 接口在请求头携带 <code>Authorization: Bearer &lt;token&gt;</code>，后端通过 Spring Security 过滤器统一校验。
+    匿名接口：登录、注册、商品列表、商品详情、分类列表。
+  </p>
+</div>

@@ -1,0 +1,57 @@
+<h2>第五节：聊天系统与部署方案</h2>
+<p class="subtitle">WebSocket + Redis | 开发环境 | 项目启动方式</p>
+
+<div class="mockup">
+  <div class="mockup-header">聊天系统架构</div>
+  <div class="mockup-body" style="font-size:13px;line-height:1.6;padding:18px;">
+    <div style="text-align:center;margin-bottom:12px;">
+      <span style="border:1px solid #409eff;padding:4px 10px;border-radius:3px;background:#ecf5ff;">Vue 前端</span>
+      <span style="margin:0 8px;">— ws:// —</span>
+      <span style="border:1px solid #67c23a;padding:4px 10px;border-radius:3px;background:#f0f9eb;">Spring WebSocket</span>
+      <span style="margin:0 8px;">— pub/sub —</span>
+      <span style="border:1px solid #e6a23c;padding:4px 10px;border-radius:3px;background:#fdf6ec;">Redis</span>
+      <span style="margin:0 8px;">←—</span>
+      <span style="border:1px solid #909399;padding:4px 10px;border-radius:3px;background:#f5f5f5;">MySQL</span>
+    </div>
+    <div style="font-size:12px;color:#606266;text-align:center;">
+      <p><strong>消息流转：</strong>发送 → Redis Pub/Sub 广播 → 接收方在线则实时推送 → 同时持久化到 MySQL</p>
+      <p><strong>离线消息：</strong>接收方不在线时消息已存入 MySQL，上线后拉取未读消息</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>聊天核心逻辑</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">环节</td><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">实现</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">连接鉴权</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">WebSocket 握手阶段，从 URL 参数或首次消息中校验 JWT token</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">在线状态</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">用户连接时 Redis 记录 userId → sessionId 映射</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">消息发送</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">接收消息 → 存 MySQL → 通过 Redis Pub/Sub 推送给目标用户</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">历史消息</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">HTTP REST 接口拉取：GET /api/message/{userId}，分页返回</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">未读计数</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">前端定时轮询，同时 WebSocket 也可推送未读更新事件</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>项目启动方式</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">组件</td><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">启动方式</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">MySQL</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">本地安装，初始化 SQL 脚本，创建数据库 xianyu_plus</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">Redis</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">本地安装，默认端口 6379</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">后端</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">IDEA 打开 Maven 项目，运行主启动类，端口 8080</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">前端</td><td style="padding:6px 10px;border:1px solid #e4e7ed;"><code>npm install && npm run dev</code>，Vite 开发服务器端口 5173，代理 /api 到 8080</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>非功能设计说明</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">方面</td><td style="padding:6px 10px;border:1px solid #e4e7ed;font-weight:600;">方案</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">分页</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">MyBatis-Plus PageHelper，统一 PageResult&lt;T&gt; 返回</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">异常处理</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">@RestControllerAdvice 全局捕获，统一返回 {code, message}</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">ID 生成</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">MyBatis-Plus 雪花算法（ASSIGN_ID）</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">跨域</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">Spring CORS 配置允许 localhost:5173</td></tr>
+    <tr><td style="padding:6px 10px;border:1px solid #e4e7ed;">密码加密</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">BCryptPasswordEncoder</td></tr>
+    <tr style="background:#f5f7fa;"><td style="padding:6px 10px;border:1px solid #e4e7ed;">数据初始化</td><td style="padding:6px 10px;border:1px solid #e4e7ed;">SQL 脚本预置分类数据和 admin 账号</td></tr>
+  </table>
+</div>
