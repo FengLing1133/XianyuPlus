@@ -7,7 +7,7 @@
 | 层级 | 技术 |
 |------|------|
 | 后端框架 | Spring Boot 2.7.18 |
-| 前端框架 | Vue 3 + Vite + Element Plus |
+| 前端框架 | Vue 3 + Vite + 自定义 CSS |
 | 数据库 | MySQL 8.0 |
 | ORM | MyBatis-Plus 3.5 |
 | 缓存 | Redis |
