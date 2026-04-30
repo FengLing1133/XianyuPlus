@@ -1,31 +1,79 @@
 <template>
-  <div class="register-page">
-    <el-card class="register-card">
-      <h2 class="title">注册账号</h2>
-      <el-form :model="form" :rules="rules" ref="formRef" label-width="0">
-        <el-form-item prop="username">
-          <el-input v-model="form.username" placeholder="用户名（3-20位）" prefix-icon="User" />
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input v-model="form.password" type="password" placeholder="密码（6-20位）" prefix-icon="Lock" show-password />
-        </el-form-item>
-        <el-form-item prop="confirmPassword">
-          <el-input v-model="form.confirmPassword" type="password" placeholder="确认密码" prefix-icon="Lock" show-password />
-        </el-form-item>
-        <el-form-item prop="nickname">
-          <el-input v-model="form.nickname" placeholder="昵称（选填）" prefix-icon="UserFilled" />
-        </el-form-item>
-        <el-form-item prop="phone">
-          <el-input v-model="form.phone" placeholder="手机号（选填）" prefix-icon="Phone" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" class="submit-btn" @click="handleRegister" :loading="loading">注 册</el-button>
-        </el-form-item>
-      </el-form>
-      <div class="footer-link">
-        已有账号？<router-link to="/login">立即登录</router-link>
+  <div class="auth-page">
+    <div class="auth-card card">
+      <div class="auth-header">
+        <div class="auth-icon">🎉</div>
+        <h2 class="auth-title">加入闲鱼Plus</h2>
+        <p class="auth-subtitle">注册账号，开启校园二手交易</p>
       </div>
-    </el-card>
+
+      <form class="auth-form" @submit.prevent="handleRegister">
+        <div class="form-group">
+          <label class="form-label">👤 用户名</label>
+          <input
+            v-model="form.username"
+            type="text"
+            class="form-input"
+            placeholder="3-20位用户名"
+            :class="{ error: errors.username }"
+          />
+          <span v-if="errors.username" class="form-error">{{ errors.username }}</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🔒 密码</label>
+          <input
+            v-model="form.password"
+            type="password"
+            class="form-input"
+            placeholder="6-20位密码"
+            :class="{ error: errors.password }"
+          />
+          <span v-if="errors.password" class="form-error">{{ errors.password }}</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🔒 确认密码</label>
+          <input
+            v-model="form.confirmPassword"
+            type="password"
+            class="form-input"
+            placeholder="再次输入密码"
+            :class="{ error: errors.confirmPassword }"
+          />
+          <span v-if="errors.confirmPassword" class="form-error">{{ errors.confirmPassword }}</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">😊 昵称 <span style="color:var(--text-muted);font-weight:400;">(选填)</span></label>
+          <input
+            v-model="form.nickname"
+            type="text"
+            class="form-input"
+            placeholder="给自己起个好听的名字"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">📱 手机号 <span style="color:var(--text-muted);font-weight:400;">(选填)</span></label>
+          <input
+            v-model="form.phone"
+            type="text"
+            class="form-input"
+            placeholder="方便联系"
+          />
+        </div>
+
+        <button type="submit" class="btn-pill btn-pill-primary auth-btn" :disabled="loading">
+          <span v-if="loading" class="spinner"></span>
+          <span v-else>注 册</span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        已有账号？<router-link to="/login" class="auth-link">立即登录 →</router-link>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -33,12 +81,16 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { ElMessage } from 'element-plus'
+import { Toast } from '@/utils/toast'
 
 const router = useRouter()
 const userStore = useUserStore()
-const formRef = ref(null)
 const loading = ref(false)
+const errors = reactive({
+  username: '',
+  password: '',
+  confirmPassword: ''
+})
 
 const form = reactive({
   username: '',
@@ -48,32 +100,36 @@ const form = reactive({
   phone: ''
 })
 
-const validateConfirm = (rule, value, callback) => {
-  if (value !== form.password) {
-    callback(new Error('两次密码不一致'))
-  } else {
-    callback()
-  }
-}
+function validate() {
+  errors.username = ''
+  errors.password = ''
+  errors.confirmPassword = ''
 
-const rules = {
-  username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 20, message: '用户名长度3-20位', trigger: 'blur' }
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '密码长度6-20位', trigger: 'blur' }
-  ],
-  confirmPassword: [
-    { required: true, message: '请确认密码', trigger: 'blur' },
-    { validator: validateConfirm, trigger: 'blur' }
-  ]
+  if (!form.username.trim()) {
+    errors.username = '请输入用户名'
+    return false
+  }
+  if (form.username.length < 3 || form.username.length > 20) {
+    errors.username = '用户名长度3-20位'
+    return false
+  }
+  if (!form.password) {
+    errors.password = '请输入密码'
+    return false
+  }
+  if (form.password.length < 6 || form.password.length > 20) {
+    errors.password = '密码长度6-20位'
+    return false
+  }
+  if (form.password !== form.confirmPassword) {
+    errors.confirmPassword = '两次密码不一致'
+    return false
+  }
+  return true
 }
 
 async function handleRegister() {
-  const valid = await formRef.value.validate().catch(() => false)
-  if (!valid) return
+  if (!validate()) return
   loading.value = true
   try {
     await userStore.register({
@@ -82,7 +138,7 @@ async function handleRegister() {
       nickname: form.nickname || form.username,
       phone: form.phone
     })
-    ElMessage.success('注册成功，请登录')
+    Toast.success('注册成功，请登录')
     router.push('/login')
   } catch {
     // error handled by interceptor
@@ -93,10 +149,88 @@ async function handleRegister() {
 </script>
 
 <style scoped>
-.register-page { display: flex; justify-content: center; align-items: center; min-height: 80vh; }
-.register-card { width: 420px; }
-.title { text-align: center; margin-bottom: 30px; color: #303133; }
-.submit-btn { width: 100%; }
-.footer-link { text-align: center; font-size: 14px; color: #909399; }
-.footer-link a { color: #409eff; }
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 75vh;
+}
+
+.auth-card {
+  width: 420px;
+  padding: 36px;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.auth-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.auth-form {
+  margin-bottom: 20px;
+}
+
+.form-error {
+  color: var(--price-red);
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.form-input.error {
+  border-color: var(--price-red);
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 12px;
+  justify-content: center;
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.auth-footer {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.auth-link {
+  color: var(--green-500);
+  font-weight: 500;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
 </style>

@@ -1,26 +1,31 @@
 <template>
   <div class="dashboard">
-    <div class="stat-cards">
-      <el-card class="stat-card">
+    <div class="stat-grid">
+      <div class="stat-card card">
+        <div class="stat-icon">👥</div>
         <div class="stat-value">{{ data.userCount }}</div>
         <div class="stat-label">总用户数</div>
-      </el-card>
-      <el-card class="stat-card">
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon">📦</div>
         <div class="stat-value">{{ data.productCount }}</div>
         <div class="stat-label">总商品数</div>
-      </el-card>
-      <el-card class="stat-card">
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon">📋</div>
         <div class="stat-value">{{ data.orderCount }}</div>
         <div class="stat-label">总订单数</div>
-      </el-card>
-      <el-card class="stat-card">
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon">🆕</div>
         <div class="stat-value">{{ data.todayNewUsers }}</div>
         <div class="stat-label">今日新增用户</div>
-      </el-card>
-      <el-card class="stat-card">
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon">🔥</div>
         <div class="stat-value">{{ data.todayNewProducts }}</div>
         <div class="stat-label">今日新增商品</div>
-      </el-card>
+      </div>
     </div>
   </div>
 </template>
@@ -38,15 +43,32 @@ const data = ref({
 })
 
 onMounted(async () => {
-  const res = await request.get('/admin/dashboard')
-  data.value = res.data
+  try {
+    const res = await request.get('/admin/dashboard')
+    data.value = res.data
+  } catch {}
 })
 </script>
 
 <style scoped>
-.dashboard { padding: 10px; }
-.stat-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
-.stat-card { text-align: center; }
-.stat-value { font-size: 32px; font-weight: bold; color: #409eff; }
-.stat-label { margin-top: 8px; color: #909399; font-size: 14px; }
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.stat-card {
+  padding: 28px 20px;
+  text-align: center;
+  transition: transform var(--transition-fast);
+}
+.stat-card:hover { transform: translateY(-2px); }
+
+.stat-icon { font-size: 32px; margin-bottom: 10px; }
+.stat-value { font-size: 32px; font-weight: 700; color: var(--green-500); }
+.stat-label { font-size: 14px; color: var(--text-secondary); margin-top: 6px; }
+
+@media (max-width: 1024px) {
+  .stat-grid { grid-template-columns: repeat(3, 1fr); }
+}
 </style>

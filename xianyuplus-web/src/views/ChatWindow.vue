@@ -1,32 +1,39 @@
 <template>
   <div class="chat-window">
-    <el-card class="chat-card">
-      <template #header>
-        <div class="chat-header">
-          <el-button link @click="$router.push('/chat')">
-            <el-icon><ArrowLeft /></el-icon> 返回
-          </el-button>
-          <span class="partner-name">{{ partnerName }}</span>
-        </div>
-      </template>
+    <div class="chat-card card">
+      <!-- Header -->
+      <div class="chat-top">
+        <button class="back-btn" @click="$router.push('/chat')">← 返回</button>
+        <span class="partner-name">{{ partnerName || '聊天' }}</span>
+        <span></span>
+      </div>
 
-      <!-- Messages area -->
-      <div class="message-list" ref="msgListRef">
+      <!-- Messages -->
+      <div class="msg-list" ref="msgListRef">
         <div v-for="msg in messages" :key="msg.id" :class="['msg-item', msg.senderId === currentUserId ? 'msg-me' : 'msg-other']">
           <div class="msg-bubble">
             <div class="msg-content">{{ msg.content }}</div>
             <div class="msg-time">{{ msg.createdAt?.substring(0, 16) }}</div>
           </div>
         </div>
-        <el-empty v-if="messages.length === 0" description="暂无消息，发送第一条吧" />
+        <div v-if="messages.length === 0" class="empty-state" style="padding: 40px 0;">
+          <div class="empty-icon">💭</div>
+          <p>暂无消息，发送第一条吧</p>
+        </div>
       </div>
 
-      <!-- Input area -->
+      <!-- Input -->
       <div class="input-area">
-        <el-input v-model="inputText" type="textarea" :rows="3" placeholder="输入消息..." @keyup.enter.exact="sendMsg" />
-        <el-button type="primary" @click="sendMsg" :disabled="!inputText.trim()">发送</el-button>
+        <textarea
+          v-model="inputText"
+          class="msg-input"
+          rows="2"
+          placeholder="输入消息..."
+          @keyup.enter.exact="sendMsg"
+        ></textarea>
+        <button class="btn-pill btn-pill-primary send-btn" @click="sendMsg" :disabled="!inputText.trim()">发送</button>
       </div>
-    </el-card>
+    </div>
   </div>
 </template>
 
@@ -49,17 +56,16 @@ const currentUserId = userStore.userInfo?.id
 onMounted(async () => {
   const partnerId = route.params.userId
 
-  // Load history
-  const res = await request.get(`/message/${partnerId}`)
-  messages.value = res.data
+  try {
+    const res = await request.get(`/message/${partnerId}`)
+    messages.value = res.data
+  } catch {}
 
-  // Get partner info
   try {
     const userRes = await request.get(`/user/${partnerId}`)
     partnerName.value = userRes.data.nickname
   } catch {}
 
-  // Connect WebSocket
   chatStore.connect(currentUserId, userStore.token)
   chatStore.messages = messages.value
 
@@ -70,7 +76,8 @@ onUnmounted(() => {
   chatStore.disconnect()
 })
 
-function sendMsg() {
+function sendMsg(e) {
+  if (e) e.preventDefault()
   const content = inputText.value.trim()
   if (!content) return
 
@@ -89,19 +96,111 @@ function scrollToBottom() {
 </script>
 
 <style scoped>
-.chat-window { max-width: 700px; margin: 0 auto; }
-.chat-card { height: calc(100vh - 120px); display: flex; flex-direction: column; }
-.chat-header { display: flex; align-items: center; gap: 10px; }
-.partner-name { font-size: 16px; font-weight: 500; }
-.message-list { flex: 1; overflow-y: auto; padding: 10px 0; min-height: 300px; }
-.msg-item { margin-bottom: 15px; display: flex; }
+.chat-window {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.chat-card {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+  overflow: hidden;
+}
+
+.chat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-lighter);
+}
+
+.back-btn {
+  background: none;
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+.back-btn:hover { color: var(--green-500); }
+
+.partner-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.msg-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  min-height: 300px;
+}
+
+.msg-item {
+  margin-bottom: 16px;
+  display: flex;
+}
+
 .msg-me { justify-content: flex-end; }
 .msg-other { justify-content: flex-start; }
-.msg-bubble { max-width: 70%; padding: 10px 15px; border-radius: 8px; }
-.msg-me .msg-bubble { background: #409eff; color: #fff; }
-.msg-other .msg-bubble { background: #f0f0f0; color: #303133; }
-.msg-content { font-size: 14px; line-height: 1.5; word-break: break-all; }
-.msg-time { font-size: 11px; margin-top: 4px; opacity: 0.7; }
-.input-area { display: flex; gap: 10px; align-items: flex-end; padding-top: 10px; border-top: 1px solid #ebeef5; }
-.input-area .el-textarea { flex: 1; }
+
+.msg-bubble {
+  max-width: 70%;
+  padding: 10px 16px;
+  border-radius: 14px;
+}
+
+.msg-me .msg-bubble {
+  background: var(--green-500);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.msg-other .msg-bubble {
+  background: #f0f0f0;
+  color: var(--text-primary);
+  border-bottom-left-radius: 4px;
+}
+
+.msg-content {
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.msg-time {
+  font-size: 11px;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+.input-area {
+  display: flex;
+  gap: 12px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border-lighter);
+  align-items: flex-end;
+}
+
+.msg-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  transition: border-color var(--transition-fast);
+}
+.msg-input:focus { border-color: var(--green-500); }
+
+.send-btn {
+  padding: 10px 24px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 </style>

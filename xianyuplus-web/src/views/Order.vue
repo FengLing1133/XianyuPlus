@@ -1,66 +1,82 @@
 <template>
   <div class="order-page">
-    <el-card>
-      <template #header>
-        <el-tabs v-model="type" @tab-change="fetchData">
-          <el-tab-pane label="我买到的" name="buy" />
-          <el-tab-pane label="我卖出的" name="sell" />
-        </el-tabs>
-      </template>
-      <div v-loading="loading">
+    <h2 class="page-title">📋 我的订单</h2>
+
+    <div class="card">
+      <!-- Tabs -->
+      <div class="order-tabs">
+        <button :class="['tab-item', { active: type === 'buy' }]" @click="switchTab('buy')">🛒 我买到的</button>
+        <button :class="['tab-item', { active: type === 'sell' }]" @click="switchTab('sell')">💰 我卖出的</button>
+      </div>
+
+      <div v-if="loading" style="padding: 40px; text-align: center; color: var(--text-secondary);">加载中...</div>
+      <template v-else>
         <div v-for="order in orders" :key="order.id" class="order-item">
-          <div class="order-header">
-            <span>订单号：{{ order.id }}</span>
-            <el-tag :type="statusType(order.status)">{{ statusText(order.status) }}</el-tag>
+          <div class="order-head">
+            <span class="order-id">订单号：{{ order.id }}</span>
+            <span :class="['status-tag', 'status-' + order.status]">{{ statusText(order.status) }}</span>
           </div>
           <div class="order-body" @click="$router.push(`/product/${order.productId}`)">
-            <img :src="order.productImage || defaultImg" class="order-img" />
+            <div class="order-img-wrap" :style="{ background: colors[order.id % colors.length] }">
+              <img v-if="order.productImage" :src="order.productImage" class="order-img" />
+              <span v-else class="order-placeholder">📦</span>
+            </div>
             <div class="order-info">
               <div class="order-title">{{ order.productTitle }}</div>
               <div class="order-price">¥{{ order.amount }}</div>
             </div>
           </div>
-          <div class="order-footer">
-            <span class="other-user">
+          <div class="order-foot">
+            <span class="order-contact">
               {{ type === 'buy' ? '卖家' : '买家' }}：{{ type === 'buy' ? order.sellerName : order.buyerName }}
             </span>
             <span class="order-time">{{ order.createdAt?.substring(0, 16) }}</span>
             <div class="order-actions">
-              <el-button v-if="type === 'buy' && order.status === 0" size="small" type="danger" @click="cancelOrder(order)">取消订单</el-button>
-              <el-button v-if="type === 'sell' && order.status === 0" size="small" type="primary" @click="payOrder(order)">标记已付款</el-button>
-              <el-button v-if="type === 'sell' && order.status === 1" size="small" type="success" @click="completeOrder(order)">标记已完成</el-button>
+              <button v-if="type === 'buy' && order.status === 0" class="btn-pill btn-danger" @click="cancelOrder(order)">取消</button>
+              <button v-if="type === 'sell' && order.status === 0" class="btn-pill btn-pill-primary" @click="payOrder(order)">标记已付款</button>
+              <button v-if="type === 'sell' && order.status === 1" class="btn-pill" style="background:var(--green-50);color:var(--green-500);" @click="completeOrder(order)">标记已完成</button>
             </div>
           </div>
         </div>
-        <el-empty v-if="!loading && orders.length === 0" description="暂无订单" />
-      </div>
-      <div class="pagination" v-if="total > 0">
-        <el-pagination background layout="prev, pager, next" :total="total" :page-size="10" v-model:current-page="page" @current-change="fetchData" />
-      </div>
-    </el-card>
+
+        <div v-if="orders.length === 0" class="empty-state">
+          <div class="empty-icon">📋</div>
+          <p>暂无订单</p>
+        </div>
+
+        <div v-if="total > 10" class="pagination">
+          <button :disabled="page === 1" @click="goPage(page - 1)">上一页</button>
+          <button
+            v-for="p in totalPages"
+            :key="p"
+            :class="{ active: p === page }"
+            @click="goPage(p)"
+          >{{ p }}</button>
+          <button :disabled="page >= totalPages" @click="goPage(page + 1)">下一页</button>
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref, computed, onMounted } from 'vue'
 import request from '@/api/request'
+import { Toast } from '@/utils/toast'
+import { Dialog } from '@/utils/dialog'
 
 const type = ref('buy')
 const orders = ref([])
-const loading = ref(false)
+const loading = ref(true)
 const page = ref(1)
 const total = ref(0)
-const defaultImg = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+'
+const colors = ['#fce4ec', '#e3f2fd', '#e8f5e9', '#f3e5f5', '#fff9c4', '#fff3e0']
+
+const totalPages = computed(() => Math.ceil(total.value / 10))
 
 function statusText(s) {
   const map = { 0: '待付款', 1: '已付款', 2: '已完成', 3: '已取消' }
   return map[s] || '未知'
-}
-
-function statusType(s) {
-  const map = { 0: 'info', 1: '', 2: 'success', 3: 'danger' }
-  return map[s] || 'info'
 }
 
 onMounted(() => fetchData())
@@ -76,36 +92,134 @@ async function fetchData() {
   }
 }
 
+function switchTab(t) {
+  type.value = t
+  page.value = 1
+  fetchData()
+}
+
+function goPage(p) {
+  page.value = p
+  fetchData()
+}
+
 async function cancelOrder(order) {
+  const ok = await Dialog.confirm({ title: '取消订单', message: '确认取消此订单？' })
+  if (!ok) return
   await request.put(`/order/${order.id}/status`, null, { params: { status: 3 } })
-  ElMessage.success('订单已取消')
+  Toast.success('订单已取消')
   fetchData()
 }
 
 async function payOrder(order) {
   await request.put(`/order/${order.id}/status`, null, { params: { status: 1 } })
-  ElMessage.success('已标记为已付款')
+  Toast.success('已标记为已付款')
   fetchData()
 }
 
 async function completeOrder(order) {
   await request.put(`/order/${order.id}/status`, null, { params: { status: 2 } })
-  ElMessage.success('订单已完成')
+  Toast.success('订单已完成')
   fetchData()
 }
 </script>
 
 <style scoped>
-.order-page { max-width: 800px; margin: 0 auto; }
-.order-item { border: 1px solid #ebeef5; border-radius: 8px; padding: 15px; margin-bottom: 12px; }
-.order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; color: #909399; }
-.order-body { display: flex; gap: 12px; cursor: pointer; }
-.order-img { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
+.order-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.order-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-lighter);
+}
+
+.tab-item {
+  padding: 12px 24px;
+  background: none;
+  font-size: 14px;
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+.tab-item:hover { color: var(--text-primary); }
+.tab-item.active {
+  color: var(--green-500);
+  border-bottom-color: var(--green-500);
+  font-weight: 500;
+}
+
+.order-item {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-lighter);
+}
+.order-item:last-child { border-bottom: none; }
+
+.order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.order-id { font-size: 13px; color: var(--text-secondary); }
+
+.status-tag {
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+}
+.status-0 { background: #f0f4ff; color: #5b7fff; }
+.status-1 { background: #fff3e0; color: #e65100; }
+.status-2 { background: #e8f5e9; color: var(--green-500); }
+.status-3 { background: #fef0f0; color: var(--price-red); }
+
+.order-body {
+  display: flex;
+  gap: 14px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.order-img-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.order-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.order-placeholder { font-size: 28px; }
+
 .order-info { flex: 1; }
-.order-title { font-size: 15px; margin-bottom: 6px; }
-.order-price { font-size: 18px; font-weight: bold; color: #f56c6c; }
-.order-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid #f0f0f0; font-size: 13px; }
-.other-user { color: #606266; }
-.order-time { color: #909399; }
-.pagination { margin-top: 20px; display: flex; justify-content: center; }
+.order-title { font-size: 15px; color: var(--text-primary); margin-bottom: 6px; }
+.order-price { font-size: 18px; font-weight: 700; color: var(--price-red); }
+
+.order-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-lighter);
+  font-size: 13px;
+}
+.order-contact { color: var(--text-secondary); }
+.order-time { color: var(--text-muted); }
+
+.btn-danger {
+  background: #fef0f0;
+  color: var(--price-red);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+}
+.btn-danger:hover { background: #fde2e2; }
 </style>

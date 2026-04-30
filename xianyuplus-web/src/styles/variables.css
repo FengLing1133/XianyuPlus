@@ -1,0 +1,46 @@
+:root {
+  /* Primary */
+  --green-500: #2b9939;
+  --green-400: #4caf50;
+  --green-300: #66bb6a;
+  --green-100: #c8e6c9;
+  --green-50: #e8f5e9;
+
+  /* Background */
+  --bg-page: #f5f7fa;
+  --bg-card: #ffffff;
+
+  /* Text */
+  --text-primary: #333333;
+  --text-secondary: #999999;
+  --text-muted: #bbbbbb;
+
+  /* Price */
+  --price-red: #e53935;
+
+  /* Border */
+  --border-light: #e8e8e8;
+  --border-lighter: #f0f0f0;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 50px;
+
+  /* Shadow */
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.10);
+  --shadow-nav: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+  /* Macaron placeholder colors */
+  --macaron-pink: #fce4ec;
+  --macaron-blue: #e3f2fd;
+  --macaron-green: #e8f5e9;
+  --macaron-purple: #f3e5f5;
+  --macaron-yellow: #fff9c4;
+  --macaron-orange: #fff3e0;
+
+  /* Transition */
+  --transition-fast: 0.2s ease;
+}

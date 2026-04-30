@@ -1,51 +1,85 @@
 <template>
-  <div class="admin-users">
-    <el-card>
+  <div class="admin-page">
+    <div class="card">
       <div class="toolbar">
-        <el-input v-model="keyword" placeholder="搜索用户名/昵称" clearable style="width: 250px;" @change="fetchData" />
+        <input v-model="keyword" class="form-input search-input" placeholder="🔍 搜索用户名/昵称..." @change="fetchData" style="max-width: 280px;" />
       </div>
-      <el-table :data="users" v-loading="loading" stripe>
-        <el-table-column prop="id" label="ID" width="180" />
-        <el-table-column prop="username" label="用户名" />
-        <el-table-column prop="nickname" label="昵称" />
-        <el-table-column prop="phone" label="手机号" />
-        <el-table-column label="角色" width="80">
-          <template #default="{ row }">
-            <el-tag :type="row.role === 1 ? 'danger' : 'info'">{{ row.role === 1 ? '管理员' : '用户' }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="状态" width="80">
-          <template #default="{ row }">
-            <el-tag :type="row.status === 0 ? 'success' : 'danger'">{{ row.status === 0 ? '正常' : '封禁' }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="注册时间" width="170">
-          <template #default="{ row }">{{ row.createdAt?.substring(0, 19) }}</template>
-        </el-table-column>
-        <el-table-column label="操作" width="120">
-          <template #default="{ row }">
-            <el-button v-if="row.status === 0" size="small" type="danger" @click="toggleStatus(row, 1)">封禁</el-button>
-            <el-button v-else size="small" type="success" @click="toggleStatus(row, 0)">解封</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="pagination" v-if="total > 0">
-        <el-pagination background layout="prev, pager, next" :total="total" :page-size="10" v-model:current-page="page" @current-change="fetchData" />
+
+      <div class="table-wrap">
+        <table class="data-table" v-if="!loading">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>用户名</th>
+              <th>昵称</th>
+              <th>手机号</th>
+              <th>角色</th>
+              <th>状态</th>
+              <th>注册时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="user in users" :key="user.id">
+              <td class="td-mono">{{ user.id }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.nickname }}</td>
+              <td>{{ user.phone || '-' }}</td>
+              <td>
+                <span :class="['pill-tag', user.role === 1 ? 'pill-tag-red' : 'pill-tag-gray']">
+                  {{ user.role === 1 ? '管理员' : '用户' }}
+                </span>
+              </td>
+              <td>
+                <span :class="['pill-tag', user.status === 0 ? 'pill-tag-green' : 'pill-tag-red']">
+                  {{ user.status === 0 ? '正常' : '封禁' }}
+                </span>
+              </td>
+              <td class="td-mono">{{ user.createdAt?.substring(0, 19) }}</td>
+              <td>
+                <button
+                  v-if="user.status === 0"
+                  class="btn-pill btn-danger-sm"
+                  @click="toggleStatus(user, 1)"
+                >封禁</button>
+                <button
+                  v-else
+                  class="btn-pill btn-success-sm"
+                  @click="toggleStatus(user, 0)"
+                >解封</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </el-card>
+
+      <div v-if="loading" style="padding:40px;text-align:center;color:var(--text-secondary);">加载中...</div>
+
+      <div v-if="!loading && users.length === 0" class="empty-state">
+        <div class="empty-icon">👥</div>
+        <p>暂无用户数据</p>
+      </div>
+
+      <div v-if="total > 10" class="pagination">
+        <button :disabled="page === 1" @click="goPage(page - 1)">上一页</button>
+        <button v-for="p in totalPages" :key="p" :class="{ active: p === page }" @click="goPage(p)">{{ p }}</button>
+        <button :disabled="page >= totalPages" @click="goPage(page + 1)">下一页</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref, computed, onMounted } from 'vue'
 import request from '@/api/request'
+import { Toast } from '@/utils/toast'
 
 const users = ref([])
-const loading = ref(false)
+const loading = ref(true)
 const keyword = ref('')
 const page = ref(1)
 const total = ref(0)
+const totalPages = computed(() => Math.ceil(total.value / 10))
 
 onMounted(() => fetchData())
 
@@ -64,13 +98,53 @@ async function fetchData() {
 
 async function toggleStatus(user, status) {
   await request.put(`/admin/users/${user.id}/status`, null, { params: { status } })
-  ElMessage.success(status === 1 ? '已封禁' : '已解封')
+  Toast.success(status === 1 ? '已封禁' : '已解封')
   fetchData()
 }
+
+function goPage(p) { page.value = p; fetchData() }
 </script>
 
 <style scoped>
-.admin-users { padding: 10px; }
-.toolbar { margin-bottom: 15px; }
-.pagination { margin-top: 20px; display: flex; justify-content: center; }
+.admin-page { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.card { padding: 24px; }
+.toolbar { margin-bottom: 20px; }
+.search-input { max-width: 280px; }
+
+.table-wrap { overflow-x: auto; }
+
+.data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.data-table th {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 2px solid var(--border-lighter);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  font-size: 13px;
+}
+.data-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-lighter);
+  color: var(--text-primary);
+}
+.data-table tbody tr:hover { background: #fafafa; }
+.td-mono { font-family: 'SF Mono', 'Consolas', monospace; font-size: 12px; color: var(--text-secondary); }
+
+.pill-tag-red { background: #fef0f0; color: var(--price-red); }
+.pill-tag-gray { background: #f5f5f5; color: #666; }
+
+.btn-danger-sm {
+  background: #fef0f0; color: var(--price-red);
+  padding: 4px 14px; font-size: 12px; border-radius: var(--radius-pill);
+}
+.btn-danger-sm:hover { background: #fde2e2; }
+
+.btn-success-sm {
+  background: var(--green-50); color: var(--green-500);
+  padding: 4px 14px; font-size: 12px; border-radius: var(--radius-pill);
+}
+.btn-success-sm:hover { background: #c8e6c9; }
 </style>

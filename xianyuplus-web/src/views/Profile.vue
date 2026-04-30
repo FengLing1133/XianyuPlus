@@ -1,124 +1,218 @@
 <template>
   <div class="profile-page">
-    <el-card>
-      <template #header>个人中心</template>
+    <h2 class="page-title">👤 个人中心</h2>
+
+    <!-- Avatar & Info Card -->
+    <div class="card profile-card">
       <div class="profile-header">
-        <div class="avatar-section">
-          <el-avatar :size="80" :src="userStore.userInfo?.avatar" />
-          <el-upload :action="uploadUrl" :headers="headers" :show-file-list="false" :on-success="handleAvatarSuccess" accept="image/*">
-            <el-button size="small" style="margin-top: 10px;">更换头像</el-button>
-          </el-upload>
+        <div class="avatar-area">
+          <img v-if="userStore.userInfo?.avatar" :src="userStore.userInfo.avatar" class="avatar-img" />
+          <span v-else class="avatar-default">👤</span>
+          <button class="btn-pill btn-upload" @click="triggerUpload">📷 更换头像</button>
+          <input ref="fileInput" type="file" accept="image/*" style="display:none" @change="handleAvatarChange" />
         </div>
-        <div class="info-form">
-          <el-form :model="form" label-width="80px">
-            <el-form-item label="用户名">
-              <el-input v-model="userStore.userInfo.username" disabled />
-            </el-form-item>
-            <el-form-item label="昵称">
-              <el-input v-model="form.nickname" />
-            </el-form-item>
-            <el-form-item label="手机号">
-              <el-input v-model="form.phone" />
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="saveProfile">保存</el-button>
-            </el-form-item>
-          </el-form>
+        <div class="info-area">
+          <form @submit.prevent="saveProfile">
+            <div class="form-group">
+              <label class="form-label">用户名</label>
+              <input class="form-input" :value="userStore.userInfo?.username" disabled style="background:#f9f9f9;" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">昵称</label>
+              <input v-model="form.nickname" class="form-input" placeholder="你的昵称" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">手机号</label>
+              <input v-model="form.phone" class="form-input" placeholder="你的手机号" />
+            </div>
+            <button type="submit" class="btn-pill btn-pill-primary">💾 保存</button>
+          </form>
         </div>
       </div>
-    </el-card>
+    </div>
 
-    <el-card style="margin-top: 20px;">
-      <template #header>修改密码</template>
-      <el-form :model="pwdForm" :rules="pwdRules" ref="pwdFormRef" label-width="100px" style="max-width: 400px;">
-        <el-form-item label="原密码" prop="oldPassword">
-          <el-input v-model="pwdForm.oldPassword" type="password" show-password />
-        </el-form-item>
-        <el-form-item label="新密码" prop="newPassword">
-          <el-input v-model="pwdForm.newPassword" type="password" show-password />
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="changePassword">修改密码</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
+    <!-- Password Card -->
+    <div class="card" style="margin-top: 20px; padding: 28px 32px;">
+      <h3 class="section-title">🔒 修改密码</h3>
+      <form @submit.prevent="changePassword" style="max-width: 400px;">
+        <div class="form-group">
+          <label class="form-label">原密码</label>
+          <input v-model="pwdForm.oldPassword" type="password" class="form-input" placeholder="请输入原密码" />
+          <span v-if="pwdErrors.oldPassword" class="form-error">{{ pwdErrors.oldPassword }}</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">新密码</label>
+          <input v-model="pwdForm.newPassword" type="password" class="form-input" placeholder="6-20位新密码" />
+          <span v-if="pwdErrors.newPassword" class="form-error">{{ pwdErrors.newPassword }}</span>
+        </div>
+        <button type="submit" class="btn-pill btn-pill-primary">🔑 修改密码</button>
+      </form>
+    </div>
 
-    <!-- My products -->
-    <el-card style="margin-top: 20px;">
-      <template #header>我的发布</template>
-      <div class="product-grid">
+    <!-- My Products -->
+    <div class="card" style="margin-top: 20px; padding: 28px 32px;">
+      <h3 class="section-title">📦 我的发布</h3>
+      <div class="product-grid" v-if="myProducts.length > 0">
         <ProductCard v-for="item in myProducts" :key="item.id" :product="item" />
       </div>
-      <el-empty v-if="myProducts.length === 0" description="暂无发布" />
-    </el-card>
+      <div v-else class="empty-state" style="padding: 40px 0;">
+        <div class="empty-icon">📭</div>
+        <p>暂无发布</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
-import { ElMessage } from 'element-plus'
-import request from '@/api/request'
+import { ref, reactive, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
+import request from '@/api/request'
+import { Toast } from '@/utils/toast'
 import ProductCard from '@/components/ProductCard.vue'
 
 const userStore = useUserStore()
-const pwdFormRef = ref(null)
+const fileInput = ref(null)
 const myProducts = ref([])
-
-const uploadUrl = '/api/user/avatar'
-const headers = computed(() => {
-  const token = localStorage.getItem('token')
-  return token ? { Authorization: `Bearer ${token}` } : {}
-})
 
 const form = reactive({
   nickname: userStore.userInfo?.nickname || '',
   phone: userStore.userInfo?.phone || ''
 })
 
-const pwdForm = reactive({
-  oldPassword: '',
-  newPassword: ''
-})
-
-const pwdRules = {
-  oldPassword: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
-  newPassword: [
-    { required: true, message: '请输入新密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '密码长度6-20位', trigger: 'blur' }
-  ]
-}
+const pwdForm = reactive({ oldPassword: '', newPassword: '' })
+const pwdErrors = reactive({ oldPassword: '', newPassword: '' })
 
 onMounted(async () => {
-  const res = await request.get('/product/my')
-  myProducts.value = res.data.records
+  try {
+    const res = await request.get('/product/my')
+    myProducts.value = res.data.records
+  } catch {}
 })
+
+function triggerUpload() {
+  fileInput.value?.click()
+}
+
+async function handleAvatarChange(e) {
+  const file = e.target.files?.[0]
+  if (!file) return
+  const formData = new FormData()
+  formData.append('file', file)
+  try {
+    await request.post('/user/avatar', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    await userStore.fetchInfo()
+    Toast.success('头像更新成功')
+  } catch {}
+}
 
 async function saveProfile() {
   await request.put('/user/profile', form)
-  userStore.fetchInfo()
-  ElMessage.success('保存成功')
-}
-
-function handleAvatarSuccess(response) {
-  userStore.fetchInfo()
-  ElMessage.success('头像更新成功')
+  await userStore.fetchInfo()
+  Toast.success('保存成功')
 }
 
 async function changePassword() {
-  const valid = await pwdFormRef.value.validate().catch(() => false)
-  if (!valid) return
-  await request.put('/auth/password', pwdForm)
-  ElMessage.success('密码修改成功')
-  pwdForm.oldPassword = ''
-  pwdForm.newPassword = ''
+  pwdErrors.oldPassword = ''
+  pwdErrors.newPassword = ''
+  if (!pwdForm.oldPassword) { pwdErrors.oldPassword = '请输入原密码'; return }
+  if (!pwdForm.newPassword || pwdForm.newPassword.length < 6 || pwdForm.newPassword.length > 20) {
+    pwdErrors.newPassword = '密码长度6-20位'; return
+  }
+  try {
+    await request.put('/auth/password', pwdForm)
+    Toast.success('密码修改成功')
+    pwdForm.oldPassword = ''
+    pwdForm.newPassword = ''
+  } catch {}
 }
 </script>
 
 <style scoped>
-.profile-page { max-width: 800px; margin: 0 auto; }
-.profile-header { display: flex; gap: 40px; }
-.avatar-section { display: flex; flex-direction: column; align-items: center; }
-.info-form { flex: 1; }
-.product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+.profile-page {
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-card {
+  padding: 28px 32px;
+}
+
+.profile-header {
+  display: flex;
+  gap: 48px;
+}
+
+.avatar-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-default {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: var(--green-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+}
+
+.btn-upload {
+  background: #f5f5f5;
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  font-size: 12px;
+  border-radius: var(--radius-pill);
+}
+.btn-upload:hover { background: #eee; }
+
+.info-area {
+  flex: 1;
+  max-width: 400px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.form-error {
+  color: var(--price-red);
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 </style>

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
+import { Toast } from '@/utils/toast'
 import router from '@/router'
 
 const request = axios.create({
@@ -24,7 +24,7 @@ request.interceptors.response.use(
     if (data.code === 200) {
       return data
     }
-    ElMessage.error(data.message || '请求失败')
+    Toast.error(data.message || '请求失败')
     if (data.code === 401) {
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
@@ -38,17 +38,17 @@ request.interceptors.response.use(
       if (error.response) {
         const { status, data } = error.response
         if (status === 401) {
-          ElMessage.error('登录已过期，请重新登录')
+          Toast.error('登录已过期，请重新登录')
           localStorage.removeItem('token')
           localStorage.removeItem('userInfo')
           router.push('/login')
         } else if (status === 403) {
-          ElMessage.error('无权访问')
+          Toast.error('无权访问')
         } else {
-          ElMessage.error(data?.message || `请求失败(${status})`)
+          Toast.error(data?.message || `请求失败(${status})`)
         }
       } else {
-        ElMessage.error('网络错误')
+        Toast.error('网络错误')
       }
     }
     return Promise.reject(error)
