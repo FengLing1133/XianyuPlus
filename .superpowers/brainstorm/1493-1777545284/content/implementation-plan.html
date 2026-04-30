@@ -1,0 +1,185 @@
+<h2>📋 改造方案总览</h2>
+<p class="subtitle">移除 Element Plus，全部组件用自定义 CSS 重写，统一校园清新风格</p>
+
+<div class="section">
+  <h3>🔧 技术变更</h3>
+  <table style="width:100%; border-collapse: collapse; font-size: 14px;">
+    <tr style="border-bottom:1px solid #eee;">
+      <td style="padding:8px 12px; font-weight:600;">移除</td>
+      <td style="padding:8px 12px;">element-plus、@element-plus/icons-vue、element-plus/dist/index.css</td>
+    </tr>
+    <tr style="border-bottom:1px solid #eee;">
+      <td style="padding:8px 12px; font-weight:600;">保留</td>
+      <td style="padding:8px 12px;">Vue 3、Pinia、Vue Router、Axios、Vite</td>
+    </tr>
+    <tr style="border-bottom:1px solid #eee;">
+      <td style="padding:8px 12px; font-weight:600;">新增</td>
+      <td style="padding:8px 12px;">全局 CSS 变量文件 (styles/variables.css)、通用样式 (styles/global.css)</td>
+    </tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>📁 需要修改的文件（共 20 个）</h3>
+
+  <div class="pros-cons">
+    <div class="pros">
+      <h4>核心布局 (3)</h4>
+      <ul>
+        <li>main.js — 移除 Element Plus 注册</li>
+        <li>App.vue — 全局背景色</li>
+        <li>Layout.vue — 新导航栏</li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h4>核心组件 (3)</h4>
+      <ul>
+        <li>ProductCard.vue — 新卡片设计</li>
+        <li>AdminLayout.vue — 浅色后台</li>
+        <li>ImageUploader.vue — 重写</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="pros-cons">
+    <div class="pros">
+      <h4>前台页面 (7)</h4>
+      <ul>
+        <li>Home.vue — 首页</li>
+        <li>Login.vue — 登录</li>
+        <li>Register.vue — 注册</li>
+        <li>ProductDetail.vue — 商品详情</li>
+        <li>Profile.vue — 个人中心</li>
+        <li>Publish.vue — 发布商品</li>
+        <li>Chat.vue / ChatWindow.vue</li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h4>后台 + 收藏/订单 (6)</h4>
+      <ul>
+        <li>admin/Dashboard.vue</li>
+        <li>admin/Users.vue</li>
+        <li>admin/Products.vue</li>
+        <li>admin/Orders.vue</li>
+        <li>Favorite.vue</li>
+        <li>Order.vue</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>🎨 全局 CSS 变量体系</h3>
+  <div class="mockup">
+    <div class="mockup-header">styles/variables.css</div>
+    <div class="mockup-body" style="font-family: monospace; font-size: 12px; line-height: 1.8; padding: 16px; background: #1e1e1e; color: #d4d4d4; border-radius: 8px;">
+      <span style="color:#569cd6;">:root</span> {<br>
+      &nbsp;&nbsp;<span style="color:#6a9955;">/* 主色调 */</span><br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--green-500</span>: #2b9939;<br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--green-400</span>: #4caf50;<br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--green-50</span>: #e8f5e9;<br>
+      <br>
+      &nbsp;&nbsp;<span style="color:#6a9955;">/* 背景 & 文字 */</span><br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--bg-page</span>: #f5f7fa;<br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--bg-card</span>: #ffffff;<br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--text-primary</span>: #333333;<br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--text-secondary</span>: #999999;<br>
+      <br>
+      &nbsp;&nbsp;<span style="color:#6a9955;">/* 价格 & 圆角 */</span><br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--price-red</span>: #e53935;<br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--radius-sm</span>: 8px;<br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--radius-md</span>: 14px;<br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--radius-lg</span>: 20px;<br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--radius-pill</span>: 50px;<br>
+      <br>
+      &nbsp;&nbsp;<span style="color:#6a9955;">/* 阴影 */</span><br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--shadow-card</span>: 0 4px 12px rgba(0,0,0,0.05);<br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--shadow-hover</span>: 0 8px 24px rgba(0,0,0,0.10);<br>
+      &nbsp;&nbsp;<span style="color:#9cdcfe;">--shadow-nav</span>: 0 1px 3px rgba(0,0,0,0.06);<br>
+      }
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>🗂️ 分类与 Emoji 映射</h3>
+  <table style="width:100%; border-collapse: collapse; font-size: 13px;">
+    <tr style="background:#f9fafb; text-align:left;">
+      <th style="padding: 8px 12px;">分类</th>
+      <th style="padding: 8px 12px;">Emoji</th>
+      <th style="padding: 8px 12px;">马卡龙色</th>
+      <th style="padding: 8px 12px;">品类示例</th>
+    </tr>
+    <tr style="border-top:1px solid #eee;">
+      <td style="padding:8px 12px;">教材教辅</td><td style="padding:8px 12px;">📚</td>
+      <td style="padding:8px 12px;"><span style="display:inline-block;width:16px;height:16px;background:#fce4ec;border-radius:4px;"></span> 淡粉 #fce4ec</td>
+      <td style="padding:8px 12px;">书籍、笔记、考试资料</td>
+    </tr>
+    <tr style="border-top:1px solid #eee;">
+      <td style="padding:8px 12px;">电子产品</td><td style="padding:8px 12px;">📱</td>
+      <td style="padding:8px 12px;"><span style="display:inline-block;width:16px;height:16px;background:#e3f2fd;border-radius:4px;"></span> 淡蓝 #e3f2fd</td>
+      <td style="padding:8px 12px;">手机、电脑、平板</td>
+    </tr>
+    <tr style="border-top:1px solid #eee;">
+      <td style="padding:8px 12px;">生活用品</td><td style="padding:8px 12px;">🎒</td>
+      <td style="padding:8px 12px;"><span style="display:inline-block;width:16px;height:16px;background:#e8f5e9;border-radius:4px;"></span> 淡绿 #e8f5e9</td>
+      <td style="padding:8px 12px;">日用品、宿舍好物</td>
+    </tr>
+    <tr style="border-top:1px solid #eee;">
+      <td style="padding:8px 12px;">服饰鞋包</td><td style="padding:8px 12px;">👗</td>
+      <td style="padding:8px 12px;"><span style="display:inline-block;width:16px;height:16px;background:#f3e5f5;border-radius:4px;"></span> 淡紫 #f3e5f5</td>
+      <td style="padding:8px 12px;">衣服、鞋、包</td>
+    </tr>
+    <tr style="border-top:1px solid #eee;">
+      <td style="padding:8px 12px;">运动娱乐</td><td style="padding:8px 12px;">🎮</td>
+      <td style="padding:8px 12px;"><span style="display:inline-block;width:16px;height:16px;background:#fff9c4;border-radius:4px;"></span> 淡黄 #fff9c4</td>
+      <td style="padding:8px 12px;">运动器材、乐器、游戏</td>
+    </tr>
+    <tr style="border-top:1px solid #eee;">
+      <td style="padding:8px 12px;">其他好物</td><td style="padding:8px 12px;">🏠</td>
+      <td style="padding:8px 12px;"><span style="display:inline-block;width:16px;height:16px;background:#fff3e0;border-radius:4px;"></span> 淡橙 #fff3e0</td>
+      <td style="padding:8px 12px;">其他</td>
+    </tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>⚙️ 实施顺序</h3>
+  <div class="options">
+    <div class="option" data-choice="step1" onclick="toggleSelect(this)">
+      <div class="letter">1</div>
+      <div class="content">
+        <h3>基础设施</h3>
+        <p>创建 CSS 变量文件、全局样式，修改 main.js 移除 Element Plus，更新 package.json</p>
+      </div>
+    </div>
+    <div class="option" data-choice="step2" onclick="toggleSelect(this)">
+      <div class="letter">2</div>
+      <div class="content">
+        <h3>布局层</h3>
+        <p>重写 Layout.vue（导航栏）、AdminLayout.vue、App.vue</p>
+      </div>
+    </div>
+    <div class="option" data-choice="step3" onclick="toggleSelect(this)">
+      <div class="letter">3</div>
+      <div class="content">
+        <h3>首页核心</h3>
+        <p>重写 Home.vue（Hero+搜索+分类+商品列表）、ProductCard.vue</p>
+      </div>
+    </div>
+    <div class="option" data-choice="step4" onclick="toggleSelect(this)">
+      <div class="letter">4</div>
+      <div class="content">
+        <h3>其他页面</h3>
+        <p>Login、Register、ProductDetail、Profile、Publish、Chat、Favorite、Order</p>
+      </div>
+    </div>
+    <div class="option" data-choice="step5" onclick="toggleSelect(this)">
+      <div class="letter">5</div>
+      <div class="content">
+        <h3>管理后台</h3>
+        <p>Dashboard、Users、Products、Orders 及 ImageUploader</p>
+      </div>
+    </div>
+  </div>
+</div>
