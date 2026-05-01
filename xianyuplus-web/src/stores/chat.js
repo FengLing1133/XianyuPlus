@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useNotificationStore } from './notification'
 
 export const useChatStore = defineStore('chat', () => {
   const ws = ref(null)
@@ -27,7 +28,17 @@ export const useChatStore = defineStore('chat', () => {
     }
 
     socket.onmessage = (event) => {
-      const msg = JSON.parse(event.data)
+      const data = JSON.parse(event.data)
+
+      // 处理通知推送
+      if (data.type === 'notification') {
+        const notificationStore = useNotificationStore()
+        notificationStore.incrementUnread()
+        notificationStore.fetchNotifications()
+        return
+      }
+
+      const msg = data
       // Deduplicate: if message with same id already exists, skip
       if (msg.id && messages.value.some(m => m.id === msg.id)) return
       // If this is a server echo of our own message, replace the optimistic temp message
