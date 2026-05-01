@@ -91,6 +91,11 @@ async function handleClick(item) {
         router.push(`/product/${item.relatedId}`)
       }
       break
+    case 4: // 系统通知（举报）
+      if (item.title && item.title.includes('举报')) {
+        router.push('/admin/reports')
+      }
+      break
   }
 }
 
@@ -203,7 +208,7 @@ onUnmounted(() => {
 
 .mark-all-btn {
   font-size: 13px;
-  color: var(--primary);
+  color: var(--green-500);
   background: none;
   border: none;
   cursor: pointer;

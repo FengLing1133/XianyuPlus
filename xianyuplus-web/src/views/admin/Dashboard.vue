@@ -26,6 +26,12 @@
         <div class="stat-value">{{ data.todayNewProducts }}</div>
         <div class="stat-label">今日新增商品</div>
       </div>
+      <div class="stat-card card" v-if="data.pendingReports > 0">
+        <div class="stat-icon">🚩</div>
+        <div class="stat-value">{{ data.pendingReports }}</div>
+        <div class="stat-label">待处理举报</div>
+        <button class="btn-view-reports" @click="$router.push('/admin/reports')">立即处理</button>
+      </div>
     </div>
   </div>
 </template>
@@ -53,7 +59,7 @@ onMounted(async () => {
 <style scoped>
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
@@ -67,6 +73,22 @@ onMounted(async () => {
 .stat-icon { font-size: 32px; margin-bottom: 10px; }
 .stat-value { font-size: 32px; font-weight: 700; color: var(--green-500); }
 .stat-label { font-size: 14px; color: var(--text-secondary); margin-top: 6px; }
+
+.btn-view-reports {
+  margin-top: 12px;
+  padding: 6px 16px;
+  border: none;
+  background: #ef4444;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+.btn-view-reports:hover {
+  background: #dc2626;
+}
 
 @media (max-width: 1024px) {
   .stat-grid { grid-template-columns: repeat(3, 1fr); }

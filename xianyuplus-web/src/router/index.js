@@ -16,7 +16,8 @@ const routes = [
   { path: '/admin', component: () => import('@/views/admin/Dashboard.vue'), meta: { auth: true, admin: true } },
   { path: '/admin/users', component: () => import('@/views/admin/Users.vue'), meta: { auth: true, admin: true } },
   { path: '/admin/products', component: () => import('@/views/admin/Products.vue'), meta: { auth: true, admin: true } },
-  { path: '/admin/orders', component: () => import('@/views/admin/Orders.vue'), meta: { auth: true, admin: true } }
+  { path: '/admin/orders', component: () => import('@/views/admin/Orders.vue'), meta: { auth: true, admin: true } },
+  { path: '/admin/reports', component: () => import('@/views/admin/Reports.vue'), meta: { auth: true, admin: true } }
 ]
 
 const router = createRouter({

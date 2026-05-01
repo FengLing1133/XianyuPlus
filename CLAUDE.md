@@ -47,12 +47,12 @@ npm run build      # Production build
 xianyu-plus/
 ├── common/       — Shared entities, DTOs, enums, exceptions, Result/PageResult utils
 ├── framework/    — Infrastructure: Spring Security + JWT, CORS, MyBatisPlus, Redis config, global exception handler
-├── service/      — Core business logic: Auth, User, Product, Category, Favorite, Order, File upload APIs. Contains StartApplication (entry point)
+├── service/      — Core business logic: Auth, User, Product, Category, Favorite, Order, Review, Report, Notification, Message, File upload APIs. Contains StartApplication (entry point)
 ├── chat/         — WebSocket chat (Spring WebSocket), ChatWebSocketHandler, ChatHandshakeInterceptor, ChatService
-└── admin/        — Admin dashboard APIs (user/product/order management, requires ADMIN role)
+└── admin/        — Admin dashboard APIs (user/product/order/report management, requires ADMIN role)
 ```
 
-**Dependency chain**: `common` ← `framework` ← `chat` (chat also depends on framework). `common` ← `framework` ← `service` ← `chat`, `admin`
+**Dependency chain**: `common` ← `framework` ← `chat`, `admin`. `service` depends on all: `common`, `framework`, `chat`, `admin`.
 
 ### Key Design Patterns
 
@@ -66,7 +66,7 @@ xianyu-plus/
 ### Authentication Flow
 
 1. `/api/auth/login`, `/api/auth/register`, GET `/api/product`, GET `/api/category`, `/ws/**`, `/uploads/**` are public.
-2. `/api/admin/**` requires ADMIN role (role=1).
+2. `/api/admin/**` (including `/api/admin/report/**`) requires ADMIN role (role=1).
 3. All other endpoints require a valid JWT token in `Authorization: Bearer <token>` header.
 4. JWT is generated via `JwtTokenUtil` (HMAC-SHA256, 7-day expiration). Contains userId, username, role in claims.
 5. `JwtTokenFilter` (OncePerRequestFilter) extracts and validates the token on every request.
@@ -84,7 +84,7 @@ xianyu-plus/
 - `service/src/main/resources/application.yml` — server port, datasource, Redis, file upload path, JWT secret/expiration
 - `service/src/main/resources/db/init.sql` — full schema + seed data
 - **API docs** (Knife4j/Swagger): http://localhost:8080/doc.html
-- **File uploads**: max 10MB per file, 20MB per request. Saved to `./uploads` directory, served at `/uploads/**`.
+- **File uploads**: max 10MB per file, 20MB per request. Path configured in `application.yml` (`file.upload-path`), served at `/uploads/**`.
 - **SQL logging**: MyBatis-Plus prints all SQL to stdout (`StdOutImpl`), so you'll see every query in the backend console.
 - **Map underscore to camelCase**: Enabled — DB columns like `user_id` auto-map to Java `userId`.
 
@@ -92,13 +92,13 @@ xianyu-plus/
 
 ```
 xianyuplus-web/src/
-├── api/request.js     — Axios instance with token interceptor and 401 redirect
+├── api/               — request.js (Axios instance), notification.js, report.js, review.js
 ├── router/index.js    — Routes with auth/admin guards (beforeEach)
-├── stores/user.js     — Pinia store (persisted: token, userInfo)
-├── stores/chat.js     — Pinia store (WebSocket connection, messages)
-├── components/        — Layout, AdminLayout, ProductCard, ImageUploader
-├── views/             — Home, Login, Register, ProductDetail, Publish, Profile, Chat, Order, Favorite
-└── views/admin/       — Dashboard, Users, Products, Orders
+├── stores/            — user.js (auth), chat.js (WebSocket), notification.js
+├── components/        — Layout, AdminLayout, ProductCard, ImageUploader, ReviewForm, ReviewList, ReportForm, NotificationBell
+├── views/             — Home, Login, Register, ProductDetail, Publish, Profile, Chat, ChatWindow, Order, Favorite
+├── views/admin/       — Dashboard, Users, Products, Orders, Reports
+└── utils/             — toast.js, dialog.js, category.js
 ```
 
 - **Layout switching**: App.vue renders `<Layout>` for normal routes, `<AdminLayout>` for `/admin/*` routes.
@@ -107,3 +107,7 @@ xianyuplus-web/src/
 - **Publish.vue** serves double-duty: `/publish` (create) and `/edit/:id` (edit) — the component detects an `id` route param to switch between create/edit mode.
 - **Toast utility** (`@/utils/toast`): Used for user-facing error/success messages. The Axios response interceptor in `request.js` automatically shows Toast errors for failed requests (unless `config.silent` is set).
 - **Silent requests**: Set `silent: true` on an Axios request config to suppress automatic error Toasts (useful for polling or background requests).
+- **Review system**: Buyers can rate and comment on products after order completion. Sellers can reply to reviews. Both can delete their own content.
+- **Report system**: Users can report products or users. Reports are managed by admins via `/admin/reports`.
+- **Notification system**: Bell icon in header shows unread count. Notification store tracks messages in real-time.
+- **Chat routing**: `/chat` shows conversation list, `/chat/:userId` opens a specific chat window (ChatWindow.vue).

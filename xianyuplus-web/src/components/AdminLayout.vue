@@ -19,6 +19,9 @@
         <router-link to="/admin/orders" class="admin-nav-item">
           <span>📋</span> 订单管理
         </router-link>
+        <router-link to="/admin/reports" class="admin-nav-item">
+          <span>🚩</span> 举报管理
+        </router-link>
       </nav>
 
       <div class="sidebar-footer">

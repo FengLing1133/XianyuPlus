@@ -52,6 +52,15 @@
               {{ favorited ? '⭐ 已收藏' : '☆ 收藏' }}
             </button>
             <button class="btn-pill btn-chat" @click="handleChat">💬 联系卖家</button>
+            <button
+              v-if="userStore.token"
+              class="btn-pill btn-report"
+              :class="{ reported: hasReported }"
+              :disabled="hasReported"
+              @click="showReportForm = true"
+            >
+              {{ hasReported ? '已举报' : '举报' }}
+            </button>
           </div>
           <div class="action-row" v-else>
             <button class="btn-pill btn-pill-primary" @click="$router.push(`/edit/${product.id}`)">✏️ 编辑</button>
@@ -85,6 +94,13 @@
       <div class="empty-icon">🔍</div>
       <p>商品不存在或已下架</p>
     </div>
+
+    <ReportForm
+      :visible="showReportForm"
+      :product-id="product?.id"
+      @close="showReportForm = false"
+      @success="hasReported = true"
+    />
   </div>
 </template>
 
@@ -97,6 +113,8 @@ import { Toast } from '@/utils/toast'
 import { Dialog } from '@/utils/dialog'
 import { conditionText, getProductEmoji, getProductColor } from '@/utils/category'
 import ReviewList from '@/components/ReviewList.vue'
+import ReportForm from '@/components/ReportForm.vue'
+import { checkReported } from '@/api/report'
 
 const route = useRoute()
 const router = useRouter()
@@ -106,6 +124,8 @@ const loading = ref(true)
 const favorited = ref(false)
 const currentIndex = ref(0)
 const mainImgError = ref(false)
+const showReportForm = ref(false)
+const hasReported = ref(false)
 
 const isOwner = computed(() => userStore.userInfo?.id === product.value?.userId)
 const currentImage = computed(() => product.value?.images?.[currentIndex.value]?.url)
@@ -117,6 +137,14 @@ onMounted(async () => {
   try {
     const res = await request.get(`/product/${id}`)
     product.value = res.data
+
+    // 检查是否已举报
+    if (userStore.token && product.value.userId !== userStore.userInfo?.id) {
+      const reportRes = await checkReported(product.value.id)
+      if (reportRes.code === 200) {
+        hasReported.value = reportRes.data
+      }
+    }
   } catch (e) {
     // Toast already shown by axios interceptor
   } finally {
@@ -369,5 +397,25 @@ async function handleToggleStatus() {
 .review-section h3 {
   font-size: 18px;
   margin-bottom: 20px;
+}
+
+.btn-report {
+  background: #f5f5f5;
+  color: var(--text-secondary);
+  padding: 12px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  transition: all var(--transition-fast);
+}
+
+.btn-report:hover:not(:disabled) {
+  background: #fef0f0;
+  color: #ef4444;
+}
+
+.btn-report.reported {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
 }
 </style>

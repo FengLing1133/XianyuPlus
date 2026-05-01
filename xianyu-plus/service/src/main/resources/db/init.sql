@@ -162,6 +162,25 @@ CREATE TABLE `review` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评价表';
 
 -- --------------------------------------------
+-- 举报表
+-- --------------------------------------------
+DROP TABLE IF EXISTS `report`;
+CREATE TABLE `report` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `product_id` BIGINT NOT NULL COMMENT '被举报商品',
+    `reporter_id` BIGINT NOT NULL COMMENT '举报者',
+    `reason` TINYINT NOT NULL COMMENT '1虚假信息 2违禁品 3价格异常 4恶意欺诈 5其他',
+    `description` VARCHAR(500) DEFAULT NULL COMMENT '补充说明(可选)',
+    `status` TINYINT DEFAULT 0 COMMENT '0待处理 1已处理 2已驳回',
+    `admin_note` VARCHAR(500) DEFAULT NULL COMMENT '管理员处理备注',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `handled_at` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_product` (`product_id`),
+    KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='举报表';
+
+-- --------------------------------------------
 -- 预置数据
 -- --------------------------------------------
 

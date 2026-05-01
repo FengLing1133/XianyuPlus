@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xianyuplus.common.dto.PageDTO;
 import com.xianyuplus.common.entity.Order;
 import com.xianyuplus.common.entity.Product;
+import com.xianyuplus.common.entity.Report;
 import com.xianyuplus.common.entity.User;
 import com.xianyuplus.common.utils.PageResult;
 import com.xianyuplus.common.utils.Result;
 import com.xianyuplus.common.mapper.OrderMapper;
 import com.xianyuplus.common.mapper.ProductMapper;
+import com.xianyuplus.common.mapper.ReportMapper;
 import com.xianyuplus.common.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -32,6 +34,9 @@ public class AdminController {
     @Autowired
     private OrderMapper orderMapper;
 
+    @Autowired
+    private ReportMapper reportMapper;
+
     @GetMapping("/dashboard")
     public Result<Map<String, Object>> dashboard() {
         long userCount = userMapper.selectCount(null);
@@ -46,12 +51,18 @@ public class AdminController {
                 new LambdaQueryWrapper<Product>()
                         .ge(Product::getCreatedAt, today.atStartOfDay()));
 
+        // 待处理举报数量
+        long pendingReports = reportMapper.selectCount(
+                new LambdaQueryWrapper<Report>()
+                        .eq(Report::getStatus, 0));
+
         Map<String, Object> data = new HashMap<>();
         data.put("userCount", userCount);
         data.put("productCount", productCount);
         data.put("orderCount", orderCount);
         data.put("todayNewUsers", todayUsers);
         data.put("todayNewProducts", todayProducts);
+        data.put("pendingReports", pendingReports);
         return Result.ok(data);
     }
 
