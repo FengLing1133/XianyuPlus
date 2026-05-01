@@ -39,6 +39,8 @@ public class SecurityConfig {
             ).permitAll()
             .antMatchers(HttpMethod.GET, "/api/product").permitAll()
             .regexMatchers(HttpMethod.GET, "/api/product/\\d+").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/review/product/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/review/seller/*/stats").permitAll()
             .antMatchers("/api/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated()
             .and()
