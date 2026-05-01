@@ -6,6 +6,7 @@ const routes = [
   { path: '/login', component: () => import('@/views/Login.vue') },
   { path: '/register', component: () => import('@/views/Register.vue') },
   { path: '/product/:id', component: () => import('@/views/ProductDetail.vue') },
+  { path: '/seller/:id', component: () => import('@/views/SellerProfile.vue') },
   { path: '/publish', component: () => import('@/views/Publish.vue'), meta: { auth: true } },
   { path: '/edit/:id', component: () => import('@/views/Publish.vue'), meta: { auth: true } },
   { path: '/chat', component: () => import('@/views/Chat.vue'), meta: { auth: true } },

@@ -28,7 +28,9 @@
           </div>
           <div class="order-foot">
             <span class="order-contact">
-              {{ type === 'buy' ? '卖家' : '买家' }}：{{ type === 'buy' ? order.sellerName : order.buyerName }}
+              {{ type === 'buy' ? '卖家' : '买家' }}：
+              <router-link v-if="type === 'buy'" :to="`/seller/${order.sellerId}`" class="seller-link">{{ order.sellerName || '卖家' }}</router-link>
+              <router-link v-else :to="`/seller/${order.buyerId}`" class="seller-link">{{ order.buyerName || '买家' }}</router-link>
             </span>
             <span class="order-time">{{ order.createdAt?.substring(0, 16) }}</span>
             <div class="order-actions">
@@ -267,4 +269,13 @@ function handleReviewSuccess() {
   font-size: 13px;
 }
 .btn-danger:hover { background: #fde2e2; }
+
+.seller-link {
+  color: var(--green-500);
+  text-decoration: none;
+}
+
+.seller-link:hover {
+  text-decoration: underline;
+}
 </style>

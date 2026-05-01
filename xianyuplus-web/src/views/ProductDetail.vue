@@ -38,7 +38,7 @@
 
           <div class="seller-row">
             <span class="seller-avatar">👤</span>
-            <span class="seller-name">{{ product.sellerName }}</span>
+            <router-link :to="`/seller/${product.userId}`" class="seller-link">{{ product.sellerName || '卖家' }}</router-link>
           </div>
 
           <div class="stats-row">
@@ -417,5 +417,15 @@ async function handleToggleStatus() {
   background: #f5f5f5;
   color: #999;
   cursor: not-allowed;
+}
+
+.seller-link {
+  color: var(--green-500);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.seller-link:hover {
+  text-decoration: underline;
 }
 </style>
