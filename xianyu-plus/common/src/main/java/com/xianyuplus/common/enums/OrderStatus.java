@@ -18,4 +18,13 @@ public enum OrderStatus {
         this.code = code;
         this.desc = desc;
     }
+
+    public static OrderStatus fromCode(int code) {
+        for (OrderStatus status : values()) {
+            if (status.code == code) {
+                return status;
+            }
+        }
+        return null;
+    }
 }

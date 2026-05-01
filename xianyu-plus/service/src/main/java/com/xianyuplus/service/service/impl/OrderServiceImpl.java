@@ -17,6 +17,7 @@ import com.xianyuplus.common.mapper.OrderMapper;
 import com.xianyuplus.common.mapper.ProductImageMapper;
 import com.xianyuplus.common.mapper.ProductMapper;
 import com.xianyuplus.common.mapper.UserMapper;
+import com.xianyuplus.service.service.NotificationService;
 import com.xianyuplus.service.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     @Transactional
@@ -144,22 +148,26 @@ public class OrderServiceImpl implements OrderService {
             if (current == OrderStatus.PENDING.getCode() && target == OrderStatus.PAID.getCode()) {
                 order.setStatus(target);
                 orderMapper.updateById(order);
+                createOrderNotification(order, OrderStatus.PAID.getCode());
                 return Result.ok();
             }
             // PENDING → CANCELLED: 取消未付款订单
             if (current == OrderStatus.PENDING.getCode() && target == OrderStatus.CANCELLED.getCode()) {
                 cancelOrder(order);
+                createOrderNotification(order, OrderStatus.CANCELLED.getCode());
                 return Result.ok();
             }
             // PAID → CANCELLED: 取消已付款订单（退款）
             if (current == OrderStatus.PAID.getCode() && target == OrderStatus.CANCELLED.getCode()) {
                 cancelOrder(order);
+                createOrderNotification(order, OrderStatus.CANCELLED.getCode());
                 return Result.ok();
             }
             // SHIPPED → RECEIVED: 确认收货 → 自动完成
             if (current == OrderStatus.SHIPPED.getCode() && target == OrderStatus.RECEIVED.getCode()) {
                 order.setStatus(OrderStatus.COMPLETED.getCode());
                 orderMapper.updateById(order);
+                createOrderNotification(order, OrderStatus.COMPLETED.getCode());
                 return Result.ok();
             }
         }
@@ -170,6 +178,7 @@ public class OrderServiceImpl implements OrderService {
             if (current == OrderStatus.PAID.getCode() && target == OrderStatus.SHIPPED.getCode()) {
                 order.setStatus(target);
                 orderMapper.updateById(order);
+                createOrderNotification(order, OrderStatus.SHIPPED.getCode());
                 return Result.ok();
             }
         }
@@ -186,5 +195,55 @@ public class OrderServiceImpl implements OrderService {
             product.setStatus(ProductStatus.ON_SALE.getCode());
             productMapper.updateById(product);
         }
+    }
+
+    private void createOrderNotification(Order order, int targetStatus) {
+        String title;
+        String content;
+        Long notifyUserId;
+
+        switch (OrderStatus.fromCode(targetStatus)) {
+            case PAID:
+                title = "买家已付款";
+                content = "您的商品已被买家付款，等待您发货";
+                notifyUserId = order.getSellerId();
+                break;
+            case SHIPPED:
+                title = "卖家已发货";
+                content = "您购买的商品已发货，请注意查收";
+                notifyUserId = order.getBuyerId();
+                break;
+            case COMPLETED:
+                title = "订单已完成";
+                content = "交易已完成，感谢您的使用";
+                notifyUserId = order.getSellerId();
+                break;
+            case CANCELLED:
+                title = "订单已取消";
+                content = "订单已被取消";
+                Long currentUserId = getCurrentUserId();
+                notifyUserId = order.getSellerId().equals(currentUserId)
+                        ? order.getBuyerId()
+                        : order.getSellerId();
+                break;
+            default:
+                return;
+        }
+
+        notificationService.createNotification(
+                notifyUserId,
+                1, // 订单状态类型
+                title,
+                content,
+                order.getId()
+        );
+    }
+
+    private Long getCurrentUserId() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getUsername, username);
+        User user = userMapper.selectOne(wrapper);
+        return user != null ? user.getId() : null;
     }
 }
