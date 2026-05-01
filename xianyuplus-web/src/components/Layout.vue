@@ -31,6 +31,7 @@
               <div v-if="showDropdown" class="dropdown">
                 <router-link to="/profile" class="dropdown-item" @click="showDropdown = false">👤 个人中心</router-link>
                 <router-link to="/favorites" class="dropdown-item" @click="showDropdown = false">⭐ 我的收藏</router-link>
+                <router-link to="/history" class="dropdown-item" @click="showDropdown = false">📖 浏览历史</router-link>
                 <router-link to="/orders" class="dropdown-item" @click="showDropdown = false">📋 我的订单</router-link>
                 <router-link v-if="userStore.isAdmin" to="/admin" class="dropdown-item" @click="showDropdown = false">⚙️ 管理后台</router-link>
                 <div class="dropdown-divider"></div>
