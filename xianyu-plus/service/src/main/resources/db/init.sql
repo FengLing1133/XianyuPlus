@@ -123,6 +123,24 @@ CREATE TABLE `message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息表';
 
 -- --------------------------------------------
+-- 通知表
+-- --------------------------------------------
+DROP TABLE IF EXISTS `notification`;
+CREATE TABLE `notification` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `user_id` BIGINT NOT NULL COMMENT '接收者',
+    `type` TINYINT NOT NULL COMMENT '1订单状态 2新消息 3商品相关 4系统通知',
+    `title` VARCHAR(100) NOT NULL,
+    `content` VARCHAR(500) DEFAULT NULL,
+    `related_id` BIGINT DEFAULT NULL COMMENT '关联ID(订单ID/商品ID/消息ID)',
+    `is_read` TINYINT DEFAULT 0 COMMENT '0未读 1已读',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_user_read` (`user_id`, `is_read`),
+    KEY `idx_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='通知表';
+
+-- --------------------------------------------
 -- 预置数据
 -- --------------------------------------------
 
