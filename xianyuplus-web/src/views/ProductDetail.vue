@@ -67,6 +67,12 @@
         <h3 class="desc-title">📝 商品描述</h3>
         <div class="desc-body">{{ product.description || '暂无描述' }}</div>
       </div>
+
+      <!-- Reviews -->
+      <div class="review-section">
+        <h3>商品评价</h3>
+        <ReviewList :product-id="product.id" :seller-id="product.userId" />
+      </div>
     </template>
 
     <div v-else class="empty-state">
@@ -84,6 +90,7 @@ import request from '@/api/request'
 import { Toast } from '@/utils/toast'
 import { Dialog } from '@/utils/dialog'
 import { conditionText, getProductEmoji, getProductColor } from '@/utils/category'
+import ReviewList from '@/components/ReviewList.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -345,5 +352,16 @@ async function handleToggleStatus() {
   .image-section {
     width: 100%;
   }
+}
+
+.review-section {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.review-section h3 {
+  font-size: 18px;
+  margin-bottom: 20px;
 }
 </style>
