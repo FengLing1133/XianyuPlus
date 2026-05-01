@@ -29,7 +29,7 @@
             <div>
               <div class="reviewer-name">{{ review.buyerNickname || '匿名用户' }}</div>
               <div class="review-rating">
-                <span v-for="i in 5" :key="i" class="star-small">{{ i <= review.rating ? '★' : '☆' }}</span>
+                <span v-for="i in 5" :key="i" class="star-small" :class="{ 'star-filled': i <= review.rating }">{{ i <= review.rating ? '★' : '☆' }}</span>
                 <span class="review-time">{{ formatTime(review.createdAt) }}</span>
               </div>
             </div>
@@ -285,6 +285,9 @@ watch(() => props.productId, () => {
 
 .star-small {
   font-size: 14px;
+  color: #ddd;
+}
+.star-small.star-filled {
   color: #ffc107;
 }
 
