@@ -31,10 +31,15 @@
 |----------|-----------|
 | 待决定 | 待决定 |
 
+### Bug 4: LocalDateTime 序列化异常
+- **根因**: `JacksonConfig.java` 自建 `ObjectMapper` bean 覆盖了 Spring Boot 自动配置的 ObjectMapper，丢失了默认注册的 JSR310 模块
+- `jackson-datatype-jsr310` 通过 Spring Boot starter 已在 classpath 上，但被自定义 bean 覆盖
+- 所有 Entity 的 `createdAt`/`updatedAt` (LocalDateTime 类型) 都无法序列化
+
 ## Issues Encountered
 | Issue | Resolution |
 |-------|------------|
-|       |            |
+| LocalDateTime 序列化失败 | 改用 Jackson2ObjectMapperBuilderCustomizer 定制而非替换 ObjectMapper |
 
 ## Resources
 - 前端: `xianyuplus-web/src/`

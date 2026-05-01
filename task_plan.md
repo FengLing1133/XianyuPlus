@@ -1,7 +1,7 @@
 # Task Plan: XianyuPlus
 
 ## Goal
-修复三个前端/后端Bug：商品图片显示问题、多用户并发问题、商品详情页404问题
+修复XianyuPlus的前端/后端Bug
 
 ## Current Phase
 Phase 1
@@ -35,6 +35,12 @@ Phase 1
 ### Phase 5: Testing & Verification
 - [x] 后端编译通过
 - [ ] 用户手动验证三个Bug均已修复
+- **Status:** complete
+
+### Phase 6: Fix Bug 4 — LocalDateTime 序列化异常
+- [x] 将 JacksonConfig 从自建 ObjectMapper 改为 Jackson2ObjectMapperBuilderCustomizer
+- [x] 保留 Long→String 转换，同时保留 Spring Boot 默认 JSR310 支持
+- [x] 后端编译通过
 - **Status:** complete
 
 ## Key Questions

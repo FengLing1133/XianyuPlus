@@ -62,6 +62,14 @@
 |-----------|-------|---------|------------|
 |           |       |         |            |
 
+### Phase 6: Fix Bug 4 — LocalDateTime 序列化异常
+- **Status:** complete
+- Actions taken:
+  - 将 `JacksonConfig.java` 从 `@Bean ObjectMapper` 改为 `@Bean Jackson2ObjectMapperBuilderCustomizer`
+  - 这样保留 Spring Boot 自动配置的 ObjectMapper（含 JSR310 模块），仅追加 Long→String 转换
+- Files modified:
+  - xianyu-plus/framework/src/main/java/com/xianyuplus/framework/config/JacksonConfig.java
+
 ## 5-Question Reboot Check
 | Question | Answer |
 |----------|--------|
