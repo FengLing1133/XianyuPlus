@@ -13,6 +13,7 @@ import com.xianyuplus.common.mapper.FavoriteMapper;
 import com.xianyuplus.common.mapper.ProductImageMapper;
 import com.xianyuplus.common.mapper.ProductMapper;
 import com.xianyuplus.common.mapper.UserMapper;
+import com.xianyuplus.common.service.NotificationService;
 import com.xianyuplus.service.service.FavoriteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,6 +37,9 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public Result<Map<String, Object>> toggle(Long productId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -57,6 +61,18 @@ public class FavoriteServiceImpl implements FavoriteService {
             favorite.setProductId(productId);
             favoriteMapper.insert(favorite);
             result.put("favorited", true);
+
+            // 创建收藏通知
+            Product product = productMapper.selectById(productId);
+            if (product != null && !product.getUserId().equals(user.getId())) {
+                notificationService.createNotification(
+                    product.getUserId(),
+                    3, // 商品相关类型
+                    "商品被收藏",
+                    "您发布的商品 \"" + product.getTitle() + "\" 被人收藏了",
+                    productId
+                );
+            }
         }
         return Result.ok(result);
     }
