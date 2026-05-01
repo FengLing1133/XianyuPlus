@@ -14,6 +14,7 @@ const routes = [
   { path: '/favorites', component: () => import('@/views/Favorite.vue'), meta: { auth: true } },
   { path: '/orders', component: () => import('@/views/Order.vue'), meta: { auth: true } },
   { path: '/profile', component: () => import('@/views/Profile.vue'), meta: { auth: true } },
+  { path: '/history', component: () => import('@/views/ViewHistory.vue'), meta: { auth: true } },
   { path: '/admin', component: () => import('@/views/admin/Dashboard.vue'), meta: { auth: true, admin: true } },
   { path: '/admin/users', component: () => import('@/views/admin/Users.vue'), meta: { auth: true, admin: true } },
   { path: '/admin/products', component: () => import('@/views/admin/Products.vue'), meta: { auth: true, admin: true } },
