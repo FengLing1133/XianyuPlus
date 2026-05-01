@@ -21,6 +21,7 @@ public class Product {
     private BigDecimal originalPrice;
     private Long categoryId;
     private Long userId;
+    @TableField("`condition`")
     private Integer condition;
     private Integer status;
     private Integer viewCount;

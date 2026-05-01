@@ -70,9 +70,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 return true;
             }
         }
-        // GET /api/product and /api/product/{id} are public
-        if ("GET".equals(method) && path.startsWith("/api/product")) {
-            return true;
+        if ("GET".equals(method)) {
+            if ("/api/product".equals(path)) {
+                return true;
+            }
+            if (path.matches("/api/product/\\d+")) {
+                return true;
+            }
         }
         return false;
     }

@@ -4,6 +4,7 @@ import com.xianyuplus.framework.security.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,11 +34,11 @@ public class SecurityConfig {
                 "/api/auth/login",
                 "/api/auth/register",
                 "/api/category/**",
-                "/api/product",        // GET list
-                "/api/product/*",      // GET detail (path variable)
                 "/ws/**",
                 "/uploads/**"
             ).permitAll()
+            .antMatchers(HttpMethod.GET, "/api/product").permitAll()
+            .regexMatchers(HttpMethod.GET, "/api/product/\\d+").permitAll()
             .antMatchers("/api/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated()
             .and()

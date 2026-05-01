@@ -214,6 +214,9 @@ public class ProductServiceImpl implements ProductService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userMapper.selectOne(
                 new LambdaQueryWrapper<User>().eq(User::getUsername, username));
+        if (user == null) {
+            return Result.error(401, "请先登录");
+        }
 
         Page<Product> page = new Page<>(dto.getPage(), dto.getSize());
         LambdaQueryWrapper<Product> wrapper = new LambdaQueryWrapper<Product>()
