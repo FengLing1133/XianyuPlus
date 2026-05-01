@@ -36,6 +36,7 @@
               <button v-if="type === 'buy' && order.status === 0" class="btn-pill btn-danger" @click="cancelOrder(order)">取消</button>
               <button v-if="type === 'buy' && order.status === 1" class="btn-pill btn-danger" @click="cancelOrder(order)">申请退款</button>
               <button v-if="type === 'buy' && order.status === 2" class="btn-pill btn-pill-primary" @click="receiveOrder(order)">确认收货</button>
+              <button v-if="type === 'buy' && order.status === 4 && canReviewMap[order.id]" class="btn-pill btn-pill-primary" @click="openReview(order)">去评价</button>
               <button v-if="type === 'sell' && order.status === 1" class="btn-pill" style="background:var(--green-50);color:var(--green-500);" @click="shipOrder(order)">确认发货</button>
             </div>
           </div>
@@ -58,6 +59,14 @@
         </div>
       </template>
     </div>
+
+    <!-- 评价表单 -->
+    <ReviewForm
+      :visible="showReviewForm"
+      :order-id="reviewOrderId"
+      @close="showReviewForm = false"
+      @success="handleReviewSuccess"
+    />
   </div>
 </template>
 
@@ -66,6 +75,8 @@ import { ref, computed, onMounted } from 'vue'
 import request from '@/api/request'
 import { Toast } from '@/utils/toast'
 import { Dialog } from '@/utils/dialog'
+import ReviewForm from '@/components/ReviewForm.vue'
+import { checkCanReview } from '@/api/review'
 
 const type = ref('buy')
 const orders = ref([])
@@ -73,6 +84,9 @@ const loading = ref(true)
 const page = ref(1)
 const total = ref(0)
 const colors = ['#fce4ec', '#e3f2fd', '#e8f5e9', '#f3e5f5', '#fff9c4', '#fff3e0']
+const showReviewForm = ref(false)
+const reviewOrderId = ref(null)
+const canReviewMap = ref({})
 
 const totalPages = computed(() => Math.ceil(total.value / 10))
 
@@ -89,6 +103,16 @@ async function fetchData() {
     const res = await request.get('/order', { params: { type: type.value, page: page.value, size: 10 } })
     orders.value = res.data.records
     total.value = res.data.total
+
+    // 检查已完成订单是否可评价
+    for (const order of orders.value) {
+      if (order.status === 4 && type.value === 'buy') {
+        const res = await checkCanReview(order.id)
+        if (res.code === 200) {
+          canReviewMap.value[order.id] = res.data
+        }
+      }
+    }
   } finally {
     loading.value = false
   }
@@ -129,6 +153,16 @@ async function shipOrder(order) {
 async function receiveOrder(order) {
   await request.put(`/order/${order.id}/status`, null, { params: { status: 3 } })
   Toast.success('已确认收货，订单完成')
+  fetchData()
+}
+
+function openReview(order) {
+  reviewOrderId.value = order.id
+  showReviewForm.value = true
+}
+
+function handleReviewSuccess() {
+  canReviewMap.value[reviewOrderId.value] = false
   fetchData()
 }
 </script>
