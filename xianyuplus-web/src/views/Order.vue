@@ -32,6 +32,7 @@
             </span>
             <span class="order-time">{{ order.createdAt?.substring(0, 16) }}</span>
             <div class="order-actions">
+              <button v-if="type === 'buy' && order.status === 0" class="btn-pill btn-pill-primary" @click="payOrder(order)">确认付款</button>
               <button v-if="type === 'buy' && order.status === 0" class="btn-pill btn-danger" @click="cancelOrder(order)">取消</button>
               <button v-if="type === 'sell' && order.status === 0" class="btn-pill btn-pill-primary" @click="payOrder(order)">标记已付款</button>
               <button v-if="type === 'sell' && order.status === 1" class="btn-pill" style="background:var(--green-50);color:var(--green-500);" @click="completeOrder(order)">标记已完成</button>

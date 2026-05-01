@@ -48,21 +48,27 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         // Save to database
         Message msg = chatService.saveMessage(senderId, receiverId, productId, content);
 
-        // Send to receiver if online
-        WebSocketSession receiverSession = ONLINE_USERS.get(receiverId);
-        if (receiverSession != null && receiverSession.isOpen()) {
-            JSONObject response = JSONUtil.createObj()
-                    .set("id", msg.getId())
-                    .set("senderId", senderId)
-                    .set("receiverId", receiverId)
-                    .set("productId", productId)
-                    .set("content", content)
-                    .set("createdAt", msg.getCreatedAt().toString());
-            receiverSession.sendMessage(new TextMessage(response.toString()));
+        // Build response with server-generated id and timestamp
+        JSONObject response = JSONUtil.createObj()
+                .set("id", msg.getId())
+                .set("senderId", senderId)
+                .set("receiverId", receiverId)
+                .set("productId", productId)
+                .set("content", content)
+                .set("createdAt", msg.getCreatedAt() != null ? msg.getCreatedAt().toString() : "");
+
+        // Send back to sender (confirmation with real id/timestamp)
+        if (session.isOpen()) {
+            session.sendMessage(new TextMessage(response.toString()));
         }
 
-        // Broadcast via Redis Pub/Sub
-        redisTemplate.convertAndSend("chat_message", msg);
+        // Send to receiver if online (and not the same as sender)
+        if (!receiverId.equals(senderId)) {
+            WebSocketSession receiverSession = ONLINE_USERS.get(receiverId);
+            if (receiverSession != null && receiverSession.isOpen()) {
+                receiverSession.sendMessage(new TextMessage(response.toString()));
+            }
+        }
     }
 
     @Override

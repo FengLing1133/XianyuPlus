@@ -48,7 +48,7 @@ const condition = computed(() => conditionText(props.product.condition))
 }
 
 .card-image {
-  height: 180px;
+  aspect-ratio: 4 / 3;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,7 +59,7 @@ const condition = computed(() => conditionText(props.product.condition))
 .real-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .placeholder-emoji {

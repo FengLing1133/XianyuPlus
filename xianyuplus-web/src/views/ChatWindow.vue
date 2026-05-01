@@ -43,6 +43,7 @@ import { useRoute } from 'vue-router'
 import request from '@/api/request'
 import { useUserStore } from '@/stores/user'
 import { useChatStore } from '@/stores/chat'
+import { Toast } from '@/utils/toast'
 
 const route = useRoute()
 const userStore = useUserStore()
@@ -58,7 +59,7 @@ onMounted(async () => {
 
   try {
     const res = await request.get(`/message/${partnerId}`)
-    messages.value = res.data
+    messages.value = res.data || []
   } catch {}
 
   try {
@@ -66,8 +67,9 @@ onMounted(async () => {
     partnerName.value = userRes.data.nickname
   } catch {}
 
+  // Point store messages to local messages array
+  chatStore.setMessages(messages.value)
   chatStore.connect(currentUserId, userStore.token)
-  chatStore.messages = messages.value
 
   scrollToBottom()
 })
@@ -82,9 +84,13 @@ function sendMsg(e) {
   if (!content) return
 
   const receiverId = parseInt(route.params.userId)
-  chatStore.send(receiverId, null, content)
+  const productId = route.query.productId ? parseInt(route.query.productId) : null
+  const sent = chatStore.send(receiverId, productId, content)
+  if (!sent) {
+    Toast.error('消息发送失败，请检查网络连接')
+    return
+  }
   inputText.value = ''
-  messages.value = chatStore.messages
   nextTick(() => scrollToBottom())
 }
 

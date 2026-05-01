@@ -127,10 +127,16 @@ public class OrderServiceImpl implements OrderService {
             throw new BusinessException("订单不存在");
         }
 
-        // Buyer can cancel, seller can mark complete/paid
+        // Buyer can cancel or confirm payment
         if (order.getBuyerId().equals(user.getId())) {
             if (order.getStatus().equals(OrderStatus.PENDING.getCode())
                     && status.equals(OrderStatus.CANCELLED.getCode())) {
+                order.setStatus(status);
+                orderMapper.updateById(order);
+                return Result.ok();
+            }
+            if (order.getStatus().equals(OrderStatus.PENDING.getCode())
+                    && status.equals(OrderStatus.PAID.getCode())) {
                 order.setStatus(status);
                 orderMapper.updateById(order);
                 return Result.ok();

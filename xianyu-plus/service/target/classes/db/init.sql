@@ -151,8 +151,8 @@ INSERT INTO `user` (`username`, `password`, `nickname`, `role`) VALUES
 
 -- 测试用户: test1 / 123456, test2 / 123456
 INSERT INTO `user` (`username`, `password`, `nickname`, `role`) VALUES
-('test1', '$2b$12$GtyiB1MT0XcQ2bht/v59OuQv.3OddBHy/2G0c9bYuduuXf3pNuBe2', '测试用户1', 0),
-('test2', '$2b$12$GtyiB1MT0XcQ2bht/v59OuQv.3OddBHy/2G0c9bYuduuXf3pNuBe2', '测试用户2', 0);
+('test1', '$2b$12$erx.KQEdSG1oUxWsPFpPV.xctZbeo9MK/LAKKNE16JDkVYSua3R5m', '测试用户1', 0),
+('test2', '$2b$12$erx.KQEdSG1oUxWsPFpPV.xctZbeo9MK/LAKKNE16JDkVYSua3R5m', '测试用户2', 0);
 
 -- 商品预置数据
 INSERT INTO `product` (`id`, `title`, `description`, `price`, `original_price`, `category_id`, `user_id`, `condition`, `status`, `view_count`) VALUES

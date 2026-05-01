@@ -1,50 +1,52 @@
 # Findings & Decisions
 
 ## Requirements
-- 修复商品图片部分不能显示的问题
-- 修复多用户不能同时使用前端的问题
-- 修复商品详情页显示"商品不存在"的问题
+1. 聊天功能消息发送不了
+2. 订单页面添加确认付款功能（不接真实支付）
+3. 商品缩略图显示不完全
+4. 分类筛选缺陷：父分类下找不到子分类商品
+5. "暂无商品"图片和文本居中
 
 ## Research Findings
 
-### Bug 1: 商品图片显示问题
-- `file.upload-path: ./uploads` 使用相对路径，JVM 工作目录变化会导致图片 404
-- Vite 代理 `/uploads` 仅开发环境生效，生产环境需要 Nginx 配置
-- `ImageUploader.vue` 使用原生 fetch 而非统一 axios 实例
-- 所有 `<img>` 标签无 `@error` fallback 处理
-- `ProductDetail.vue` 主图用 `object-fit: contain`，`ProductCard.vue` 用 `cover`，风格不一致
+### Bug 5: 聊天功能
+- **根因**: `chatStore.send()` 发送后未将消息 push 到本地 messages 数组
+- 后端 `ChatWebSocketHandler` 只发给接收方，不回传发送方
+- WebSocket URL 硬编码 `ws://localhost:8080`，绕过 Vite 代理
+- 每次进入聊天窗口都重建 WebSocket 连接
+- 发送失败时无任何用户反馈
+- productId 固定传 null
 
-### Bug 2: 多用户并发问题
-- **根因**: `stores/user.js` 同时使用手动 localStorage + pinia-plugin-persistedstate 双重持久化，后登录用户覆盖先登录用户的 token
-- `localStorage` 在同一浏览器同一 origin 下全局共享，不同标签页登录不同账号会互相覆盖
-- WebSocket 按 userId 做单例映射，同用户多设备连接会互相踢掉
-- Axios 401 处理只清 localStorage 未同步清 Pinia store
-- JWT 无吊销机制，7 天有效期
+### Bug 6: 订单确认付款
+- 当前状态流转：PENDING(0) → 卖家标记PAID(1) → 卖家标记COMPLETED(2)
+- 买家只能取消订单，没有"确认付款"按钮
+- 需要给买家添加"确认付款"按钮（PENDING→PAID）
 
-### Bug 3: 商品详情页"商品不存在"
-- **根因**: `init.sql` 中没有任何商品 INSERT 语句，数据库中无商品数据
-- MyBatis-Plus 雪花 ID (18-19位) 超出 JS `Number.MAX_SAFE_INTEGER` (16位)，存在精度丢失风险
-- 前端 catch 块只 console.error，无用户提示
+### Bug 7: 缩略图显示不完全
+- `ProductCard.vue` `.card-image` 高度固定 180px + `overflow: hidden` + `object-fit: cover`
+- 非标准比例图片被裁切
+
+### Bug 8: 分类筛选缺陷
+- 后端 `ProductServiceImpl` 用 `eq` 精确匹配 `category_id`
+- 商品关联到子分类(id=7,8,9,10)，父分类(id=1)查不到任何商品
+- 前端只展示一级分类按钮，看不到子分类
+
+### Bug 9: "暂无商品"居中
+- `.empty-state` 在 `.product-grid`(4列Grid) 内只占1个单元格
+- 需要 `grid-column: 1 / -1` 横跨所有列
 
 ## Technical Decisions
 | Decision | Rationale |
 |----------|-----------|
-| 待决定 | 待决定 |
-
-### Bug 4: LocalDateTime 序列化异常
-- **根因**: `JacksonConfig.java` 自建 `ObjectMapper` bean 覆盖了 Spring Boot 自动配置的 ObjectMapper，丢失了默认注册的 JSR310 模块
-- `jackson-datatype-jsr310` 通过 Spring Boot starter 已在 classpath 上，但被自定义 bean 覆盖
-- 所有 Entity 的 `createdAt`/`updatedAt` (LocalDateTime 类型) 都无法序列化
+| 聊天：乐观更新 + 后端回传 | 发送方立即看到消息，后端确认后补充 id/createdAt |
+| 分类：后端 IN 查询 | 前端传父分类ID，后端自动查所有子分类 |
 
 ## Issues Encountered
 | Issue | Resolution |
 |-------|------------|
-| LocalDateTime 序列化失败 | 改用 Jackson2ObjectMapperBuilderCustomizer 定制而非替换 ObjectMapper |
+|       |            |
 
 ## Resources
 - 前端: `xianyuplus-web/src/`
 - 后端: `xianyu-plus/`
 - 数据库初始化: `xianyu-plus/service/src/main/resources/db/init.sql`
-
----
-*Update this file after every 2 view/browser/search operations*

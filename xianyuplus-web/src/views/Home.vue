@@ -378,6 +378,10 @@ function goPage(p) {
   min-height: 300px;
 }
 
+.product-grid .empty-state {
+  grid-column: 1 / -1;
+}
+
 /* Skeleton */
 .skeleton-card {
   background: #fff;

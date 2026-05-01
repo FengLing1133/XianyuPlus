@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,7 +54,19 @@ public class ProductServiceImpl implements ProductService {
             wrapper.like(Product::getTitle, query.getKeyword());
         }
         if (query.getCategoryId() != null) {
-            wrapper.eq(Product::getCategoryId, query.getCategoryId());
+            // Check if this category has children; if so, query all child IDs
+            List<Long> childIds = categoryMapper.selectList(
+                    new LambdaQueryWrapper<com.xianyuplus.common.entity.Category>()
+                            .eq(com.xianyuplus.common.entity.Category::getParentId, query.getCategoryId()))
+                    .stream()
+                    .map(com.xianyuplus.common.entity.Category::getId)
+                    .collect(Collectors.toList());
+            if (childIds.isEmpty()) {
+                wrapper.eq(Product::getCategoryId, query.getCategoryId());
+            } else {
+                childIds.add(query.getCategoryId());
+                wrapper.in(Product::getCategoryId, childIds);
+            }
         }
         if (query.getCondition() != null) {
             wrapper.eq(Product::getCondition, query.getCondition());

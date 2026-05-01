@@ -1,57 +1,50 @@
-# Task Plan: XianyuPlus
+# Task Plan: XianyuPlus — 第二轮修复
 
 ## Goal
-修复XianyuPlus的前端/后端Bug
+修复XianyuPlus第二轮5个问题：聊天功能、订单付款、商品缩略图、分类筛选、暂无商品居中
 
 ## Current Phase
-Phase 1
+Complete
 
 ## Phases
 
-### Phase 1: Requirements & Discovery
-- [x] Understand user intent
-- [x] Identify constraints and requirements
-- [x] Document findings in findings.md
+### Phase 1-6: 第一轮Bug修复 (已完成)
 - **Status:** complete
 
-### Phase 2: Fix Bug 1 — 商品图片显示问题
-- [x] 将 `file.upload-path` 改为绝对路径 (`D:/Demo/XianyuPlus/uploads`)
-- [x] 为所有 `<img>` 添加 `@error` fallback（ProductCard, ProductDetail, Favorite, Order）
-- [x] `ImageUploader.vue` 改用统一 axios 实例
-- [x] 统一 `object-fit: cover` 样式
+### Phase 7: 修复对话功能 — 消息发送不了
+- [x] chat.js: 乐观更新 + WebSocket URL 相对路径 + 连接复用
+- [x] ChatWindow.vue: 重构消息管理 + 发送失败提示
+- [x] ChatWebSocketHandler.java: 消息回传发送方 + null 安全
 - **Status:** complete
 
-### Phase 3: Fix Bug 2 — 多用户并发问题
-- [x] 移除 `stores/user.js` 中手动 localStorage 读写，统一用 persist 插件
-- [x] 修复 Axios 401 处理清理所有 localStorage keys（user, token, userInfo）
+### Phase 8: 订单确认付款功能
+- [x] 后端 OrderServiceImpl: 允许买家 PENDING→PAID
+- [x] 前端 Order.vue: 买家视角添加"确认付款"按钮
 - **Status:** complete
 
-### Phase 4: Fix Bug 3 — 商品详情页显示"商品不存在"
-- [x] 在 `init.sql` 中添加 8 个商品预置数据 + 测试用户
-- [x] 新增 `JacksonConfig.java` 将 Long ID 序列化为字符串
-- [x] 创建 uploads 目录
+### Phase 9: 修复商品缩略图显示不完全
+- [x] ProductCard.vue: aspect-ratio: 4/3 + object-fit: contain
 - **Status:** complete
 
-### Phase 5: Testing & Verification
-- [x] 后端编译通过
-- [ ] 用户手动验证三个Bug均已修复
+### Phase 10: 修复分类筛选功能缺陷
+- [x] ProductServiceImpl: 父分类查询时自动包含子分类 IN 查询
 - **Status:** complete
 
-### Phase 6: Fix Bug 4 — LocalDateTime 序列化异常
-- [x] 将 JacksonConfig 从自建 ObjectMapper 改为 Jackson2ObjectMapperBuilderCustomizer
-- [x] 保留 Long→String 转换，同时保留 Spring Boot 默认 JSR310 支持
-- [x] 后端编译通过
+### Phase 11: "暂无商品"图片和文本居中
+- [x] Home.vue: grid-column: 1 / -1
 - **Status:** complete
 
 ## Key Questions
-1. 商品图片URL格式是什么？是相对路径还是绝对路径？前端如何拼接？
-2. 多用户并发问题的根因是什么？Pinia状态？Token冲突？WebSocket？
-3. 商品详情API返回什么？路由参数类型是否匹配（string vs number）？
+1. WebSocket 连接是否建立成功？→ 已改为相对路径，走 Vite 代理
+2. 订单状态有哪些？→ PENDING(0), PAID(1), COMPLETED(2), CANCELLED(3)
+3. 分类是父子层级关系吗？→ 是，后端已支持 IN 查询
 
 ## Decisions Made
 | Decision | Rationale |
 |----------|-----------|
-|          |           |
+| 聊天乐观更新 | 发送方立即看到消息，后端回传后补充真实 id/createdAt |
+| 分类 IN 查询 | 前端传父分类ID，后端自动查所有子分类，无需改前端 |
+| object-fit: contain | 不裁切图片内容，可能有留白但信息完整 |
 
 ## Errors Encountered
 | Error | Attempt | Resolution |
@@ -59,6 +52,4 @@ Phase 1
 |       | 1       |            |
 
 ## Notes
-- Update phase status as you progress: pending → in_progress → complete
-- Re-read this plan before major decisions (attention manipulation)
-- Log ALL errors - they help avoid repetition
+- 所有阶段已完成，等待用户验证
