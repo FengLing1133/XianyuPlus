@@ -1,4 +1,4 @@
-package com.xianyuplus.service.service;
+package com.xianyuplus.common.service;
 
 import com.xianyuplus.common.utils.Result;
 

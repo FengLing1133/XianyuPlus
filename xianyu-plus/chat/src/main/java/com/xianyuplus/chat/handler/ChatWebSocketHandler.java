@@ -4,6 +4,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.xianyuplus.chat.service.ChatService;
 import com.xianyuplus.common.entity.Message;
+import com.xianyuplus.common.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         Long userId = (Long) session.getAttributes().get("userId");
@@ -47,6 +51,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         // Save to database
         Message msg = chatService.saveMessage(senderId, receiverId, productId, content);
+
+        // 创建消息通知
+        notificationService.createNotification(
+                msg.getReceiverId(),
+                2, // 新消息类型
+                "收到新消息",
+                msg.getContent().length() > 50 ? msg.getContent().substring(0, 50) + "..." : msg.getContent(),
+                msg.getId()
+        );
 
         // Build response with server-generated id and timestamp
         // Long fields must be serialized as String to avoid JavaScript precision loss

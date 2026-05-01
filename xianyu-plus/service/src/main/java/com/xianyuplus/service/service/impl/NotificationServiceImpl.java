@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xianyuplus.common.entity.Notification;
 import com.xianyuplus.common.mapper.NotificationMapper;
 import com.xianyuplus.common.utils.Result;
-import com.xianyuplus.service.service.NotificationService;
+import com.xianyuplus.common.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -17,7 +17,7 @@ import com.xianyuplus.common.mapper.OrderMapper;
 import com.xianyuplus.common.mapper.ProductImageMapper;
 import com.xianyuplus.common.mapper.ProductMapper;
 import com.xianyuplus.common.mapper.UserMapper;
-import com.xianyuplus.service.service.NotificationService;
+import com.xianyuplus.common.service.NotificationService;
 import com.xianyuplus.service.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

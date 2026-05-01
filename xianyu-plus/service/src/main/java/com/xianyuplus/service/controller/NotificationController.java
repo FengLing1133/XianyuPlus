@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xianyuplus.common.entity.User;
 import com.xianyuplus.common.mapper.UserMapper;
 import com.xianyuplus.common.utils.Result;
-import com.xianyuplus.service.service.NotificationService;
+import com.xianyuplus.common.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
