@@ -262,7 +262,7 @@ watch(() => props.productId, () => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--primary);
+  background: var(--green-500);
   color: #fff;
   display: flex;
   align-items: center;
@@ -339,8 +339,8 @@ watch(() => props.productId, () => {
 }
 
 .btn-reply:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--green-500);
+  color: var(--green-500);
 }
 
 .no-reviews {
@@ -371,8 +371,8 @@ watch(() => props.productId, () => {
 }
 
 .pagination button:hover:not(:disabled) {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--green-500);
+  color: var(--green-500);
 }
 
 .reply-modal {
@@ -410,7 +410,7 @@ watch(() => props.productId, () => {
 
 .reply-form textarea:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--green-500);
 }
 
 .reply-actions {
@@ -433,7 +433,7 @@ watch(() => props.productId, () => {
 
 .reply-actions button:last-child {
   border: none;
-  background: var(--primary);
+  background: var(--green-500);
   color: #fff;
 }
 

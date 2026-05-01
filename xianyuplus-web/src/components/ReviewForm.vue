@@ -205,7 +205,7 @@ async function submit() {
 
 .content-section textarea:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--green-500);
 }
 
 .char-count {
@@ -240,7 +240,7 @@ async function submit() {
 .btn-submit {
   padding: 10px 24px;
   border: none;
-  background: var(--primary);
+  background: var(--green-500);
   color: #fff;
   border-radius: 8px;
   cursor: pointer;
