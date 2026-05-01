@@ -47,9 +47,12 @@
           <div class="reply-time">{{ formatTime(review.replyAt) }}</div>
         </div>
 
-        <!-- 回复按钮（卖家视角） -->
-        <div class="reply-action" v-if="showReplyButton && !review.sellerReply">
-          <button class="btn-reply" @click="startReply(review)">回复</button>
+        <!-- 操作按钮 -->
+        <div class="review-actions">
+          <!-- 回复按钮（卖家视角） -->
+          <button v-if="showReplyButton && !review.sellerReply" class="btn-reply" @click="startReply(review)">回复</button>
+          <!-- 删除按钮（买家或卖家） -->
+          <button v-if="showDeleteButton && (userId === review.buyerId || userId === review.sellerId)" class="btn-delete" @click="handleDelete(review)">删除</button>
         </div>
       </div>
 
@@ -81,14 +84,17 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { getProductReviews, getSellerReviews, getSellerStats, replyReview } from '@/api/review'
+import { getProductReviews, getSellerReviews, getSellerStats, replyReview, deleteReview } from '@/api/review'
 import { Toast } from '@/utils/toast'
+import { Dialog } from '@/utils/dialog'
 
 const props = defineProps({
   productId: Number,
   sellerId: Number,
+  userId: Number,
   showSummary: { type: Boolean, default: true },
   showReplyButton: { type: Boolean, default: false },
+  showDeleteButton: { type: Boolean, default: false },
   pageSize: { type: Number, default: 10 }
 })
 
@@ -155,6 +161,19 @@ async function submitReply() {
   Toast.success('回复成功')
   cancelReply()
   fetchReviews()
+}
+
+async function handleDelete(review) {
+  const ok = await Dialog.confirm({
+    title: '删除评价',
+    message: '确定要删除这条评价吗？'
+  })
+  if (!ok) return
+
+  await deleteReview(review.id)
+  Toast.success('删除成功')
+  fetchReviews()
+  fetchStats()
 }
 
 onMounted(() => {
@@ -328,7 +347,9 @@ watch(() => props.productId, () => {
   margin-top: 4px;
 }
 
-.reply-action {
+.review-actions {
+  display: flex;
+  gap: 8px;
   margin-top: 8px;
 }
 
@@ -344,6 +365,21 @@ watch(() => props.productId, () => {
 .btn-reply:hover {
   border-color: var(--green-500);
   color: var(--green-500);
+}
+
+.btn-delete {
+  padding: 6px 16px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #999;
+}
+
+.btn-delete:hover {
+  border-color: #ff4d4f;
+  color: #ff4d4f;
 }
 
 .no-reviews {

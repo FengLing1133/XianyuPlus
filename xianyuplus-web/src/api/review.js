@@ -8,6 +8,10 @@ export function replyReview(id, reply) {
   return request.put(`/review/${id}/reply`, { reply })
 }
 
+export function deleteReview(id) {
+  return request.delete(`/review/${id}`)
+}
+
 export function getProductReviews(productId, page = 1, size = 10) {
   return request.get(`/review/product/${productId}`, { params: { page, size } })
 }

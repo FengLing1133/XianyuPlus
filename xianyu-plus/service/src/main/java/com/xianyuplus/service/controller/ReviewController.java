@@ -27,6 +27,11 @@ public class ReviewController {
         return reviewService.reply(id, body.get("reply"));
     }
 
+    @DeleteMapping("/{id}")
+    public Result<?> delete(@PathVariable Long id) {
+        return reviewService.delete(id);
+    }
+
     @GetMapping("/product/{productId}")
     public Result<?> getByProduct(@PathVariable Long productId,
                                   @RequestParam(defaultValue = "1") Integer page,
