@@ -187,9 +187,13 @@ async function handleDeleteReply(review) {
   })
   if (!ok) return
 
-  await deleteReply(review.id)
-  Toast.success('删除成功')
-  fetchReviews()
+  try {
+    await deleteReply(review.id)
+    Toast.success('删除成功')
+    fetchReviews()
+  } catch (error) {
+    console.error('删除回复失败:', error)
+  }
 }
 
 onMounted(() => {
