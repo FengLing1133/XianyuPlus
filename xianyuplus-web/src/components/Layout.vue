@@ -98,8 +98,8 @@ let timer = null
 async function fetchUnread() {
   if (!userStore.token) return
   try {
-    const res = await request.get('/message/unread/count', { silent: true })
-    unreadCount.value = res.data || 0
+    const res = await request.get('/message/unread', { silent: true })
+    unreadCount.value = res.data.count || 0
   } catch {}
 }
 

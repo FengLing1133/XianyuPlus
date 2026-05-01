@@ -18,7 +18,7 @@
           </div>
           <div class="order-body" @click="$router.push(`/product/${order.productId}`)">
             <div class="order-img-wrap" :style="{ background: colors[order.id % colors.length] }">
-              <span class="order-placeholder">-</span>
+              <component :is="[Smartphone, BookOpen, ShoppingBag, Laptop, Gamepad2, Armchair][order.id % 6]" :size="28" class="order-placeholder-icon" />
               <img v-if="order.productImage" :src="order.productImage" class="order-img" @error="$event.target.style.display='none'" />
             </div>
             <div class="order-info">
@@ -45,7 +45,7 @@
         </div>
 
         <div v-if="orders.length === 0" class="empty-state">
-          <div class="empty-icon">-</div>
+          <div class="empty-icon"><ShoppingBag :size="48" /></div>
           <p>暂无订单</p>
         </div>
 
@@ -79,13 +79,14 @@ import { Toast } from '@/utils/toast'
 import { Dialog } from '@/utils/dialog'
 import ReviewForm from '@/components/ReviewForm.vue'
 import { checkCanReview } from '@/api/review'
+import { ShoppingBag, Smartphone, BookOpen, Laptop, Gamepad2, Armchair } from 'lucide-vue-next'
 
 const type = ref('buy')
 const orders = ref([])
 const loading = ref(true)
 const page = ref(1)
 const total = ref(0)
-const colors = ['#fce4ec', '#e3f2fd', 'var(--color-background)', '#f3e5f5', '#fff9c4', '#fff3e0']
+const colors = ['#fce4ec', '#e3f2fd', '#FDF2F8', '#f3e5f5', '#fff9c4', '#fff3e0']
 const showReviewForm = ref(false)
 const reviewOrderId = ref(null)
 const canReviewMap = ref({})
@@ -244,7 +245,7 @@ function handleReviewSuccess() {
   height: 100%;
   object-fit: cover;
 }
-.order-placeholder { font-size: 28px; }
+.order-placeholder-icon { color: var(--color-primary); opacity: 0.4; }
 
 .order-info { flex: 1; }
 .order-title { font-size: 15px; color: var(--text-primary); margin-bottom: 6px; }

@@ -7,7 +7,7 @@
       <div class="profile-header">
         <div class="avatar-area">
           <img v-if="userStore.userInfo?.avatar" :src="userStore.userInfo.avatar" class="avatar-img" />
-          <span v-else class="avatar-default"></span>
+          <span v-else class="avatar-default"><User :size="40" /></span>
           <button class="btn-pill btn-upload" @click="triggerUpload">更换头像</button>
           <input ref="fileInput" type="file" accept="image/*" style="display:none" @change="handleAvatarChange" />
         </div>
@@ -51,7 +51,7 @@
 
     <!-- View History -->
     <router-link to="/history" class="profile-menu-item">
-      <span class="menu-icon"></span>
+      <span class="menu-icon"><Clock :size="20" /></span>
       <span class="menu-text">浏览历史</span>
       <span class="menu-arrow">›</span>
     </router-link>
@@ -63,7 +63,7 @@
         <ProductCard v-for="item in myProducts" :key="item.id" :product="item" />
       </div>
       <div v-else class="empty-state" style="padding: 40px 0;">
-        <div class="empty-icon"></div>
+        <div class="empty-icon"><Package :size="48" /></div>
         <p>暂无发布</p>
       </div>
     </div>
@@ -76,6 +76,7 @@ import { useUserStore } from '@/stores/user'
 import request from '@/api/request'
 import { Toast } from '@/utils/toast'
 import ProductCard from '@/components/ProductCard.vue'
+import { User, Clock, Package } from 'lucide-vue-next'
 
 const userStore = useUserStore()
 const fileInput = ref(null)
@@ -176,7 +177,8 @@ async function changePassword() {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
+  color: var(--color-primary);
+  opacity: 0.6;
 }
 
 .btn-upload {
@@ -241,7 +243,9 @@ async function changePassword() {
 }
 
 .menu-icon {
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  color: var(--color-primary);
 }
 
 .menu-text {

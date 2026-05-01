@@ -10,7 +10,7 @@
         <div v-for="conv in conversations" :key="conv.partnerId" class="conv-item" @click="$router.push(`/chat/${conv.partnerId}`)">
           <div class="conv-avatar">
             <img v-if="conv.partnerAvatar" :src="conv.partnerAvatar" class="avatar-img" />
-            <span v-else class="avatar-default">头</span>
+            <span v-else class="avatar-default"><User :size="22" /></span>
             <span v-if="conv.unread > 0" class="unread-dot">{{ conv.unread > 99 ? '99+' : conv.unread }}</span>
           </div>
           <div class="conv-body">
@@ -22,7 +22,7 @@
           </div>
         </div>
         <div v-if="conversations.length === 0" class="empty-state">
-          <div class="empty-icon">-</div>
+          <div class="empty-icon"><MessageCircle :size="48" /></div>
           <p>暂无消息</p>
         </div>
       </template>
@@ -33,6 +33,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import request from '@/api/request'
+import { User, MessageCircle } from 'lucide-vue-next'
 
 const conversations = ref([])
 const loading = ref(true)
@@ -85,7 +86,8 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  color: var(--color-primary);
+  opacity: 0.6;
 }
 
 .unread-dot {

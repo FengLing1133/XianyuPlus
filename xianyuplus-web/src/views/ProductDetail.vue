@@ -37,7 +37,7 @@
           </div>
 
           <div class="seller-row">
-            <span class="seller-avatar"></span>
+            <span class="seller-avatar"><User :size="16" /></span>
             <router-link :to="`/seller/${product.userId}`" class="seller-link">{{ product.sellerName || '卖家' }}</router-link>
           </div>
 
@@ -91,7 +91,7 @@
     </template>
 
     <div v-else class="empty-state">
-      <div class="empty-icon"></div>
+      <div class="empty-icon"><AlertCircle :size="48" /></div>
       <p>商品不存在或已下架</p>
     </div>
 
@@ -112,7 +112,7 @@ import request from '@/api/request'
 import { Toast } from '@/utils/toast'
 import { Dialog } from '@/utils/dialog'
 import { conditionText, getProductColor } from '@/utils/category'
-import { Package } from 'lucide-vue-next'
+import { Package, User, AlertCircle } from 'lucide-vue-next'
 import ReviewList from '@/components/ReviewList.vue'
 import ReportForm from '@/components/ReportForm.vue'
 import { checkReported } from '@/api/report'

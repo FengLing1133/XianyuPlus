@@ -7,7 +7,7 @@
       <template v-else>
         <div v-for="item in favorites" :key="item.id" class="fav-item" @click="$router.push(`/product/${item.productId}`)">
           <div class="fav-img-wrap" :style="{ background: colors[item.id % colors.length] }">
-            <span class="fav-placeholder">{{ emojis[item.id % emojis.length] }}</span>
+            <component :is="placeholderIcons[item.id % placeholderIcons.length]" :size="32" class="fav-placeholder-icon" />
             <img v-if="item.productImage" :src="item.productImage" class="fav-img" @error="$event.target.style.display='none'" />
           </div>
           <div class="fav-info">
@@ -18,7 +18,7 @@
         </div>
 
         <div v-if="favorites.length === 0" class="empty-state">
-          <div class="empty-icon">-</div>
+          <div class="empty-icon"><Heart :size="48" /></div>
           <p>暂无收藏</p>
         </div>
 
@@ -41,14 +41,15 @@
 import { ref, computed, onMounted } from 'vue'
 import request from '@/api/request'
 import { Toast } from '@/utils/toast'
+import { Heart, Smartphone, BookOpen, ShoppingBag, Laptop, Gamepad2, Armchair, Watch, Headphones, Camera, Gift, Package } from 'lucide-vue-next'
 
 const favorites = ref([])
 const loading = ref(true)
 const page = ref(1)
 const total = ref(0)
 
-const emojis = ['书', '手', '电', '衣', '游', '椅', '耳', '表']
-const colors = ['#fce4ec', '#e3f2fd', 'var(--color-background)', '#f3e5f5', '#fff9c4', '#fff3e0', '#e0f7fa', '#fbe9e7']
+const placeholderIcons = [Smartphone, BookOpen, ShoppingBag, Laptop, Gamepad2, Armchair, Watch, Headphones, Camera, Gift, Package]
+const colors = ['#fce4ec', '#e3f2fd', '#FDF2F8', '#f3e5f5', '#fff9c4', '#fff3e0', '#e0f7fa', '#fbe9e7']
 const totalPages = computed(() => Math.ceil(total.value / 10))
 
 onMounted(() => fetchData())
@@ -115,8 +116,9 @@ function goPage(p) {
   object-fit: cover;
 }
 
-.fav-placeholder {
-  font-size: 32px;
+.fav-placeholder-icon {
+  color: var(--color-primary);
+  opacity: 0.4;
 }
 
 .fav-info { flex: 1; }

@@ -9,7 +9,7 @@
 
     <div v-if="loading" class="loading">加载中...</div>
     <div v-else-if="historyList.length === 0" class="empty">
-      <div class="empty-icon">-</div>
+      <div class="empty-icon"><Clock :size="48" /></div>
       <div class="empty-text">暂无浏览记录</div>
       <router-link to="/" class="btn-go">去逛逛</router-link>
     </div>
@@ -44,6 +44,7 @@ import request from '@/api/request'
 import { Dialog } from '@/utils/dialog'
 import { Toast } from '@/utils/toast'
 import ProductCard from '@/components/ProductCard.vue'
+import { Clock } from 'lucide-vue-next'
 
 const historyList = ref([])
 const total = ref(0)

@@ -17,7 +17,7 @@
           </div>
         </div>
         <div v-if="messages.length === 0" class="empty-state" style="padding: 40px 0;">
-          <div class="empty-icon">-</div>
+          <div class="empty-icon"><MessageCircle :size="48" /></div>
           <p>暂无消息，发送第一条吧</p>
         </div>
       </div>
@@ -44,6 +44,7 @@ import request from '@/api/request'
 import { useUserStore } from '@/stores/user'
 import { useChatStore } from '@/stores/chat'
 import { Toast } from '@/utils/toast'
+import { MessageCircle } from 'lucide-vue-next'
 
 const route = useRoute()
 const userStore = useUserStore()

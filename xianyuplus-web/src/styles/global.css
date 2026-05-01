@@ -248,9 +248,11 @@ textarea.form-input {
 }
 
 .empty-state .empty-icon {
-  font-size: 48px;
   margin-bottom: 12px;
+  color: var(--text-muted);
   opacity: 0.6;
+  display: flex;
+  justify-content: center;
 }
 
 /* Scrollbar */

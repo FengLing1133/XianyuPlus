@@ -12,8 +12,7 @@
       </div>
       <div class="card-footer">
         <div class="card-seller">
-          <img v-if="product.sellerAvatar" :src="product.sellerAvatar" class="seller-avatar" @error="e => e.target.style.display='none'" />
-          <span v-else class="seller-avatar-placeholder"></span>
+          <span class="seller-avatar-placeholder"></span>
           <span class="seller-name">{{ product.sellerName || '匿名' }}</span>
         </div>
       </div>
@@ -22,7 +21,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, shallowRef } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { Smartphone, BookOpen, ShoppingBag, Laptop, Gamepad2, Armchair, Watch, Headphones, Camera, Gift, Package } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -155,13 +154,6 @@ const conditionClass = computed(() => {
   display: flex;
   align-items: center;
   gap: 5px;
-}
-
-.seller-avatar {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  object-fit: cover;
 }
 
 .seller-avatar-placeholder {

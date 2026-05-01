@@ -21,11 +21,6 @@
   --color-on-destructive: #FFFFFF;
 
   /* Legacy aliases (for gradual migration) */
-  --green-500: var(--color-primary);
-  --green-400: var(--color-secondary);
-  --green-300: var(--color-secondary);
-  --green-100: var(--color-border);
-  --green-50: var(--color-background);
   --bg-page: #F9FAFB;
   --bg-card: var(--color-card);
   --text-primary: #1F2937;
