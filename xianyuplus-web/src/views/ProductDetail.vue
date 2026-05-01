@@ -99,10 +99,12 @@ const placeholderEmoji = computed(() => product.value ? getProductEmoji(product.
 const placeholderColor = computed(() => product.value ? getProductColor(product.value.id) : '#f0f0f0')
 
 onMounted(async () => {
-  const id = route.params.id
+  const id = String(route.params.id)
   try {
     const res = await request.get(`/product/${id}`)
     product.value = res.data
+  } catch (e) {
+    console.error('获取商品详情失败:', e)
   } finally {
     loading.value = false
   }
@@ -179,9 +181,10 @@ async function handleToggleStatus() {
 
 .main-image {
   width: 100%;
-  height: 400px;
-  object-fit: cover;
+  max-height: 500px;
+  object-fit: contain;
   background: var(--bg-page);
+  display: block;
 }
 
 .thumb-list {

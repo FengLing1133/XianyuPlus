@@ -12,6 +12,7 @@ import com.xianyuplus.common.enums.ProductStatus;
 import com.xianyuplus.common.exception.BusinessException;
 import com.xianyuplus.common.utils.PageResult;
 import com.xianyuplus.common.utils.Result;
+import com.xianyuplus.common.mapper.CategoryMapper;
 import com.xianyuplus.common.mapper.ProductImageMapper;
 import com.xianyuplus.common.mapper.ProductMapper;
 import com.xianyuplus.common.mapper.UserMapper;
@@ -37,6 +38,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     @Override
     public Result<PageResult<Product>> list(ProductQueryDTO query) {
@@ -113,6 +117,15 @@ public class ProductServiceImpl implements ProductService {
         User seller = userMapper.selectById(product.getUserId());
         if (seller != null) {
             product.setSellerName(seller.getNickname());
+        }
+
+        // Load category name
+        if (product.getCategoryId() != null) {
+            com.xianyuplus.common.entity.Category category =
+                    categoryMapper.selectById(product.getCategoryId());
+            if (category != null) {
+                product.setCategoryName(category.getName());
+            }
         }
 
         return Result.ok(product);

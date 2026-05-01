@@ -169,6 +169,7 @@ async function handleSubmit() {
 .publish-card {
   padding: 28px 32px;
   max-width: 700px;
+  margin: 0 auto;
 }
 
 .required {
