@@ -1,8 +1,8 @@
 <template>
   <div class="product-card card" @click="$router.push(`/product/${product.id}`)">
     <div class="card-image" :style="{ background: bgColor }">
-      <img v-if="product.images?.[0]?.url" :src="product.images[0].url" class="real-img" />
-      <span v-else class="placeholder-emoji">{{ emoji }}</span>
+      <span class="placeholder-emoji">{{ emoji }}</span>
+      <img v-if="product.images?.[0]?.url && !imgError" :src="product.images[0].url" class="real-img" @error="imgError = true" />
       <span v-if="condition" class="condition-tag pill-tag pill-tag-green">{{ condition }}</span>
     </div>
     <div class="card-body">
@@ -20,12 +20,15 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { getProductEmoji, getProductColor, conditionText } from '@/utils/category'
 
 const props = defineProps({
   product: { type: Object, required: true }
 })
+
+const imgError = ref(false)
+watch(() => props.product?.id, () => { imgError.value = false })
 
 const emoji = computed(() => getProductEmoji(props.product.id))
 const bgColor = computed(() => getProductColor(props.product.id))

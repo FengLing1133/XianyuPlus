@@ -28,4 +28,4 @@ jwt:
   expiration: 604800000
 
 file:
-  upload-path: ./uploads
+  upload-path: D:/Demo/XianyuPlus/uploads

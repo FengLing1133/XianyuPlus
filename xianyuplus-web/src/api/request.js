@@ -18,6 +18,13 @@ request.interceptors.request.use(
   error => Promise.reject(error)
 )
 
+function clearAuth() {
+  localStorage.removeItem('user')
+  localStorage.removeItem('token')
+  localStorage.removeItem('userInfo')
+  router.push('/login')
+}
+
 request.interceptors.response.use(
   response => {
     const data = response.data
@@ -26,9 +33,7 @@ request.interceptors.response.use(
     }
     Toast.error(data.message || '请求失败')
     if (data.code === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('userInfo')
-      router.push('/login')
+      clearAuth()
     }
     return Promise.reject(new Error(data.message))
   },
@@ -39,9 +44,7 @@ request.interceptors.response.use(
         const { status, data } = error.response
         if (status === 401) {
           Toast.error('登录已过期，请重新登录')
-          localStorage.removeItem('token')
-          localStorage.removeItem('userInfo')
-          router.push('/login')
+          clearAuth()
         } else if (status === 403) {
           Toast.error('无权访问')
         } else {

@@ -1,6 +1,7 @@
 com\xianyuplus\framework\config\RedisConfig.class
 com\xianyuplus\framework\config\MyBatisPlusConfig.class
 com\xianyuplus\framework\config\CorsConfig.class
+com\xianyuplus\framework\config\JacksonConfig.class
 com\xianyuplus\framework\handler\GlobalExceptionHandler.class
 com\xianyuplus\framework\security\JwtTokenFilter.class
 com\xianyuplus\framework\config\SecurityConfig.class

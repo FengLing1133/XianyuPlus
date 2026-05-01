@@ -7,8 +7,8 @@
       <template v-else>
         <div v-for="item in favorites" :key="item.id" class="fav-item" @click="$router.push(`/product/${item.productId}`)">
           <div class="fav-img-wrap" :style="{ background: colors[item.id % colors.length] }">
-            <img v-if="item.productImage" :src="item.productImage" class="fav-img" />
-            <span v-else class="fav-placeholder">{{ emojis[item.id % emojis.length] }}</span>
+            <span class="fav-placeholder">{{ emojis[item.id % emojis.length] }}</span>
+            <img v-if="item.productImage" :src="item.productImage" class="fav-img" @error="$event.target.style.display='none'" />
           </div>
           <div class="fav-info">
             <div class="fav-title">{{ item.productTitle }}</div>

@@ -18,8 +18,8 @@
           </div>
           <div class="order-body" @click="$router.push(`/product/${order.productId}`)">
             <div class="order-img-wrap" :style="{ background: colors[order.id % colors.length] }">
-              <img v-if="order.productImage" :src="order.productImage" class="order-img" />
-              <span v-else class="order-placeholder">📦</span>
+              <span class="order-placeholder">📦</span>
+              <img v-if="order.productImage" :src="order.productImage" class="order-img" @error="$event.target.style.display='none'" />
             </div>
             <div class="order-info">
               <div class="order-title">{{ order.productTitle }}</div>

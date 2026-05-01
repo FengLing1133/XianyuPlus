@@ -4,8 +4,8 @@
       <div class="detail-content">
         <!-- Image Gallery -->
         <div class="image-section">
-          <div v-if="product.images && product.images.length > 0" class="image-gallery">
-            <img :src="currentImage" class="main-image" />
+          <div v-if="product.images && product.images.length > 0 && !mainImgError" class="image-gallery">
+            <img :src="currentImage" class="main-image" @error="mainImgError = true" />
             <div class="thumb-list" v-if="product.images.length > 1">
               <img
                 v-for="(img, i) in product.images"
@@ -13,7 +13,7 @@
                 :src="img.url"
                 class="thumb"
                 :class="{ active: i === currentIndex }"
-                @click="currentIndex = i"
+                @click="currentIndex = i; mainImgError = false"
               />
             </div>
           </div>
@@ -92,6 +92,7 @@ const product = ref(null)
 const loading = ref(true)
 const favorited = ref(false)
 const currentIndex = ref(0)
+const mainImgError = ref(false)
 
 const isOwner = computed(() => userStore.userInfo?.id === product.value?.userId)
 const currentImage = computed(() => product.value?.images?.[currentIndex.value]?.url)
@@ -104,7 +105,7 @@ onMounted(async () => {
     const res = await request.get(`/product/${id}`)
     product.value = res.data
   } catch (e) {
-    console.error('获取商品详情失败:', e)
+    // Toast already shown by axios interceptor
   } finally {
     loading.value = false
   }
@@ -181,9 +182,8 @@ async function handleToggleStatus() {
 
 .main-image {
   width: 100%;
-  max-height: 500px;
-  object-fit: contain;
-  background: var(--bg-page);
+  height: 440px;
+  object-fit: cover;
   display: block;
 }
 

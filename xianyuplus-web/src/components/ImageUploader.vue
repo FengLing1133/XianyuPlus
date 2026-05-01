@@ -15,8 +15,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { Toast } from '@/utils/toast'
+import request from '@/api/request'
 
 const props = defineProps({
   modelValue: { type: Array, default: () => [] },
@@ -24,12 +25,6 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 const fileInput = ref(null)
-
-const uploadUrl = '/api/file/upload'
-const headers = computed(() => {
-  const token = localStorage.getItem('token')
-  return token ? { Authorization: `Bearer ${token}` } : {}
-})
 
 function triggerUpload() {
   fileInput.value?.click()
@@ -41,21 +36,11 @@ async function handleFile(e) {
   const formData = new FormData()
   formData.append('file', file)
   try {
-    const res = await fetch(uploadUrl, {
-      method: 'POST',
-      headers: headers.value,
-      body: formData
-    })
-    const data = await res.json()
-    if (data.code === 200) {
-      emit('update:modelValue', [...props.modelValue, data.data])
-    } else {
-      Toast.error(data.message || '上传失败')
-    }
+    const res = await request.post('/file/upload', formData)
+    emit('update:modelValue', [...props.modelValue, res.data])
   } catch {
-    Toast.error('上传失败')
+    // Toast already shown by axios interceptor
   } finally {
-    // Reset input for re-upload same file
     fileInput.value.value = ''
   }
 }
