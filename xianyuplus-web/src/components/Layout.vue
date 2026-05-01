@@ -20,6 +20,8 @@
               <span v-if="unreadCount > 0" class="badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
             </router-link>
 
+            <NotificationBell v-if="userStore.token" />
+
             <div class="user-menu" @click="showDropdown = !showDropdown" v-click-outside="() => showDropdown = false">
               <img :src="userStore.userInfo?.avatar || ''" class="user-avatar" @error="e => e.target.style.display='none'" />
               <span v-if="!userStore.userInfo?.avatar" class="avatar-placeholder">👤</span>
@@ -55,6 +57,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import request from '@/api/request'
+import NotificationBell from './NotificationBell.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
