@@ -81,7 +81,7 @@ async function handleClick(item) {
   // 根据通知类型跳转
   switch (item.type) {
     case 1: // 订单状态
-      router.push('/order')
+      router.push('/orders')
       break
     case 2: // 新消息
       router.push('/chat')
