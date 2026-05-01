@@ -23,3 +23,6 @@ Thumbs.db
 # Project specific
 uploads/
 *.log
+
+# Git worktrees
+.worktrees/
