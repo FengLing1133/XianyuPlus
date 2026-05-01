@@ -40,7 +40,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { getViewHistory, clearViewHistory, deleteViewHistory } from '@/api/viewHistory'
-import { getProduct } from '@/api/product'
+import request from '@/api/request'
 import { Dialog } from '@/utils/dialog'
 import { Toast } from '@/utils/toast'
 import ProductCard from '@/components/ProductCard.vue'
@@ -83,10 +83,10 @@ async function fetchHistory() {
       const enriched = await Promise.all(
         records.map(async (item) => {
           try {
-            const productRes = await getProduct(item.productId)
+            const productRes = await request.get(`/product/${item.productId}`)
             return {
               ...item,
-              product: productRes.code === 200 ? productRes.data : null
+              product: productRes.data || null
             }
           } catch {
             return { ...item, product: null }
