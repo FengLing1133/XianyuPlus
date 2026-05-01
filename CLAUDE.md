@@ -92,11 +92,11 @@ xianyu-plus/
 
 ```
 xianyuplus-web/src/
-├── api/               — request.js (Axios instance), notification.js, report.js, review.js
+├── api/               — request.js (Axios instance), notification.js, report.js, review.js, user.js, viewHistory.js
 ├── router/index.js    — Routes with auth/admin guards (beforeEach)
 ├── stores/            — user.js (auth), chat.js (WebSocket), notification.js
 ├── components/        — Layout, AdminLayout, ProductCard, ImageUploader, ReviewForm, ReviewList, ReportForm, NotificationBell
-├── views/             — Home, Login, Register, ProductDetail, Publish, Profile, Chat, ChatWindow, Order, Favorite
+├── views/             — Home, Login, Register, ProductDetail, Publish, Profile, SellerProfile, Chat, ChatWindow, Order, Favorite, ViewHistory
 ├── views/admin/       — Dashboard, Users, Products, Orders, Reports
 └── utils/             — toast.js, dialog.js, category.js
 ```
@@ -111,3 +111,5 @@ xianyuplus-web/src/
 - **Report system**: Users can report products or users. Reports are managed by admins via `/admin/reports`.
 - **Notification system**: Bell icon in header shows unread count. Notification store tracks messages in real-time.
 - **Chat routing**: `/chat` shows conversation list, `/chat/:userId` opens a specific chat window (ChatWindow.vue).
+- **SellerProfile**: `/seller/:id` shows seller's published products and profile info.
+- **ViewHistory**: `/history` shows user's recently viewed products, auto-recorded when visiting ProductDetail.
