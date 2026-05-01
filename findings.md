@@ -64,14 +64,19 @@
 - 无 keep-alive 缓存，router-view 每次导航重建组件
 - 结论：后端逻辑正确，用户可能误报或存在其他未发现的缓存问题
 
-### Bug 13: 聊天消息跨用户显示（用户111/test1）
-- **现象**: 用户111给test1发消息，两边同时显示；刷新后111看到test1视角的消息
-- **根因**: Pinia `persist: true` 将 token 写入 localStorage（key='user'），当两个用户在同一浏览器不同标签页登录时，后登录的用户覆盖 localStorage。`request.js` 的 `getToken()` 从 localStorage 读 token → 读到错误用户的 token → 后端返回错误视角的消息
-- **admin/test2 不受影响**: 因为没有同时在不同标签页登录
+### Bug 13: 聊天消息重复显示（用户111发消息后两边都显示）
+- **现象**: 用户111给test1发消息，111界面显示双方都发了相同内容；test1只收到消息
+- **根因**: WebSocket Handler 用 Hutool JSONUtil 将 Long (senderId/id) 序列化为 number，雪花算法 ID 超出 JS Number.MAX_SAFE_INTEGER → JSON.parse 精度丢失 → senderId 不匹配 → 乐观消息替换失败 → 服务端回传被当作新消息 push
+- **数据**: senderId `2050084962427498498` → JSON.parse → `2050084962427498500` (末3位丢失)
+- **为什么 REST API 没问题**: JacksonConfig 将 Long 序列化为 String，但 WebSocket Handler 用 Hutool JSON 不受 Jackson 影响
+- **修复**: ChatWebSocketHandler.java 中将 Long 字段 `.toString()` 后再 set 到 JSON
+
+### Bug 14: Pinia persist 多标签页 token 覆盖（潜在问题）
+- **现象**: 同浏览器不同标签页登录不同用户，后登录覆盖 localStorage → 先登录用户的 API 请求用错误 token
 - **修复**: 
   1. 新建 `pinia.js` 独立导出 pinia 实例
   2. `user.js` 移除 `persist: true`，改为手动 `init()`/`persist()` 管理 localStorage
-  3. `request.js` 的 `getToken()` 从 Pinia 内存状态读 token（通过 `useUserStore(pinia)`）
+  3. `request.js` 的 `getToken()` 从 Pinia 内存状态读 token
   4. `main.js` 在 app 挂载前调用 `userStore.init()` 恢复登录状态
 
 ## Resources

@@ -69,13 +69,17 @@ Phase 14 abgeschlossen — auf neue Aufgaben warten
 - [x] 结论：后端逻辑正确，无 keep-alive 缓存问题
 - **Status:** complete
 
-### Phase 15: 修复聊天消息跨用户显示
+### Phase 15: 修复 Pinia persist 多标签页 token 覆盖
 - [x] 新建 pinia.js 独立导出 pinia 实例
 - [x] user.js: 移除 persist:true，改为手动 init()/persist()
 - [x] request.js: getToken() 从 Pinia 内存状态读 token
 - [x] main.js: app 挂载前调用 userStore.init()
-- [x] 前端构建通过
+- **Status:** complete
+
+### Phase 16: 修复聊天消息重复显示（JS大整数精度丢失）
+- [x] ChatWebSocketHandler.java: Long 字段 (id/senderId/receiverId/productId) 转 String 输出
+- [x] 后端编译通过，前端构建通过
 - **Status:** complete
 
 ## Notes
-- Phase 7-15 全部完成
+- Phase 7-16 全部完成

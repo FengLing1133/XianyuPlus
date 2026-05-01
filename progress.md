@@ -107,6 +107,15 @@
   - xianyuplus-web/src/stores/user.js
   - xianyuplus-web/src/api/request.js
 
+### Phase 16: 修复聊天消息重复显示
+- **Status:** complete
+- **根因**: WebSocket Handler 用 Hutool JSONUtil 将雪花算法 Long ID 序列化为 number → 前端 JSON.parse 精度丢失 → senderId 不匹配 → 乐观消息无法替换 → 重复显示
+- **诊断过程**: 添加 console.log 发现乐观消息 senderId=`"2050084962427498498"` vs 服务端回传 senderId=`2050084962427498500`（末3位不同）
+- Actions taken:
+  - `ChatWebSocketHandler.java`: response JSON 中 Long 字段全部 `.toString()`
+- Files modified:
+  - xianyu-plus/chat/src/main/java/com/xianyuplus/chat/handler/ChatWebSocketHandler.java
+
 ## Error Log
 | Timestamp | Error | Attempt | Resolution |
 |-----------|-------|---------|------------|
@@ -115,8 +124,8 @@
 ## 5-Question Reboot Check
 | Question | Answer |
 |----------|--------|
-| Where am I? | Phase 15 完成 |
+| Where am I? | Phase 15-16 完成 |
 | Where am I going? | 等待用户验证 |
-| What's the goal? | 修复聊天消息跨用户显示 |
-| What have I learned? | Pinia persist:true + localStorage 在多标签页下互相覆盖；request.js 应从内存状态读 token |
-| What have I done? | 重构 token 管理：独立 pinia 实例、手动 init/persist、getToken 读内存 |
+| What's the goal? | 修复聊天消息重复显示 |
+| What have I learned? | 雪花算法 Long ID 在 JS 中精度丢失（MAX_SAFE_INTEGER）；Hutool JSONUtil 不受 JacksonConfig 影响 |
+| What have I done? | WebSocket Handler Long→String；Pinia persist 改手动管理 |

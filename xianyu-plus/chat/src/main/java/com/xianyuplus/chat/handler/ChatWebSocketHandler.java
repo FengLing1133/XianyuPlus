@@ -49,11 +49,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         Message msg = chatService.saveMessage(senderId, receiverId, productId, content);
 
         // Build response with server-generated id and timestamp
+        // Long fields must be serialized as String to avoid JavaScript precision loss
         JSONObject response = JSONUtil.createObj()
-                .set("id", msg.getId())
-                .set("senderId", senderId)
-                .set("receiverId", receiverId)
-                .set("productId", productId)
+                .set("id", msg.getId().toString())
+                .set("senderId", senderId.toString())
+                .set("receiverId", receiverId.toString())
+                .set("productId", productId != null ? productId.toString() : null)
                 .set("content", content)
                 .set("createdAt", msg.getCreatedAt() != null ? msg.getCreatedAt().toString() : "");
 
