@@ -71,7 +71,7 @@
       <!-- Reviews -->
       <div class="review-section">
         <h3>商品评价</h3>
-        <ReviewList :product-id="product.id" :seller-id="product.userId" />
+        <ReviewList :product-id="product.id" :seller-id="product.userId" :show-reply-button="isOwner" />
       </div>
     </template>
 
