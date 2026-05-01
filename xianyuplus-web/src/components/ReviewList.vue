@@ -11,7 +11,7 @@
       </div>
       <div class="summary-right">
         <div v-for="(count, index) in (stats.ratingDistribution || [0,0,0,0,0])" :key="index" class="rating-bar">
-          <span class="bar-label">{{ 5 - index }}星</span>
+          <span class="bar-label">{{ index + 1 }}星</span>
           <div class="bar-track">
             <div class="bar-fill" :style="{ width: getBarWidth(count) + '%' }"></div>
           </div>
