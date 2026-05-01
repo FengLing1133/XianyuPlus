@@ -5,7 +5,7 @@ import { pinia } from './pinia'
 import { useUserStore } from './stores/user'
 import './styles/global.css'
 
-// 初始化用户 store，从 localStorage 恢复登录状态
+// 初始化用户 store，从 sessionStorage 恢复登录状态
 const userStore = useUserStore(pinia)
 userStore.init()
 

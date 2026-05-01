@@ -72,9 +72,9 @@
       <div class="review-section">
         <h3>商品评价</h3>
         <ReviewList
-          :product-id="product.id"
-          :seller-id="product.userId"
-          :user-id="userStore.userInfo?.id"
+          :product-id="Number(product.id)"
+          :seller-id="Number(product.userId)"
+          :user-id="Number(userStore.userInfo?.id)"
           :show-reply-button="isOwner"
           :show-delete-button="!!userStore.userInfo"
         />

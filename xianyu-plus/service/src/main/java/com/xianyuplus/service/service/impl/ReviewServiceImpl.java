@@ -1,6 +1,7 @@
 package com.xianyuplus.service.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xianyuplus.common.entity.Order;
 import com.xianyuplus.common.entity.Review;
@@ -143,10 +144,12 @@ public class ReviewServiceImpl implements ReviewService {
             return Result.error("该评价没有回复");
         }
 
-        // 清空回复内容
-        review.setSellerReply(null);
-        review.setReplyAt(null);
-        reviewMapper.updateById(review);
+        // 使用 UpdateWrapper 显式设置 null 值（MyBatis-Plus 默认忽略 null）
+        LambdaUpdateWrapper<Review> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Review::getId, reviewId)
+                     .set(Review::getSellerReply, null)
+                     .set(Review::getReplyAt, null);
+        reviewMapper.update(null, updateWrapper);
 
         return Result.ok();
     }

@@ -11,7 +11,7 @@ export const useUserStore = defineStore('user', () => {
 
   function init() {
     try {
-      const raw = localStorage.getItem('user')
+      const raw = sessionStorage.getItem('user')
       if (raw) {
         const saved = JSON.parse(raw)
         if (saved.token) {
@@ -24,12 +24,12 @@ export const useUserStore = defineStore('user', () => {
 
   function persist() {
     if (token.value) {
-      localStorage.setItem('user', JSON.stringify({
+      sessionStorage.setItem('user', JSON.stringify({
         token: token.value,
         userInfo: userInfo.value
       }))
     } else {
-      localStorage.removeItem('user')
+      sessionStorage.removeItem('user')
     }
   }
 

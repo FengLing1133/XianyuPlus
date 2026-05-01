@@ -9,7 +9,7 @@ const request = axios.create({
   timeout: 15000
 })
 
-// 从 Pinia 内存状态读 token，避免多标签页 localStorage 互相覆盖
+// 从 Pinia 内存状态读 token，每个标签页独立存储（sessionStorage）
 function getToken() {
   try {
     const store = useUserStore(pinia)
@@ -17,7 +17,7 @@ function getToken() {
   } catch {
     // pinia 未初始化时的 fallback
     try {
-      const raw = localStorage.getItem('user')
+      const raw = sessionStorage.getItem('user')
       if (raw) {
         const parsed = JSON.parse(raw)
         return parsed.token || ''
@@ -43,9 +43,9 @@ function clearAuth() {
     const store = useUserStore(pinia)
     store.logout()
   } catch {
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
-    localStorage.removeItem('userInfo')
+    sessionStorage.removeItem('user')
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('userInfo')
   }
   router.push('/login')
 }
