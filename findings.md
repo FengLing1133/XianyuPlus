@@ -1,11 +1,15 @@
 # Findings & Decisions
 
-## Requirements
-1. 聊天功能消息发送不了
-2. 订单页面添加确认付款功能（不接真实支付）
-3. 商品缩略图显示不完全
-4. 分类筛选缺陷：父分类下找不到子分类商品
-5. "暂无商品"图片和文本居中
+## Requirements (新需求)
+1. 订单完整流程：买家确认付款 → 卖家发货 → 买家确认收货 → 订单完成
+2. 取消订单后恢复商品为在售状态
+
+## Requirements (已完成)
+1. 聊天功能消息发送不了 ✓
+2. 订单页面添加确认付款功能（不接真实支付）✓
+3. 商品缩略图显示不完全 ✓
+4. 分类筛选缺陷：父分类下找不到子分类商品 ✓
+5. "暂无商品"图片和文本居中 ✓
 
 ## Research Findings
 
@@ -78,6 +82,74 @@
   2. `user.js` 移除 `persist: true`，改为手动 `init()`/`persist()` 管理 localStorage
   3. `request.js` 的 `getToken()` 从 Pinia 内存状态读 token
   4. `main.js` 在 app 挂载前调用 `userStore.init()` 恢复登录状态
+
+## Research Findings (新需求分析)
+
+### 当前订单状态流转
+```
+PENDING(0) ──买家取消──> CANCELLED(3)
+    │
+    │ 买家确认付款 / 卖家标记已付款
+    ▼
+ PAID(1)
+    │
+    │ 卖家标记已完成
+    ▼
+COMPLETED(2)
+```
+
+### 问题分析
+1. **缺少发货和确认收货环节** — 当前只有"已付款"直接到"已完成"，没有物流/发货/收货步骤
+2. **取消订单不恢复商品** — `create()` 中商品状态改为 `SOLD(2)`，但取消时未恢复为 `ON_SALE(1)`
+
+### 目标订单状态流转
+```
+PENDING(0) ──买家取消──> CANCELLED(5)
+    │                         ↑
+    │ 买家确认付款             │ 买家取消已付款订单(退款场景)
+    ▼                         │
+ PAID(1) ─────────────────────┘
+    │
+    │ 卖家确认发货
+    ▼
+SHIPPED(2)
+    │
+    │ 买家确认收货
+    ▼
+RECEIVED(3)
+    │
+    │ 系统自动/手动完成
+    ▼
+COMPLETED(4)
+```
+
+### 新增状态
+| Code | 枚举名 | 含义 | 操作方 |
+|------|--------|------|--------|
+| 2 | SHIPPED | 已发货 | 卖家 |
+| 3 | RECEIVED | 已收货 | 买家 |
+| 4 | COMPLETED | 已完成 | 系统自动 |
+| 5 | CANCELLED | 已取消 | 买家 |
+
+### 状态流转权限矩阵
+| 当前状态 | 买家可操作 | 卖家可操作 |
+|---------|-----------|-----------|
+| PENDING(0) | → PAID(确认付款), → CANCELLED(取消) | — |
+| PAID(1) | → CANCELLED(申请退款) | → SHIPPED(确认发货) |
+| SHIPPED(2) | → RECEIVED(确认收货) | — |
+| RECEIVED(3) | — | — |
+| COMPLETED(4) | — | — |
+| CANCELLED(5) | — | — |
+
+### 数据库迁移策略
+- COMPLETED: 2 → 4
+- CANCELLED: 3 → 5
+- 新增 SHIPPED=2, RECEIVED=3
+- 需要更新 `init.sql` 中的 seed 数据
+- 现有数据库需执行迁移 SQL
+
+### 取消订单恢复商品
+- `updateStatus()` 中当目标状态为 CANCELLED 时，将商品状态恢复为 `ON_SALE(1)`
 
 ## Resources
 - 前端: `xianyuplus-web/src/`

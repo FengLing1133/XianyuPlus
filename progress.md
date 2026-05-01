@@ -121,6 +121,15 @@
 |-----------|-------|---------|------------|
 |           |       |         |            |
 
+## 5-Question Reboot Check (本轮)
+| Question | Answer |
+|----------|--------|
+| Where am I? | 订单完整流程规划完成，Phase 17-22 待实施 |
+| Where am I going? | 开始实施 Phase 17: 数据库迁移 |
+| What's the goal? | 实现 认付款→发货→收货→完成 完整订单生命周期 |
+| What have I learned? | 当前系统只有4个状态(0-3)，需扩展到6个(0-5)；取消订单未恢复商品是已知 Bug |
+| What have I done? | 完成需求分析、状态机设计、实施计划制定 |
+
 ## 5-Question Reboot Check
 | Question | Answer |
 |----------|--------|
@@ -129,3 +138,60 @@
 | What's the goal? | 修复聊天消息重复显示 |
 | What have I learned? | 雪花算法 Long ID 在 JS 中精度丢失（MAX_SAFE_INTEGER）；Hutool JSONUtil 不受 JacksonConfig 影响 |
 | What have I done? | WebSocket Handler Long→String；Pinia persist 改手动管理 |
+
+---
+
+## Session: 2026-05-01 (第五轮 — 规划)
+
+### Phase 17: 数据库迁移
+- **Status:** complete
+- Actions taken:
+  - `init.sql`: orders 表 status 注释更新为 '0待付款 1已付款 2已发货 3已收货 4已完成 5已取消'
+- Files modified:
+  - xianyu-plus/service/src/main/resources/db/init.sql
+
+### Phase 18: OrderStatus 枚举扩展
+- **Status:** complete
+- Actions taken:
+  - 新增 SHIPPED(2, "已发货"), RECEIVED(3, "已收货")
+  - COMPLETED: 2→4, CANCELLED: 3→5
+- Files modified:
+  - xianyu-plus/common/src/main/java/com/xianyuplus/common/enums/OrderStatus.java
+
+### Phase 19: OrderServiceImpl 状态流转重构
+- **Status:** complete
+- Actions taken:
+  - 重写 updateStatus() 方法，支持完整状态流转
+  - 买家: PENDING→PAID(确认付款), PENDING→CANCELLED(取消), PAID→CANCELLED(退款), SHIPPED→RECEIVED(确认收货→自动完成)
+  - 卖家: PAID→SHIPPED(确认发货)
+  - 新增 cancelOrder() 私有方法，取消时恢复商品为 ON_SALE
+  - 添加 @Transactional 注解保证事务
+- Files modified:
+  - xianyu-plus/service/src/main/java/com/xianyuplus/service/service/impl/OrderServiceImpl.java
+
+### Phase 20: Order.vue 前端更新
+- **Status:** complete
+- Actions taken:
+  - statusText(): 新增 SHIPPED/RECEIVED 状态，更新 COMPLETED/CANCELLED code
+  - 买家按钮: PENDING→确认付款+取消, PAID→申请退款, SHIPPED→确认收货
+  - 卖家按钮: PAID→确认发货（移除了旧的"标记已付款"+"标记已完成"）
+  - cancelOrder(): status 参数改为 5
+  - 新增 shipOrder() 和 receiveOrder() 方法
+  - CSS: 新增 status-2(蓝色), status-3(青色), 更新 status-4(绿色), status-5(红色)
+- Files modified:
+  - xianyuplus-web/src/views/Order.vue
+
+### Phase 21: admin/Orders.vue 同步更新
+- **Status:** complete
+- Actions taken:
+  - statusText(): 新增已发货/已收货
+  - statusClass(): 新增 pill-tag-cyan/teal
+  - CSS: 新增 .pill-tag-cyan, .pill-tag-teal
+- Files modified:
+  - xianyuplus-web/src/views/admin/Orders.vue
+
+### Phase 22: 编译验证
+- **Status:** complete
+- Results:
+  - `mvn compile` → BUILD SUCCESS (5.060s)
+  - `npm run build` → built in 851ms

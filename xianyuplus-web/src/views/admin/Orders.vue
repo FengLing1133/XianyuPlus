@@ -56,9 +56,9 @@ const page = ref(1)
 const total = ref(0)
 const totalPages = computed(() => Math.ceil(total.value / 10))
 
-function statusText(s) { const map = { 0: '待付款', 1: '已付款', 2: '已完成', 3: '已取消' }; return map[s] || '未知' }
+function statusText(s) { const map = { 0: '待付款', 1: '已付款', 2: '已发货', 3: '已收货', 4: '已完成', 5: '已取消' }; return map[s] || '未知' }
 function statusClass(s) {
-  const map = { 0: 'pill-tag-blue', 1: 'pill-tag-orange', 2: 'pill-tag-green', 3: 'pill-tag-red' }
+  const map = { 0: 'pill-tag-blue', 1: 'pill-tag-orange', 2: 'pill-tag-cyan', 3: 'pill-tag-teal', 4: 'pill-tag-green', 5: 'pill-tag-red' }
   return map[s] || 'pill-tag-gray'
 }
 
@@ -109,6 +109,8 @@ function goPage(p) { page.value = p; fetchData() }
 /* Status tag colors */
 .pill-tag-blue { background: #f0f4ff; color: #5b7fff; }
 .pill-tag-orange { background: #fff3e0; color: #e65100; }
+.pill-tag-cyan { background: #e8f4fd; color: #0277bd; }
+.pill-tag-teal { background: #e0f7fa; color: #00838f; }
 .pill-tag-green { background: #e8f5e9; color: var(--green-500); }
 .pill-tag-red { background: #fef0f0; color: var(--price-red); }
 .pill-tag-gray { background: #f5f5f5; color: #666; }

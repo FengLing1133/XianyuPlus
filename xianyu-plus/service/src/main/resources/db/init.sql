@@ -97,7 +97,7 @@ CREATE TABLE `orders` (
     `seller_id` BIGINT NOT NULL,
     `product_id` BIGINT NOT NULL,
     `amount` DECIMAL(10,2) NOT NULL,
-    `status` TINYINT DEFAULT 0 COMMENT '0待付款 1已付款 2已完成 3已取消',
+    `status` TINYINT DEFAULT 0 COMMENT '0待付款 1已付款 2已发货 3已收货 4已完成 5已取消',
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),

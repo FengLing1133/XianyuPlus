@@ -34,8 +34,9 @@
             <div class="order-actions">
               <button v-if="type === 'buy' && order.status === 0" class="btn-pill btn-pill-primary" @click="payOrder(order)">确认付款</button>
               <button v-if="type === 'buy' && order.status === 0" class="btn-pill btn-danger" @click="cancelOrder(order)">取消</button>
-              <button v-if="type === 'sell' && order.status === 0" class="btn-pill btn-pill-primary" @click="payOrder(order)">标记已付款</button>
-              <button v-if="type === 'sell' && order.status === 1" class="btn-pill" style="background:var(--green-50);color:var(--green-500);" @click="completeOrder(order)">标记已完成</button>
+              <button v-if="type === 'buy' && order.status === 1" class="btn-pill btn-danger" @click="cancelOrder(order)">申请退款</button>
+              <button v-if="type === 'buy' && order.status === 2" class="btn-pill btn-pill-primary" @click="receiveOrder(order)">确认收货</button>
+              <button v-if="type === 'sell' && order.status === 1" class="btn-pill" style="background:var(--green-50);color:var(--green-500);" @click="shipOrder(order)">确认发货</button>
             </div>
           </div>
         </div>
@@ -76,7 +77,7 @@ const colors = ['#fce4ec', '#e3f2fd', '#e8f5e9', '#f3e5f5', '#fff9c4', '#fff3e0'
 const totalPages = computed(() => Math.ceil(total.value / 10))
 
 function statusText(s) {
-  const map = { 0: '待付款', 1: '已付款', 2: '已完成', 3: '已取消' }
+  const map = { 0: '待付款', 1: '已付款', 2: '已发货', 3: '已收货', 4: '已完成', 5: '已取消' }
   return map[s] || '未知'
 }
 
@@ -105,22 +106,29 @@ function goPage(p) {
 }
 
 async function cancelOrder(order) {
-  const ok = await Dialog.confirm({ title: '取消订单', message: '确认取消此订单？' })
+  const msg = order.status === 0 ? '确认取消此订单？' : '确认申请退款？取消后将恢复商品为在售状态。'
+  const ok = await Dialog.confirm({ title: '取消订单', message: msg })
   if (!ok) return
-  await request.put(`/order/${order.id}/status`, null, { params: { status: 3 } })
+  await request.put(`/order/${order.id}/status`, null, { params: { status: 5 } })
   Toast.success('订单已取消')
   fetchData()
 }
 
 async function payOrder(order) {
   await request.put(`/order/${order.id}/status`, null, { params: { status: 1 } })
-  Toast.success('已标记为已付款')
+  Toast.success('已确认付款，等待卖家发货')
   fetchData()
 }
 
-async function completeOrder(order) {
+async function shipOrder(order) {
   await request.put(`/order/${order.id}/status`, null, { params: { status: 2 } })
-  Toast.success('订单已完成')
+  Toast.success('已确认发货')
+  fetchData()
+}
+
+async function receiveOrder(order) {
+  await request.put(`/order/${order.id}/status`, null, { params: { status: 3 } })
+  Toast.success('已确认收货，订单完成')
   fetchData()
 }
 </script>
@@ -173,8 +181,10 @@ async function completeOrder(order) {
 }
 .status-0 { background: #f0f4ff; color: #5b7fff; }
 .status-1 { background: #fff3e0; color: #e65100; }
-.status-2 { background: #e8f5e9; color: var(--green-500); }
-.status-3 { background: #fef0f0; color: var(--price-red); }
+.status-2 { background: #e8f4fd; color: #0277bd; }
+.status-3 { background: #e0f7fa; color: #00838f; }
+.status-4 { background: #e8f5e9; color: var(--green-500); }
+.status-5 { background: #fef0f0; color: var(--price-red); }
 
 .order-body {
   display: flex;

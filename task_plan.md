@@ -1,85 +1,68 @@
-# Task Plan: XianyuPlus — 第二轮修复
+# Task Plan: XianyuPlus — 订单完整流程
 
 ## Goal
-修复XianyuPlus第二轮5个问题：聊天功能、订单付款、商品缩略图、分类筛选、暂无商品居中
+实现订单完整生命周期：买家确认付款 → 卖家发货 → 买家确认收货 → 订单完成。同时修复取消订单不恢复商品的 Bug。
 
 ## Current Phase
-Phase 14 abgeschlossen — auf neue Aufgaben warten
+Phase 17 — 待开始
 
-## Phases
+## Phases (历史)
 
-### Phase 1-6: 第一轮Bug修复 (已完成)
+### Phase 1-16: 历史修复 (已完成)
 - **Status:** complete
 
-### Phase 7: 修复对话功能 — 消息发送不了
-- [x] chat.js: 乐观更新 + WebSocket URL 相对路径 + 连接复用
-- [x] ChatWindow.vue: 重构消息管理 + 发送失败提示
-- [x] ChatWebSocketHandler.java: 消息回传发送方 + null 安全
+## Phases (新需求)
+
+### Phase 17: 数据库迁移 — 更新订单状态枚举
+- [x] 修改 `init.sql`: 更新 orders 表 status 注释为 '0待付款 1已付款 2已发货 3已收货 4已完成 5已取消'
 - **Status:** complete
 
-### Phase 8: 订单确认付款功能
-- [x] 后端 OrderServiceImpl: 允许买家 PENDING→PAID
-- [x] 前端 Order.vue: 买家视角添加"确认付款"按钮
+### Phase 18: 后端 — 扩展 OrderStatus 枚举
+- [x] `OrderStatus.java`: 新增 SHIPPED(2,"已发货"), RECEIVED(3,"已收货"), 修改 COMPLETED(4), CANCELLED(5)
 - **Status:** complete
 
-### Phase 9: 修复商品缩略图显示不完全
-- [x] ProductCard.vue: aspect-ratio: 4/3 + object-fit: contain
+### Phase 19: 后端 — 更新 OrderServiceImpl 状态流转逻辑
+- [x] `updateStatus()`: 新增状态转换规则
+  - 买家: PENDING→PAID, PENDING→CANCELLED, PAID→CANCELLED(退款), SHIPPED→RECEIVED→COMPLETED(自动)
+  - 卖家: PAID→SHIPPED
+- [x] 新增 `cancelOrder()` 私有方法：取消/退款时恢复商品状态为 ON_SALE
 - **Status:** complete
 
-### Phase 10: 修复分类筛选功能缺陷
-- [x] ProductServiceImpl: 父分类查询时自动包含子分类 IN 查询
+### Phase 20: 前端 — 更新 Order.vue 状态显示和按钮
+- [x] `statusText()`: 新增 SHIPPED(已发货), RECEIVED(已收货), 更新 COMPLETED/CANCELLED code
+- [x] 买家按钮: PENDING→确认付款+取消, PAID→申请退款, SHIPPED→确认收货
+- [x] 卖家按钮: PAID→确认发货
+- [x] 状态标签样式: 新增 status-2(蓝色已发货), status-3(青色已收货), status-4(绿色已完成), status-5(红色已取消)
 - **Status:** complete
 
-### Phase 11: "暂无商品"图片和文本居中
-- [x] Home.vue: grid-column: 1 / -1
+### Phase 21: 前端 — 更新 admin/Orders.vue 状态映射
+- [x] 状态标签 code 和文本与用户端同步
+- [x] 新增 pill-tag-cyan, pill-tag-teal 样式
+- **Status:** complete
+
+### Phase 22: 编译验证
+- [x] `mvn compile` 后端编译通过 (BUILD SUCCESS)
+- [x] `npm run build` 前端构建通过 (851ms)
 - **Status:** complete
 
 ## Key Questions
-1. WebSocket 连接是否建立成功？→ 已改为相对路径，走 Vite 代理
-2. 订单状态有哪些？→ PENDING(0), PAID(1), COMPLETED(2), CANCELLED(3)
-3. 分类是父子层级关系吗？→ 是，后端已支持 IN 查询
+1. COMPLETED 是否自动触发？→ 可选：买家确认收货后自动变为已完成，或增加延时
+2. 退款场景是否需要？→ PAID 状态允许买家取消（模拟退款）
+3. 已发货后卖家能否取消？→ 不允许，只有买家可以操作
 
 ## Decisions Made
 | Decision | Rationale |
 |----------|-----------|
-| 聊天乐观更新 | 发送方立即看到消息，后端回传后补充真实 id/createdAt |
-| 分类 IN 查询 | 前端传父分类ID，后端自动查所有子分类，无需改前端 |
-| object-fit: contain | 不裁切图片内容，可能有留白但信息完整 |
+| 新增 SHIPPED/RECEIVED 两状态 | 完整模拟真实交易流程 |
+| 取消恢复商品状态 | 避免商品被锁定无法再售 |
+| RECEIVED→COMPLETED 自动 | 简化流程，确认收货即完成 |
+| 买家 PAID→CANCELLED 允许 | 模拟退款场景 |
 
 ## Errors Encountered
 | Error | Attempt | Resolution |
 |-------|---------|------------|
-|       | 1       |            |
-
-### Phase 12: 修复聊天消息方向 + 接收方收不到消息
-- [x] chat.js: send() 增加 senderId 参数，乐观消息不再设 null
-- [x] chat.js: connect() 保存 currentUserId，onmessage 用 String 比较
-- [x] chat.js: onmessage 收到自己消息的回传时替换乐观消息（避免重复）
-- [x] ChatWindow.vue: 传 currentUserId 给 send()，模板用 String() 比较
-- **Status:** complete
-
-### Phase 13: 修复首页切换分类卡片阴影闪烁
-- [x] Home.vue: loading 初始为 true，fetchData 增加 showSkeleton 参数
-- [x] 仅首次加载显示骨架屏，切换分类/筛选/翻页不显示
-- **Status:** complete
-
-### Phase 14: 修复个人中心"我的发布"数据隔离
-- [x] 排查结果：后端 myProducts() 用 SecurityContext 按 user.getId() 过滤 → 正确
-- [x] 前端 /profile 路由需认证，request.get('/product/my') 带 JWT → 正确
-- [x] 结论：后端逻辑正确，无 keep-alive 缓存问题
-- **Status:** complete
-
-### Phase 15: 修复 Pinia persist 多标签页 token 覆盖
-- [x] 新建 pinia.js 独立导出 pinia 实例
-- [x] user.js: 移除 persist:true，改为手动 init()/persist()
-- [x] request.js: getToken() 从 Pinia 内存状态读 token
-- [x] main.js: app 挂载前调用 userStore.init()
-- **Status:** complete
-
-### Phase 16: 修复聊天消息重复显示（JS大整数精度丢失）
-- [x] ChatWebSocketHandler.java: Long 字段 (id/senderId/receiverId/productId) 转 String 输出
-- [x] 后端编译通过，前端构建通过
-- **Status:** complete
+|       |         |            |
 
 ## Notes
-- Phase 7-16 全部完成
+- 状态 code 变化: COMPLETED 2→4, CANCELLED 3→5, 新增 SHIPPED=2, RECEIVED=3
+- 需要数据库迁移脚本处理已有数据

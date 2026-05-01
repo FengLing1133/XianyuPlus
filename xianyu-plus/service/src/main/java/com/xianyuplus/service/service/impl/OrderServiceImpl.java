@@ -117,6 +117,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public Result<?> updateStatus(Long id, Integer status) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userMapper.selectOne(
@@ -127,37 +128,63 @@ public class OrderServiceImpl implements OrderService {
             throw new BusinessException("订单不存在");
         }
 
-        // Buyer can cancel or confirm payment
-        if (order.getBuyerId().equals(user.getId())) {
-            if (order.getStatus().equals(OrderStatus.PENDING.getCode())
-                    && status.equals(OrderStatus.CANCELLED.getCode())) {
-                order.setStatus(status);
+        boolean isBuyer = order.getBuyerId().equals(user.getId());
+        boolean isSeller = order.getSellerId().equals(user.getId());
+
+        if (!isBuyer && !isSeller) {
+            throw new BusinessException("无权执行此操作");
+        }
+
+        int current = order.getStatus();
+        int target = status;
+
+        // 买家操作
+        if (isBuyer) {
+            // PENDING → PAID: 确认付款
+            if (current == OrderStatus.PENDING.getCode() && target == OrderStatus.PAID.getCode()) {
+                order.setStatus(target);
                 orderMapper.updateById(order);
                 return Result.ok();
             }
-            if (order.getStatus().equals(OrderStatus.PENDING.getCode())
-                    && status.equals(OrderStatus.PAID.getCode())) {
-                order.setStatus(status);
+            // PENDING → CANCELLED: 取消未付款订单
+            if (current == OrderStatus.PENDING.getCode() && target == OrderStatus.CANCELLED.getCode()) {
+                cancelOrder(order);
+                return Result.ok();
+            }
+            // PAID → CANCELLED: 取消已付款订单（退款）
+            if (current == OrderStatus.PAID.getCode() && target == OrderStatus.CANCELLED.getCode()) {
+                cancelOrder(order);
+                return Result.ok();
+            }
+            // SHIPPED → RECEIVED: 确认收货 → 自动完成
+            if (current == OrderStatus.SHIPPED.getCode() && target == OrderStatus.RECEIVED.getCode()) {
+                order.setStatus(OrderStatus.COMPLETED.getCode());
                 orderMapper.updateById(order);
                 return Result.ok();
             }
         }
 
-        if (order.getSellerId().equals(user.getId())) {
-            if (order.getStatus().equals(OrderStatus.PENDING.getCode())
-                    && status.equals(OrderStatus.PAID.getCode())) {
-                order.setStatus(status);
-                orderMapper.updateById(order);
-                return Result.ok();
-            }
-            if (order.getStatus().equals(OrderStatus.PAID.getCode())
-                    && status.equals(OrderStatus.COMPLETED.getCode())) {
-                order.setStatus(status);
+        // 卖家操作
+        if (isSeller) {
+            // PAID → SHIPPED: 确认发货
+            if (current == OrderStatus.PAID.getCode() && target == OrderStatus.SHIPPED.getCode()) {
+                order.setStatus(target);
                 orderMapper.updateById(order);
                 return Result.ok();
             }
         }
 
         throw new BusinessException("无权执行此操作");
+    }
+
+    private void cancelOrder(Order order) {
+        order.setStatus(OrderStatus.CANCELLED.getCode());
+        orderMapper.updateById(order);
+        // 恢复商品为在售状态
+        Product product = productMapper.selectById(order.getProductId());
+        if (product != null) {
+            product.setStatus(ProductStatus.ON_SALE.getCode());
+            productMapper.updateById(product);
+        }
     }
 }
