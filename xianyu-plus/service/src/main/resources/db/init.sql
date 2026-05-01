@@ -181,6 +181,20 @@ CREATE TABLE `report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='举报表';
 
 -- --------------------------------------------
+-- 浏览历史表
+-- --------------------------------------------
+DROP TABLE IF EXISTS `view_history`;
+CREATE TABLE `view_history` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `user_id` BIGINT NOT NULL,
+    `product_id` BIGINT NOT NULL,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_user_time` (`user_id`, `created_at`),
+    UNIQUE KEY `uk_user_product` (`user_id`, `product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='浏览历史表';
+
+-- --------------------------------------------
 -- 预置数据
 -- --------------------------------------------
 
