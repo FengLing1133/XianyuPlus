@@ -55,6 +55,58 @@
 |------|-------|----------|--------|--------|
 | 后端编译 | `mvn compile` | 无错误 | 编译通过 | ✓ |
 
+## Session: 2026-05-01 (第三轮)
+
+### Phase 12: 修复聊天消息方向 + 接收方收不到消息
+- **Status:** complete
+- Actions taken:
+  - `chat.js`: send() 增加 senderId 参数，乐观消息设置正确的 senderId
+  - `chat.js`: connect() 保存 currentUserId.value
+  - `chat.js`: onmessage 用 String() 比较 senderId，收到自己消息回传时替换乐观消息
+  - `ChatWindow.vue`: 传 currentUserId 给 send()，模板用 String() 比较
+- 根因: JacksonConfig 将 Long 序列化为 String，=== 比较失败；乐观消息 senderId=null
+- Files modified:
+  - xianyuplus-web/src/stores/chat.js
+  - xianyuplus-web/src/views/ChatWindow.vue
+
+### Phase 13: 修复首页切换分类卡片阴影闪烁
+- **Status:** complete
+- Actions taken:
+  - `Home.vue`: loading 初始为 true
+  - `fetchData(showSkeleton)` 参数控制是否显示骨架屏
+  - 仅 onMounted 调用 fetchData(true)，其他调用不显示骨架屏
+- Files modified:
+  - xianyuplus-web/src/views/Home.vue
+
+### Phase 14: "我的发布"数据隔离排查
+- **Status:** complete
+- 排查结果:
+  - 后端 myProducts() 用 SecurityContext 获取当前用户，按 user.getId() 过滤 → 正确
+  - 前端 /profile 路由需认证，request.get('/product/my') 带 JWT → 正确
+  - 无 keep-alive 缓存，router-view 每次导航重建组件
+  - 结论：后端逻辑正确，可能是用户误报
+
+## Test Results
+| Test | Input | Expected | Actual | Status |
+|------|-------|----------|--------|--------|
+| 后端编译 | `mvn compile` | 无错误 | 编译通过 | ✓ |
+
+## Session: 2026-05-01 (第四轮)
+
+### Phase 15: 修复聊天消息跨用户显示
+- **Status:** complete
+- **根因**: Pinia `persist: true` 将 token 写入 localStorage，多标签页登录时后登录用户覆盖前一用户的 token。`request.js` 的 `getToken()` 从 localStorage 读到错误 token，导致 API 请求使用错误身份
+- Actions taken:
+  - 新建 `pinia.js` 独立导出 pinia 实例，解决循环依赖
+  - `user.js`: 移除 `persist: true`，添加 `init()` 从 localStorage 恢复状态，`persist()` 手动保存
+  - `request.js`: `getToken()` 改为从 `useUserStore(pinia)` 读内存状态，`clearAuth()` 同步清除 store
+  - `main.js`: 导入 pinia 和 userStore，app 挂载前调用 `userStore.init()`
+- Files modified:
+  - xianyuplus-web/src/pinia.js (新建)
+  - xianyuplus-web/src/main.js
+  - xianyuplus-web/src/stores/user.js
+  - xianyuplus-web/src/api/request.js
+
 ## Error Log
 | Timestamp | Error | Attempt | Resolution |
 |-----------|-------|---------|------------|
@@ -63,8 +115,8 @@
 ## 5-Question Reboot Check
 | Question | Answer |
 |----------|--------|
-| Where am I? | 所有 5 个问题已修复 |
+| Where am I? | Phase 15 完成 |
 | Where am I going? | 等待用户验证 |
-| What's the goal? | 修复聊天、订单付款、缩略图、分类筛选、居中 |
-| What have I learned? | 见 findings.md |
-| What have I done? | 见上方各阶段记录 |
+| What's the goal? | 修复聊天消息跨用户显示 |
+| What have I learned? | Pinia persist:true + localStorage 在多标签页下互相覆盖；request.js 应从内存状态读 token |
+| What have I done? | 重构 token 管理：独立 pinia 实例、手动 init/persist、getToken 读内存 |

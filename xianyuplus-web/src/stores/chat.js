@@ -6,8 +6,10 @@ export const useChatStore = defineStore('chat', () => {
   const messages = ref([])
   const unreadCount = ref(0)
   const connected = ref(false)
+  const currentUserId = ref(null)
 
   function connect(userId, token) {
+    currentUserId.value = userId
     // Reuse existing connection
     if (ws.value && connected.value) {
       return
@@ -28,6 +30,18 @@ export const useChatStore = defineStore('chat', () => {
       const msg = JSON.parse(event.data)
       // Deduplicate: if message with same id already exists, skip
       if (msg.id && messages.value.some(m => m.id === msg.id)) return
+      // If this is a server echo of our own message, replace the optimistic temp message
+      if (String(msg.senderId) === String(currentUserId.value)) {
+        const tempIdx = messages.value.findIndex(m =>
+          typeof m.id === 'string' && m.id.startsWith('temp_') &&
+          String(m.senderId) === String(currentUserId.value) && m.receiverId == msg.receiverId &&
+          m.content === msg.content
+        )
+        if (tempIdx !== -1) {
+          messages.value.splice(tempIdx, 1, msg)
+          return
+        }
+      }
       messages.value.push(msg)
     }
 
@@ -40,14 +54,14 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
-  function send(receiverId, productId, content) {
+  function send(receiverId, productId, content, senderId) {
     if (!ws.value || !connected.value) {
       return false
     }
     // Optimistic update: add message to local list immediately
     const optimisticMsg = {
       id: 'temp_' + Date.now(),
-      senderId: null, // will be set by caller
+      senderId,
       receiverId,
       productId,
       content,

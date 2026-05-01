@@ -103,7 +103,7 @@ const selectedCategory = ref(null)
 const sort = ref('newest')
 const condition = ref(null)
 const products = ref([])
-const loading = ref(false)
+const loading = ref(true)
 const page = ref(1)
 const size = ref(12)
 const total = ref(0)
@@ -134,7 +134,7 @@ const categoryEmojis = {
 
 onMounted(() => {
   fetchCategories()
-  fetchData()
+  fetchData(true)
 })
 
 async function fetchCategories() {
@@ -147,8 +147,8 @@ async function fetchCategories() {
   } catch {}
 }
 
-async function fetchData() {
-  loading.value = true
+async function fetchData(showSkeleton = false) {
+  if (showSkeleton) loading.value = true
   try {
     const params = { page: page.value, size: size.value, sort: sort.value }
     if (keyword.value) params.keyword = keyword.value

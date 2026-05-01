@@ -10,7 +10,7 @@
 
       <!-- Messages -->
       <div class="msg-list" ref="msgListRef">
-        <div v-for="msg in messages" :key="msg.id" :class="['msg-item', msg.senderId === currentUserId ? 'msg-me' : 'msg-other']">
+        <div v-for="msg in messages" :key="msg.id" :class="['msg-item', String(msg.senderId) === String(currentUserId) ? 'msg-me' : 'msg-other']">
           <div class="msg-bubble">
             <div class="msg-content">{{ msg.content }}</div>
             <div class="msg-time">{{ msg.createdAt?.substring(0, 16) }}</div>
@@ -85,7 +85,7 @@ function sendMsg(e) {
 
   const receiverId = parseInt(route.params.userId)
   const productId = route.query.productId ? parseInt(route.query.productId) : null
-  const sent = chatStore.send(receiverId, productId, content)
+  const sent = chatStore.send(receiverId, productId, content, currentUserId)
   if (!sent) {
     Toast.error('消息发送失败，请检查网络连接')
     return

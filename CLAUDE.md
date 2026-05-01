@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Please always communicate, explain code, and answer questions in **Chinese**.
+
 ## Project Overview
 
 XianyuPlus (闲鱼Plus) is a campus second-hand goods trading platform — a course/graduation project. It consists of a Spring Boot multi-module backend and a Vue 3 frontend.

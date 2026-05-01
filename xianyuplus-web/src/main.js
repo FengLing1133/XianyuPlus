@@ -1,12 +1,13 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import App from './App.vue'
 import router from './router'
+import { pinia } from './pinia'
+import { useUserStore } from './stores/user'
 import './styles/global.css'
 
-const pinia = createPinia()
-pinia.use(piniaPluginPersistedstate)
+// 初始化用户 store，从 localStorage 恢复登录状态
+const userStore = useUserStore(pinia)
+userStore.init()
 
 const app = createApp(App)
 app.use(pinia)

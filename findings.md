@@ -44,7 +44,35 @@
 ## Issues Encountered
 | Issue | Resolution |
 |-------|------------|
-|       |            |
+| Jackson Long→String 序列化导致 senderId 比较失败 | 模板和 onmessage 中用 String() 包装比较 |
+| 乐观消息 senderId 为 null 导致全部显示在左边 | send() 增加 senderId 参数，由调用方传入 |
+| 切换分类骨架屏闪烁 | 仅首次加载显示骨架屏，后续切换不显示 |
+| "我的发布"数据隔离 | 后端 myProducts() 已按 user.getId() 过滤，前端 /product/my 需认证，逻辑正确 |
+
+### Bug 10: 聊天消息方向 + 接收
+- 乐观消息 senderId=null → 全部显示在左边
+- JacksonConfig 将 Long 序列化为 String → === 比较失败
+- onmessage 中 currentUserId 未在 store 作用域内
+
+### Bug 11: 分类切换骨架屏闪烁
+- 每次 fetchData() 都 loading=true → 骨架屏闪现
+- 仅首次加载需要骨架屏
+
+### Bug 12: "我的发布"数据隔离
+- 后端 myProducts() 用 SecurityContext 获取当前用户，按 user.getId() 过滤 → 正确
+- 前端 /profile 路由需认证，request.get('/product/my') 带 JWT → 正确
+- 无 keep-alive 缓存，router-view 每次导航重建组件
+- 结论：后端逻辑正确，用户可能误报或存在其他未发现的缓存问题
+
+### Bug 13: 聊天消息跨用户显示（用户111/test1）
+- **现象**: 用户111给test1发消息，两边同时显示；刷新后111看到test1视角的消息
+- **根因**: Pinia `persist: true` 将 token 写入 localStorage（key='user'），当两个用户在同一浏览器不同标签页登录时，后登录的用户覆盖 localStorage。`request.js` 的 `getToken()` 从 localStorage 读 token → 读到错误用户的 token → 后端返回错误视角的消息
+- **admin/test2 不受影响**: 因为没有同时在不同标签页登录
+- **修复**: 
+  1. 新建 `pinia.js` 独立导出 pinia 实例
+  2. `user.js` 移除 `persist: true`，改为手动 `init()`/`persist()` 管理 localStorage
+  3. `request.js` 的 `getToken()` 从 Pinia 内存状态读 token（通过 `useUserStore(pinia)`）
+  4. `main.js` 在 app 挂载前调用 `userStore.init()` 恢复登录状态
 
 ## Resources
 - 前端: `xianyuplus-web/src/`

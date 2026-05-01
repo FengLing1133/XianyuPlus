@@ -9,10 +9,35 @@ export const useUserStore = defineStore('user', () => {
   const isLoggedIn = computed(() => !!token.value)
   const isAdmin = computed(() => userInfo.value?.role === 1)
 
+  function init() {
+    try {
+      const raw = localStorage.getItem('user')
+      if (raw) {
+        const saved = JSON.parse(raw)
+        if (saved.token) {
+          token.value = saved.token
+          userInfo.value = saved.userInfo || null
+        }
+      }
+    } catch {}
+  }
+
+  function persist() {
+    if (token.value) {
+      localStorage.setItem('user', JSON.stringify({
+        token: token.value,
+        userInfo: userInfo.value
+      }))
+    } else {
+      localStorage.removeItem('user')
+    }
+  }
+
   async function login(username, password) {
     const res = await request.post('/auth/login', { username, password })
     token.value = res.data.token
     userInfo.value = res.data.user
+    persist()
   }
 
   async function register(form) {
@@ -22,14 +47,14 @@ export const useUserStore = defineStore('user', () => {
   async function fetchInfo() {
     const res = await request.get('/auth/info')
     userInfo.value = res.data
+    persist()
   }
 
   function logout() {
     token.value = ''
     userInfo.value = null
+    persist()
   }
 
-  return { token, userInfo, isLoggedIn, isAdmin, login, register, fetchInfo, logout }
-}, {
-  persist: true
+  return { token, userInfo, isLoggedIn, isAdmin, init, login, register, fetchInfo, logout }
 })

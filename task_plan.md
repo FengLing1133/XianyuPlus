@@ -4,7 +4,7 @@
 修复XianyuPlus第二轮5个问题：聊天功能、订单付款、商品缩略图、分类筛选、暂无商品居中
 
 ## Current Phase
-Complete
+Phase 14 abgeschlossen — auf neue Aufgaben warten
 
 ## Phases
 
@@ -51,5 +51,31 @@ Complete
 |-------|---------|------------|
 |       | 1       |            |
 
+### Phase 12: 修复聊天消息方向 + 接收方收不到消息
+- [x] chat.js: send() 增加 senderId 参数，乐观消息不再设 null
+- [x] chat.js: connect() 保存 currentUserId，onmessage 用 String 比较
+- [x] chat.js: onmessage 收到自己消息的回传时替换乐观消息（避免重复）
+- [x] ChatWindow.vue: 传 currentUserId 给 send()，模板用 String() 比较
+- **Status:** complete
+
+### Phase 13: 修复首页切换分类卡片阴影闪烁
+- [x] Home.vue: loading 初始为 true，fetchData 增加 showSkeleton 参数
+- [x] 仅首次加载显示骨架屏，切换分类/筛选/翻页不显示
+- **Status:** complete
+
+### Phase 14: 修复个人中心"我的发布"数据隔离
+- [x] 排查结果：后端 myProducts() 用 SecurityContext 按 user.getId() 过滤 → 正确
+- [x] 前端 /profile 路由需认证，request.get('/product/my') 带 JWT → 正确
+- [x] 结论：后端逻辑正确，无 keep-alive 缓存问题
+- **Status:** complete
+
+### Phase 15: 修复聊天消息跨用户显示
+- [x] 新建 pinia.js 独立导出 pinia 实例
+- [x] user.js: 移除 persist:true，改为手动 init()/persist()
+- [x] request.js: getToken() 从 Pinia 内存状态读 token
+- [x] main.js: app 挂载前调用 userStore.init()
+- [x] 前端构建通过
+- **Status:** complete
+
 ## Notes
-- 所有阶段已完成，等待用户验证
+- Phase 7-15 全部完成
