@@ -141,6 +141,27 @@ CREATE TABLE `notification` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='通知表';
 
 -- --------------------------------------------
+-- 评价表
+-- --------------------------------------------
+DROP TABLE IF EXISTS `review`;
+CREATE TABLE `review` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `order_id` BIGINT NOT NULL COMMENT '关联订单',
+    `product_id` BIGINT NOT NULL COMMENT '关联商品',
+    `buyer_id` BIGINT NOT NULL COMMENT '评价者(买家)',
+    `seller_id` BIGINT NOT NULL COMMENT '被评价者(卖家)',
+    `rating` TINYINT NOT NULL COMMENT '评分1-5',
+    `content` VARCHAR(500) DEFAULT NULL COMMENT '评价内容(可选)',
+    `seller_reply` VARCHAR(500) DEFAULT NULL COMMENT '卖家回复',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `reply_at` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_order` (`order_id`),
+    KEY `idx_product` (`product_id`),
+    KEY `idx_seller` (`seller_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评价表';
+
+-- --------------------------------------------
 -- 预置数据
 -- --------------------------------------------
 
