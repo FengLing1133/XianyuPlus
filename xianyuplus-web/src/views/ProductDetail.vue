@@ -115,6 +115,7 @@ import { conditionText, getProductEmoji, getProductColor } from '@/utils/categor
 import ReviewList from '@/components/ReviewList.vue'
 import ReportForm from '@/components/ReportForm.vue'
 import { checkReported } from '@/api/report'
+import { recordView } from '@/api/viewHistory'
 
 const route = useRoute()
 const router = useRouter()
@@ -137,6 +138,11 @@ onMounted(async () => {
   try {
     const res = await request.get(`/product/${id}`)
     product.value = res.data
+
+    // 记录浏览历史
+    if (userStore.token) {
+      recordView(route.params.id).catch(() => {}) // 静默失败
+    }
 
     // 检查是否已举报
     if (userStore.token && product.value.userId !== userStore.userInfo?.id) {
