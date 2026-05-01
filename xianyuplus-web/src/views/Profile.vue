@@ -49,6 +49,13 @@
       </form>
     </div>
 
+    <!-- View History -->
+    <router-link to="/history" class="profile-menu-item">
+      <span class="menu-icon">📖</span>
+      <span class="menu-text">浏览历史</span>
+      <span class="menu-arrow">›</span>
+    </router-link>
+
     <!-- My Products -->
     <div class="card" style="margin-top: 20px; padding: 28px 32px;">
       <h3 class="section-title">📦 我的发布</h3>
@@ -214,5 +221,36 @@ async function changePassword() {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #333;
+  transition: background 0.2s;
+}
+
+.profile-menu-item:hover {
+  background: #f8f9fa;
+}
+
+.menu-icon {
+  font-size: 20px;
+}
+
+.menu-text {
+  flex: 1;
+  font-size: 15px;
+}
+
+.menu-arrow {
+  color: #999;
+  font-size: 18px;
 }
 </style>
