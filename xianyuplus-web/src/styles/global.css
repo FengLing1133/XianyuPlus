@@ -37,7 +37,7 @@ img {
   display: block;
 }
 
-/* Utility */
+/* Container */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -57,27 +57,32 @@ img {
 }
 
 .btn-pill-primary {
-  background: var(--green-500);
-  color: #fff;
+  background: var(--gradient-primary);
+  color: var(--color-on-primary);
 }
 
 .btn-pill-primary:hover {
-  background: var(--green-400);
+  opacity: 0.9;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+
+.btn-pill-primary:active {
+  transform: scale(0.98);
 }
 
 .btn-pill-outline {
   background: transparent;
-  border: 1.5px solid var(--green-500);
-  color: var(--green-500);
+  border: 1.5px solid var(--color-primary);
+  color: var(--color-primary);
 }
 
 .btn-pill-outline:hover {
-  background: var(--green-50);
+  background: var(--color-background);
 }
 
 /* Card base */
 .card {
-  background: var(--bg-card);
+  background: var(--color-card);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
 }
@@ -93,8 +98,8 @@ img {
 }
 
 .pill-tag-green {
-  background: rgba(43, 153, 57, 0.1);
-  color: var(--green-500);
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
 }
 
 /* Loading skeleton */
@@ -127,7 +132,7 @@ img {
   width: 100%;
   padding: 10px 16px;
   border: 1.5px solid var(--border-light);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: 14px;
   color: var(--text-primary);
   background: #fff;
@@ -136,7 +141,8 @@ img {
 }
 
 .form-input:focus {
-  border-color: var(--green-500);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
 }
 
 .form-input::placeholder {
@@ -156,7 +162,7 @@ textarea.form-input {
   margin-bottom: 24px;
 }
 
-/* Toast/Message (replacing ElMessage) */
+/* Toast */
 .toast {
   position: fixed;
   top: 20px;
@@ -171,21 +177,21 @@ textarea.form-input {
 }
 
 .toast-success {
-  background: #f0f9eb;
-  color: var(--green-500);
-  border: 1px solid var(--green-100);
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
 }
 
 .toast-error {
-  background: #fef0f0;
-  color: #e53935;
-  border: 1px solid #fde2e2;
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
 }
 
 .toast-info {
-  background: #f0f9ff;
-  color: #409eff;
-  border: 1px solid #d9ecff;
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
 }
 
 @keyframes toastIn {
@@ -206,8 +212,8 @@ textarea.form-input {
   min-width: 36px;
   height: 36px;
   padding: 0 10px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-card);
+  border-radius: var(--radius-pill);
+  background: var(--color-card);
   border: 1px solid var(--border-light);
   font-size: 14px;
   color: var(--text-primary);
@@ -215,14 +221,14 @@ textarea.form-input {
 }
 
 .pagination button:hover {
-  border-color: var(--green-500);
-  color: var(--green-500);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .pagination button.active {
-  background: var(--green-500);
-  color: #fff;
-  border-color: var(--green-500);
+  background: var(--gradient-primary);
+  color: var(--color-on-primary);
+  border-color: transparent;
 }
 
 .pagination button:disabled {

@@ -301,7 +301,7 @@ watch(() => props.productId, () => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--green-500);
+  background: var(--color-primary);
   color: #fff;
   display: flex;
   align-items: center;
@@ -404,8 +404,8 @@ watch(() => props.productId, () => {
 }
 
 .btn-reply:hover {
-  border-color: var(--green-500);
-  color: var(--green-500);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .btn-delete {
@@ -451,8 +451,8 @@ watch(() => props.productId, () => {
 }
 
 .pagination button:hover:not(:disabled) {
-  border-color: var(--green-500);
-  color: var(--green-500);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .reply-modal {
@@ -490,7 +490,7 @@ watch(() => props.productId, () => {
 
 .reply-form textarea:focus {
   outline: none;
-  border-color: var(--green-500);
+  border-color: var(--color-primary);
 }
 
 .reply-actions {
@@ -513,7 +513,7 @@ watch(() => props.productId, () => {
 
 .reply-actions button:last-child {
   border: none;
-  background: var(--green-500);
+  background: var(--color-primary);
   color: #fff;
 }
 

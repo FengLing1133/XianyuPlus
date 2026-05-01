@@ -2,14 +2,14 @@
   <div class="auth-page">
     <div class="auth-card card">
       <div class="auth-header">
-        <div class="auth-icon">🎉</div>
+        <div class="auth-icon">注册</div>
         <h2 class="auth-title">加入闲鱼Plus</h2>
         <p class="auth-subtitle">注册账号，开启校园二手交易</p>
       </div>
 
       <form class="auth-form" @submit.prevent="handleRegister">
         <div class="form-group">
-          <label class="form-label">👤 用户名</label>
+          <label class="form-label">用户名</label>
           <input
             v-model="form.username"
             type="text"
@@ -21,7 +21,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">🔒 密码</label>
+          <label class="form-label">密码</label>
           <input
             v-model="form.password"
             type="password"
@@ -33,7 +33,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">🔒 确认密码</label>
+          <label class="form-label">确认密码</label>
           <input
             v-model="form.confirmPassword"
             type="password"
@@ -45,7 +45,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">😊 昵称 <span style="color:var(--text-muted);font-weight:400;">(选填)</span></label>
+          <label class="form-label">昵称 <span style="color:var(--text-muted);font-weight:400;">(选填)</span></label>
           <input
             v-model="form.nickname"
             type="text"
@@ -55,7 +55,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">📱 手机号 <span style="color:var(--text-muted);font-weight:400;">(选填)</span></label>
+          <label class="form-label">手机号 <span style="color:var(--text-muted);font-weight:400;">(选填)</span></label>
           <input
             v-model="form.phone"
             type="text"
@@ -167,7 +167,9 @@ async function handleRegister() {
 }
 
 .auth-icon {
-  font-size: 48px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-primary);
   margin-bottom: 12px;
 }
 
@@ -226,7 +228,7 @@ async function handleRegister() {
 }
 
 .auth-link {
-  color: var(--green-500);
+  color: var(--color-primary);
   font-weight: 500;
 }
 

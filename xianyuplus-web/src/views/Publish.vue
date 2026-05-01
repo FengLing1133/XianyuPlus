@@ -1,17 +1,17 @@
 <template>
   <div class="publish-page">
-    <h2 class="page-title">{{ isEdit ? '✏️ 编辑商品' : '📦 发布商品' }}</h2>
+    <h2 class="page-title">{{ isEdit ? '编辑商品' : '发布商品' }}</h2>
 
     <div class="card publish-card">
       <form @submit.prevent="handleSubmit">
         <div class="form-group">
-          <label class="form-label">📝 商品标题 <span class="required">*</span></label>
+          <label class="form-label">商品标题 <span class="required">*</span></label>
           <input v-model="form.title" class="form-input" placeholder="请输入商品标题" maxlength="50" />
           <span v-if="errors.title" class="form-error">{{ errors.title }}</span>
         </div>
 
         <div class="form-group">
-          <label class="form-label">📂 商品分类 <span class="required">*</span></label>
+          <label class="form-label">商品分类 <span class="required">*</span></label>
           <select v-model="form.categoryId" class="form-input form-select">
             <option :value="null" disabled>请选择分类</option>
             <optgroup v-for="cat in categoryOptions" :key="cat.id" :label="cat.name">
@@ -23,7 +23,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">✨ 成色 <span class="required">*</span></label>
+          <label class="form-label">成色 <span class="required">*</span></label>
           <select v-model="form.condition" class="form-input form-select">
             <option :value="null" disabled>请选择成色</option>
             <option :value="1">全新</option>
@@ -36,7 +36,7 @@
 
         <div class="form-row">
           <div class="form-group" style="flex:1;">
-            <label class="form-label">💰 售价 <span class="required">*</span></label>
+            <label class="form-label">售价 <span class="required">*</span></label>
             <div class="input-with-unit">
               <input v-model.number="form.price" type="number" class="form-input" placeholder="0.00" min="0" step="0.01" />
               <span class="unit">元</span>
@@ -44,7 +44,7 @@
             <span v-if="errors.price" class="form-error">{{ errors.price }}</span>
           </div>
           <div class="form-group" style="flex:1;">
-            <label class="form-label">💵 原价</label>
+            <label class="form-label">原价</label>
             <div class="input-with-unit">
               <input v-model.number="form.originalPrice" type="number" class="form-input" placeholder="选填" min="0" step="0.01" />
               <span class="unit">元</span>
@@ -53,19 +53,19 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">📄 商品描述</label>
+          <label class="form-label">商品描述</label>
           <textarea v-model="form.description" class="form-input" rows="5" placeholder="描述商品的使用情况、购买时间等..."></textarea>
         </div>
 
         <div class="form-group">
-          <label class="form-label">🖼️ 商品图片</label>
+          <label class="form-label">商品图片</label>
           <ImageUploader v-model="form.images" />
         </div>
 
         <div class="form-actions">
           <button type="submit" class="btn-pill btn-pill-primary submit-btn" :disabled="submitting">
             <span v-if="submitting" class="spinner"></span>
-            <span v-else>{{ isEdit ? '💾 保存修改' : '🚀 立即发布' }}</span>
+            <span v-else>{{ isEdit ? '保存修改' : '立即发布' }}</span>
           </button>
         </div>
       </form>

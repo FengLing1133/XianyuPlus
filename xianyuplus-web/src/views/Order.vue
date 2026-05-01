@@ -1,12 +1,12 @@
 <template>
   <div class="order-page">
-    <h2 class="page-title">📋 我的订单</h2>
+    <h2 class="page-title">我的订单</h2>
 
     <div class="card">
       <!-- Tabs -->
       <div class="order-tabs">
-        <button :class="['tab-item', { active: type === 'buy' }]" @click="switchTab('buy')">🛒 我买到的</button>
-        <button :class="['tab-item', { active: type === 'sell' }]" @click="switchTab('sell')">💰 我卖出的</button>
+        <button :class="['tab-item', { active: type === 'buy' }]" @click="switchTab('buy')">我买到的</button>
+        <button :class="['tab-item', { active: type === 'sell' }]" @click="switchTab('sell')">我卖出的</button>
       </div>
 
       <div v-if="loading" style="padding: 40px; text-align: center; color: var(--text-secondary);">加载中...</div>
@@ -18,7 +18,7 @@
           </div>
           <div class="order-body" @click="$router.push(`/product/${order.productId}`)">
             <div class="order-img-wrap" :style="{ background: colors[order.id % colors.length] }">
-              <span class="order-placeholder">📦</span>
+              <span class="order-placeholder">-</span>
               <img v-if="order.productImage" :src="order.productImage" class="order-img" @error="$event.target.style.display='none'" />
             </div>
             <div class="order-info">
@@ -39,13 +39,13 @@
               <button v-if="type === 'buy' && order.status === 1" class="btn-pill btn-danger" @click="cancelOrder(order)">申请退款</button>
               <button v-if="type === 'buy' && order.status === 2" class="btn-pill btn-pill-primary" @click="receiveOrder(order)">确认收货</button>
               <button v-if="type === 'buy' && order.status === 4 && canReviewMap[order.id]" class="btn-pill btn-pill-primary" @click="openReview(order)">去评价</button>
-              <button v-if="type === 'sell' && order.status === 1" class="btn-pill" style="background:var(--green-50);color:var(--green-500);" @click="shipOrder(order)">确认发货</button>
+              <button v-if="type === 'sell' && order.status === 1" class="btn-pill" style="background:var(--color-background);color:var(--color-primary);" @click="shipOrder(order)">确认发货</button>
             </div>
           </div>
         </div>
 
         <div v-if="orders.length === 0" class="empty-state">
-          <div class="empty-icon">📋</div>
+          <div class="empty-icon">-</div>
           <p>暂无订单</p>
         </div>
 
@@ -85,7 +85,7 @@ const orders = ref([])
 const loading = ref(true)
 const page = ref(1)
 const total = ref(0)
-const colors = ['#fce4ec', '#e3f2fd', '#e8f5e9', '#f3e5f5', '#fff9c4', '#fff3e0']
+const colors = ['#fce4ec', '#e3f2fd', 'var(--color-background)', '#f3e5f5', '#fff9c4', '#fff3e0']
 const showReviewForm = ref(false)
 const reviewOrderId = ref(null)
 const canReviewMap = ref({})
@@ -190,8 +190,8 @@ function handleReviewSuccess() {
 }
 .tab-item:hover { color: var(--text-primary); }
 .tab-item.active {
-  color: var(--green-500);
-  border-bottom-color: var(--green-500);
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
   font-weight: 500;
 }
 
@@ -219,7 +219,7 @@ function handleReviewSuccess() {
 .status-1 { background: #fff3e0; color: #e65100; }
 .status-2 { background: #e8f4fd; color: #0277bd; }
 .status-3 { background: #e0f7fa; color: #00838f; }
-.status-4 { background: #e8f5e9; color: var(--green-500); }
+.status-4 { background: var(--color-background); color: var(--color-primary); }
 .status-5 { background: #fef0f0; color: var(--price-red); }
 
 .order-body {
@@ -271,7 +271,7 @@ function handleReviewSuccess() {
 .btn-danger:hover { background: #fde2e2; }
 
 .seller-link {
-  color: var(--green-500);
+  color: var(--color-primary);
   text-decoration: none;
 }
 

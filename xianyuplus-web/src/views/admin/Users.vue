@@ -2,7 +2,7 @@
   <div class="admin-page">
     <div class="card">
       <div class="toolbar">
-        <input v-model="keyword" class="form-input search-input" placeholder="🔍 搜索用户名/昵称..." @change="fetchData" style="max-width: 280px;" />
+        <input v-model="keyword" class="form-input search-input" placeholder="搜索用户名/昵称..." @change="fetchData" style="max-width: 280px;" />
       </div>
 
       <div class="table-wrap">
@@ -56,7 +56,7 @@
       <div v-if="loading" style="padding:40px;text-align:center;color:var(--text-secondary);">加载中...</div>
 
       <div v-if="!loading && users.length === 0" class="empty-state">
-        <div class="empty-icon">👥</div>
+        <div class="empty-icon">无数据</div>
         <p>暂无用户数据</p>
       </div>
 
@@ -143,8 +143,8 @@ function goPage(p) { page.value = p; fetchData() }
 .btn-danger-sm:hover { background: #fde2e2; }
 
 .btn-success-sm {
-  background: var(--green-50); color: var(--green-500);
+  background: var(--color-background); color: var(--color-primary);
   padding: 4px 14px; font-size: 12px; border-radius: var(--radius-pill);
 }
-.btn-success-sm:hover { background: #c8e6c9; }
+.btn-success-sm:hover { background: #fce4ec; }
 </style>

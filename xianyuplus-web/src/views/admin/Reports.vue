@@ -235,7 +235,7 @@ td {
 }
 
 .status-1 {
-  background: #e8f5e9;
+  background: var(--color-background);
   color: #2e7d32;
 }
 
@@ -254,8 +254,8 @@ td {
 }
 
 .btn-handle:hover {
-  border-color: var(--green-500);
-  color: var(--green-500);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .pagination {
@@ -280,8 +280,8 @@ td {
 }
 
 .pagination button:hover:not(:disabled) {
-  border-color: var(--green-500);
-  color: var(--green-500);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .handle-modal {
@@ -351,7 +351,7 @@ td {
 
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--green-500);
+  border-color: var(--color-primary);
 }
 
 .form-actions {
@@ -375,7 +375,7 @@ td {
 
 .form-actions button:last-child {
   border: none;
-  background: var(--green-500);
+  background: var(--color-primary);
   color: #fff;
 }
 

@@ -2,25 +2,28 @@
   <div class="product-card card" @click="$router.push(`/product/${product.id}`)">
     <div class="card-image" :style="{ background: bgColor }">
       <img v-if="product.images?.[0]?.url && !imgError" :src="product.images[0].url" class="real-img" @error="imgError = true" />
-      <span v-if="condition" class="condition-tag pill-tag pill-tag-green">{{ condition }}</span>
+      <component v-else :is="placeholderIcon" :size="36" class="placeholder-icon" />
+      <span v-if="condition" class="condition-tag" :class="conditionClass">{{ condition }}</span>
     </div>
     <div class="card-body">
       <div class="card-title" :title="product.title">{{ product.title }}</div>
       <div class="card-price-row">
         <span class="card-price">¥{{ product.price }}</span>
-        <span v-if="product.originalPrice" class="card-original">¥{{ product.originalPrice }}</span>
       </div>
       <div class="card-footer">
-        <span class="card-seller">👤 {{ product.sellerName || '匿名' }}</span>
-        <span class="card-views">👁 {{ product.viewCount || 0 }}</span>
+        <div class="card-seller">
+          <img v-if="product.sellerAvatar" :src="product.sellerAvatar" class="seller-avatar" @error="e => e.target.style.display='none'" />
+          <span v-else class="seller-avatar-placeholder"></span>
+          <span class="seller-name">{{ product.sellerName || '匿名' }}</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
-import { getProductColor, conditionText } from '@/utils/category'
+import { computed, ref, watch, shallowRef } from 'vue'
+import { Smartphone, BookOpen, ShoppingBag, Laptop, Gamepad2, Armchair, Watch, Headphones, Camera, Gift, Package } from 'lucide-vue-next'
 
 const props = defineProps({
   product: { type: Object, required: true }
@@ -29,8 +32,44 @@ const props = defineProps({
 const imgError = ref(false)
 watch(() => props.product?.id, () => { imgError.value = false })
 
-const bgColor = computed(() => getProductColor(props.product.id))
-const condition = computed(() => conditionText(props.product.condition))
+const placeholderIcons = [Smartphone, BookOpen, ShoppingBag, Laptop, Gamepad2, Armchair, Watch, Headphones, Camera, Gift, Package]
+
+const placeholderIcon = computed(() => {
+  const id = props.product.id
+  if (typeof id === 'string') {
+    let hash = 0
+    for (let i = 0; i < id.length; i++) {
+      hash = id.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    return placeholderIcons[Math.abs(hash) % placeholderIcons.length]
+  }
+  return placeholderIcons[id % placeholderIcons.length]
+})
+
+const placeholderColors = [
+  'var(--placeholder-pink)', 'var(--placeholder-cyan)', 'var(--placeholder-orange)',
+  'var(--placeholder-purple)', 'var(--placeholder-green)', 'var(--placeholder-red)',
+  'var(--placeholder-blue)', 'var(--placeholder-yellow)'
+]
+
+const bgColor = computed(() => {
+  const id = props.product.id
+  if (typeof id === 'string') {
+    let hash = 0
+    for (let i = 0; i < id.length; i++) {
+      hash = id.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    return placeholderColors[Math.abs(hash) % placeholderColors.length]
+  }
+  return placeholderColors[id % placeholderColors.length]
+})
+
+const conditionTextMap = { 1: '全新', 2: '几乎全新', 3: '轻微使用', 4: '明显痕迹' }
+const condition = computed(() => conditionTextMap[props.product.condition] || '')
+const conditionClass = computed(() => {
+  const map = { 1: 'condition-new', 2: 'condition-like-new', 3: 'condition-lightly-used', 4: 'condition-visible-wear' }
+  return map[props.product.condition] || ''
+})
 </script>
 
 <style scoped>
@@ -41,12 +80,12 @@ const condition = computed(() => conditionText(props.product.condition))
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 .product-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
 
 .card-image {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,28 +96,43 @@ const condition = computed(() => conditionText(props.product.condition))
 .real-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+}
+
+.placeholder-icon {
+  color: var(--color-primary);
+  opacity: 0.3;
 }
 
 .condition-tag {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 4px 12px;
-  font-size: 12px;
+  top: 7px;
+  right: 7px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 9px;
+  font-weight: 500;
+  color: #fff;
 }
 
+.condition-new { background: var(--condition-new); }
+.condition-like-new { background: var(--condition-like-new); }
+.condition-lightly-used { background: var(--condition-lightly-used); }
+.condition-visible-wear { background: var(--condition-visible-wear); }
+
 .card-body {
-  padding: 14px 16px;
+  padding: 10px 12px;
 }
 
 .card-title {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text-primary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   margin-bottom: 8px;
 }
 
@@ -87,22 +141,38 @@ const condition = computed(() => conditionText(props.product.condition))
 }
 
 .card-price {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--price-red);
-}
-
-.card-original {
-  font-size: 12px;
-  color: var(--text-muted);
-  text-decoration: line-through;
-  margin-left: 6px;
+  color: var(--color-destructive);
 }
 
 .card-footer {
   display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: var(--text-secondary);
+  align-items: center;
+}
+
+.card-seller {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.seller-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.seller-avatar-placeholder {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+}
+
+.seller-name {
+  font-size: 11px;
+  color: #6B7280;
 }
 </style>

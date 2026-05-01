@@ -3,16 +3,18 @@
     <!-- Hero Banner -->
     <div class="hero-banner">
       <div class="hero-text">
-        <h1 class="hero-title">📦 校园二手，让闲置流动起来</h1>
-        <p class="hero-subtitle">发现身边的宝藏好物，节约又环保 🌱</p>
+        <h1 class="hero-title">发现校园好物</h1>
+        <p class="hero-subtitle">闲置交易，让物品焕发新生</p>
       </div>
-      <div class="hero-icon">🔄</div>
+      <div class="hero-icon">
+        <RefreshCw :size="24" color="#EC4899" />
+      </div>
     </div>
 
     <!-- Search & Filter Row -->
     <div class="search-row">
       <div class="search-box">
-        <span class="search-icon">🔍</span>
+        <Search :size="15" class="search-icon-svg" />
         <input
           v-model="keyword"
           type="text"
@@ -22,7 +24,8 @@
         />
       </div>
       <div class="filter-select" @click="showConditionDropdown = !showConditionDropdown" v-click-outside="() => showConditionDropdown = false">
-        <span>✨ {{ conditionLabel }}</span>
+        <Sparkles :size="14" class="filter-icon-pink" />
+        <span>{{ conditionLabel }}</span>
         <span class="arrow">▾</span>
         <div v-if="showConditionDropdown" class="filter-dropdown">
           <div class="filter-option" :class="{ active: condition === null }" @click.stop="selectCondition(null)">全部成色</div>
@@ -33,7 +36,8 @@
         </div>
       </div>
       <div class="filter-select" @click="showSortDropdown = !showSortDropdown" v-click-outside="() => showSortDropdown = false">
-        <span>🕐 {{ sortLabel }}</span>
+        <Clock :size="14" class="filter-icon-cyan" />
+        <span>{{ sortLabel }}</span>
         <span class="arrow">▾</span>
         <div v-if="showSortDropdown" class="filter-dropdown">
           <div class="filter-option" :class="{ active: sort === 'newest' }" @click.stop="selectSort('newest')">最新发布</div>
@@ -48,14 +52,14 @@
       <button
         :class="['cat-pill', { active: selectedCategory === null }]"
         @click="selectCategory(null)"
-      >📋 全部</button>
+      >全部</button>
       <button
         v-for="cat in categories"
         :key="cat.id"
         :class="['cat-pill', { active: selectedCategory === cat.id }]"
         @click="selectCategory(cat.id)"
       >
-        {{ cat.emoji || '📦' }} {{ cat.name }}
+        {{ cat.name }}
       </button>
     </div>
 
@@ -73,7 +77,7 @@
       </template>
       <ProductCard v-for="item in products" :key="item.id" :product="item" />
       <div v-if="!loading && products.length === 0" class="empty-state">
-        <div class="empty-icon">📭</div>
+        <Package :size="48" class="empty-icon-svg" />
         <p>暂无商品</p>
       </div>
     </div>
@@ -96,6 +100,7 @@
 import { ref, computed, onMounted } from 'vue'
 import request from '@/api/request'
 import ProductCard from '@/components/ProductCard.vue'
+import { RefreshCw, Search, Sparkles, Clock, Package } from 'lucide-vue-next'
 
 const keyword = ref('')
 const categories = ref([])
@@ -122,16 +127,6 @@ const sortLabel = computed(() => {
 
 const totalPages = computed(() => Math.ceil(total.value / size.value))
 
-// Category emoji mapping
-const categoryEmojis = {
-  '教材教辅': '📚', '教材': '📚', '教辅': '📚',
-  '电子产品': '📱', '电子': '📱', '数码': '📱', '手机': '📱', '电脑': '💻',
-  '生活用品': '🎒', '生活': '🎒', '日用': '🎒',
-  '服饰鞋包': '👗', '服饰': '👗', '衣服': '👗', '鞋': '👟',
-  '运动娱乐': '🎮', '运动': '🎮', '娱乐': '🎮',
-  '图书': '📖',
-}
-
 onMounted(() => {
   fetchCategories()
   fetchData(true)
@@ -140,10 +135,7 @@ onMounted(() => {
 async function fetchCategories() {
   try {
     const res = await request.get('/category')
-    categories.value = (res.data || []).map(cat => ({
-      ...cat,
-      emoji: categoryEmojis[cat.name] || '📦'
-    }))
+    categories.value = res.data || []
   } catch {}
 }
 
@@ -208,44 +200,44 @@ function goPage(p) {
 
 /* Hero */
 .hero-banner {
-  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 40%, #e0f2f1 100%);
+  background: var(--gradient-hero);
   border-radius: var(--radius-lg);
-  padding: 32px 40px;
+  padding: 28px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .hero-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
-  color: var(--green-500);
-  margin: 0 0 6px;
+  color: var(--color-foreground);
+  margin: 0 0 4px;
 }
 
 .hero-subtitle {
-  font-size: 14px;
-  color: var(--text-secondary);
+  font-size: 13px;
+  color: var(--color-muted-foreground);
   margin: 0;
 }
 
 .hero-icon {
-  width: 60px;
-  height: 60px;
-  background: rgba(43, 153, 57, 0.08);
+  width: 50px;
+  height: 50px;
+  background: rgba(236, 72, 153, 0.08);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  flex-shrink: 0;
 }
 
 /* Search Row */
 .search-row {
   display: flex;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   align-items: center;
 }
 
@@ -255,21 +247,21 @@ function goPage(p) {
   align-items: center;
   background: #fff;
   border-radius: var(--radius-pill);
-  padding: 10px 20px;
+  padding: 10px 18px;
   box-shadow: var(--shadow-card);
 }
 
-.search-icon {
-  font-size: 16px;
-  color: var(--text-secondary);
-  margin-right: 10px;
+.search-icon-svg {
+  color: var(--color-primary);
+  margin-right: 8px;
+  flex-shrink: 0;
 }
 
 .search-input {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-primary);
   background: transparent;
 }
@@ -280,16 +272,16 @@ function goPage(p) {
 
 .filter-select {
   position: relative;
-  padding: 10px 18px;
+  padding: 9px 16px;
   border-radius: var(--radius-pill);
   background: #fff;
   border: 1.5px solid var(--border-light);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   white-space: nowrap;
   user-select: none;
   box-shadow: var(--shadow-card);
@@ -297,12 +289,20 @@ function goPage(p) {
 }
 
 .filter-select:hover {
-  border-color: var(--green-500);
+  border-color: var(--color-primary);
+}
+
+.filter-icon-pink {
+  color: var(--color-primary);
+}
+
+.filter-icon-cyan {
+  color: var(--color-accent);
 }
 
 .arrow {
   font-size: 10px;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   margin-left: 2px;
 }
 
@@ -312,7 +312,7 @@ function goPage(p) {
   left: 0;
   right: 0;
   background: #fff;
-  border-radius: var(--radius-md);
+  border-radius: 14px;
   box-shadow: var(--shadow-hover);
   padding: 6px;
   z-index: 50;
@@ -334,25 +334,25 @@ function goPage(p) {
 }
 
 .filter-option.active {
-  background: var(--green-50);
-  color: var(--green-500);
+  background: var(--color-background);
+  color: var(--color-primary);
   font-weight: 500;
 }
 
 /* Category Pills */
 .category-pills {
   display: flex;
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: 8px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
 .cat-pill {
-  padding: 8px 20px;
+  padding: 6px 16px;
   border-radius: var(--radius-pill);
   border: 1.5px solid var(--border-light);
   background: #fff;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-primary);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -360,26 +360,33 @@ function goPage(p) {
 }
 
 .cat-pill:hover {
-  border-color: var(--green-500);
-  color: var(--green-500);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .cat-pill.active {
-  background: var(--green-500);
+  background: var(--gradient-primary);
   color: #fff;
-  border-color: var(--green-500);
+  border-color: transparent;
 }
 
 /* Product Grid */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 14px;
   min-height: 300px;
+  padding-bottom: 24px;
 }
 
 .product-grid .empty-state {
   grid-column: 1 / -1;
+}
+
+.empty-icon-svg {
+  color: var(--text-muted);
+  opacity: 0.4;
+  margin-bottom: 12px;
 }
 
 /* Skeleton */
@@ -390,14 +397,14 @@ function goPage(p) {
 }
 
 .skeleton-img {
-  height: 180px;
+  aspect-ratio: 1 / 1;
 }
 
 .skeleton-body {
-  padding: 14px 16px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .skeleton-line {
@@ -415,13 +422,14 @@ function goPage(p) {
   .hero-banner {
     flex-direction: column;
     text-align: center;
-    gap: 16px;
+    gap: 12px;
     padding: 24px 20px;
   }
   .hero-title { font-size: 20px; }
   .search-row { flex-direction: column; }
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 }
 </style>

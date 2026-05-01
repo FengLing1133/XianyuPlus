@@ -151,7 +151,7 @@ watch(() => route.params.id, (newId) => {
   height: 80px;
   border-radius: 50%;
   overflow: hidden;
-  background: var(--green-50);
+  background: var(--color-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -166,7 +166,7 @@ watch(() => route.params.id, (newId) => {
 .avatar-placeholder {
   font-size: 36px;
   font-weight: 600;
-  color: var(--green-500);
+  color: var(--color-primary);
 }
 
 .info {
@@ -260,8 +260,8 @@ watch(() => route.params.id, (newId) => {
 }
 
 .pagination button:hover:not(:disabled) {
-  border-color: var(--green-500);
-  color: var(--green-500);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .loading-page,

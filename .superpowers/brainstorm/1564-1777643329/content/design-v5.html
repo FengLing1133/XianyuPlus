@@ -1,0 +1,263 @@
+<div class="section">
+  <h2>XianyuPlus UI 设计 - 5列网格</h2>
+  <p class="subtitle">正方形缩略图 + 5列布局</p>
+</div>
+
+<div class="mockup">
+  <div class="mockup-header">Home Page v5 - 5列网格</div>
+  <div class="mockup-body" style="padding:0;overflow:hidden;max-width:100%">
+
+    <!-- TOP NAV -->
+    <div style="background:white;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;border-bottom:2px solid #FBCFE8">
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <div style="width:30px;height:30px;background:linear-gradient(135deg,#EC4899,#0891B2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:13px">X</div>
+        <span style="font-weight:700;font-size:15px;color:#831843">闲鱼Plus</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a style="background:linear-gradient(135deg,#EC4899,#F472B6);color:white;padding:6px 14px;border-radius:50px;font-size:12px;font-weight:600;text-decoration:none;cursor:pointer">首页</a>
+        <a style="background:white;color:#EC4899;padding:6px 14px;border-radius:50px;font-size:12px;font-weight:500;text-decoration:none;cursor:pointer;border:1.5px solid #FBCFE8">发布商品</a>
+        <a style="background:white;color:#64748B;padding:6px 14px;border-radius:50px;font-size:12px;font-weight:500;text-decoration:none;cursor:pointer;border:1.5px solid #E5E7EB">个人中心</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+        <div style="position:relative;cursor:pointer">
+          <svg style="width:20px;height:20px;color:#64748B" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          <span style="position:absolute;top:-6px;right:-8px;background:#EC4899;color:white;font-size:10px;font-weight:700;padding:1px 5px;border-radius:50px;min-width:16px;text-align:center">3</span>
+        </div>
+        <div style="position:relative;cursor:pointer">
+          <svg style="width:20px;height:20px;color:#64748B" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <span style="position:absolute;top:-6px;right:-8px;background:#0891B2;color:white;font-size:10px;font-weight:700;padding:1px 5px;border-radius:50px;min-width:16px;text-align:center">5</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 8px;border-radius:50px;background:#F9FAFB;border:1px solid #E5E7EB">
+          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#EC4899,#F472B6)"></div>
+          <span style="font-size:12px;color:#374151;font-weight:500">小明同学</span>
+          <span style="color:#9CA3AF;font-size:10px">▾</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div style="background:linear-gradient(135deg,#FDF2F8 0%,#ECFEFF 50%,#FDF2F8 100%);padding:24px 24px;text-align:center">
+      <h1 style="font-size:20px;color:#831843;margin:0 0 4px;font-weight:700">发现校园好物</h1>
+      <p style="color:#64748B;font-size:13px;margin:0 0 12px">闲置交易，让物品焕发新生</p>
+      <div style="max-width:440px;margin:0 auto">
+        <div style="background:white;border-radius:50px;padding:8px 14px;display:flex;align-items:center;box-shadow:0 4px 16px rgba(236,72,153,0.12);border:2px solid #FBCFE8">
+          <svg style="width:16px;height:16px;color:#EC4899;margin-right:8px;flex-shrink:0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input style="border:none;outline:none;font-size:13px;color:#374151;flex:1;background:transparent" placeholder="搜索你想要的宝贝..." />
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div style="padding:10px 24px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div style="background:white;border:1.5px solid #FBCFE8;border-radius:50px;padding:5px 12px;display:flex;align-items:center;gap:5px;cursor:pointer;font-size:11px;color:#64748B">
+        <svg style="width:13px;height:13px;color:#EC4899" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+        <span>全部成色</span><span style="color:#9CA3AF;font-size:9px">▾</span>
+      </div>
+      <div style="background:white;border:1.5px solid #FBCFE8;border-radius:50px;padding:5px 12px;display:flex;align-items:center;gap:5px;cursor:pointer;font-size:11px;color:#64748B">
+        <svg style="width:13px;height:13px;color:#0891B2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>最新发布</span><span style="color:#9CA3AF;font-size:9px">▾</span>
+      </div>
+      <div style="display:flex;gap:5px;overflow-x:auto;flex:1">
+        <span style="background:#EC4899;color:white;padding:4px 11px;border-radius:50px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer">全部</span>
+        <span style="background:white;color:#64748B;padding:4px 11px;border-radius:50px;font-size:11px;white-space:nowrap;border:1px solid #FBCFE8;cursor:pointer">数码电子</span>
+        <span style="background:white;color:#64748B;padding:4px 11px;border-radius:50px;font-size:11px;white-space:nowrap;border:1px solid #FBCFE8;cursor:pointer">服饰鞋包</span>
+        <span style="background:white;color:#64748B;padding:4px 11px;border-radius:50px;font-size:11px;white-space:nowrap;border:1px solid #FBCFE8;cursor:pointer">图书教材</span>
+        <span style="background:white;color:#64748B;padding:4px 11px;border-radius:50px;font-size:11px;white-space:nowrap;border:1px solid #FBCFE8;cursor:pointer">生活用品</span>
+        <span style="background:white;color:#64748B;padding:4px 11px;border-radius:50px;font-size:11px;white-space:nowrap;border:1px solid #FBCFE8;cursor:pointer">运动户外</span>
+      </div>
+    </div>
+
+    <!-- PRODUCT GRID - 5 COLUMNS -->
+    <div style="padding:0 24px 24px">
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px">
+
+        <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer">
+          <div style="aspect-ratio:1/1;background:linear-gradient(135deg,#FDF2F8,#FCE7F3);display:flex;align-items:center;justify-content:center;position:relative">
+            <svg style="width:32px;height:32px;color:#EC4899;opacity:0.35" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <span style="position:absolute;top:6px;right:6px;background:rgba(236,72,153,0.9);color:white;font-size:9px;padding:2px 7px;border-radius:50px;font-weight:500">95新</span>
+          </div>
+          <div style="padding:8px">
+            <div style="font-size:12px;color:#1F2937;font-weight:500;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:6px">iPhone 14 Pro 256G 暗紫色</div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="color:#DC2626;font-weight:700;font-size:14px">¥4,299</span>
+              <span style="color:#9CA3AF;font-size:10px">128想要</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+              <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#EC4899,#F472B6)"></div>
+              <span style="font-size:10px;color:#6B7280">小明同学</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer">
+          <div style="aspect-ratio:1/1;background:linear-gradient(135deg,#ECFEFF,#CFFAFE);display:flex;align-items:center;justify-content:center;position:relative">
+            <svg style="width:32px;height:32px;color:#0891B2;opacity:0.35" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            <span style="position:absolute;top:6px;right:6px;background:rgba(8,145,178,0.9);color:white;font-size:9px;padding:2px 7px;border-radius:50px;font-weight:500">几乎全新</span>
+          </div>
+          <div style="padding:8px">
+            <div style="font-size:12px;color:#1F2937;font-weight:500;line-height:1.4">高等数学同济第七版</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <span style="color:#DC2626;font-weight:700;font-size:14px">¥25</span>
+              <span style="color:#9CA3AF;font-size:10px">56想要</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+              <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#0891B2,#06B6D4)"></div>
+              <span style="font-size:10px;color:#6B7280">学霸小李</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer">
+          <div style="aspect-ratio:1/1;background:linear-gradient(135deg,#FFF7ED,#FFEDD5);display:flex;align-items:center;justify-content:center;position:relative">
+            <svg style="width:32px;height:32px;color:#F97316;opacity:0.35" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
+            <span style="position:absolute;top:6px;right:6px;background:rgba(249,115,22,0.9);color:white;font-size:9px;padding:2px 7px;border-radius:50px;font-weight:500">轻微使用</span>
+          </div>
+          <div style="padding:8px">
+            <div style="font-size:12px;color:#1F2937;font-weight:500;line-height:1.4">Nike Air Force 1 白色 42码</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <span style="color:#DC2626;font-weight:700;font-size:14px">¥380</span>
+              <span style="color:#9CA3AF;font-size:10px">89想要</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+              <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#F97316,#FB923C)"></div>
+              <span style="font-size:10px;color:#6B7280">运动达人</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer">
+          <div style="aspect-ratio:1/1;background:linear-gradient(135deg,#F5F3FF,#EDE9FE);display:flex;align-items:center;justify-content:center;position:relative">
+            <svg style="width:32px;height:32px;color:#8B5CF6;opacity:0.35" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <span style="position:absolute;top:6px;right:6px;background:rgba(139,92,246,0.9);color:white;font-size:9px;padding:2px 7px;border-radius:50px;font-weight:500">95新</span>
+          </div>
+          <div style="padding:8px">
+            <div style="font-size:12px;color:#1F2937;font-weight:500;line-height:1.4">iPad Air 5 64G 星光色</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <span style="color:#DC2626;font-weight:700;font-size:14px">¥2,899</span>
+              <span style="color:#9CA3AF;font-size:10px">203想要</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+              <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#A78BFA)"></div>
+              <span style="font-size:10px;color:#6B7280">数码控</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer">
+          <div style="aspect-ratio:1/1;background:linear-gradient(135deg,#ECFDF5,#D1FAE5);display:flex;align-items:center;justify-content:center;position:relative">
+            <svg style="width:32px;height:32px;color:#10B981;opacity:0.35" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span style="position:absolute;top:6px;right:6px;background:rgba(16,185,129,0.9);color:white;font-size:9px;padding:2px 7px;border-radius:50px;font-weight:500">95新</span>
+          </div>
+          <div style="padding:8px">
+            <div style="font-size:12px;color:#1F2937;font-weight:500;line-height:1.4">小米台灯 Pro 护眼灯</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <span style="color:#DC2626;font-weight:700;font-size:14px">¥68</span>
+              <span style="color:#9CA3AF;font-size:10px">34想要</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+              <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#10B981,#34D399)"></div>
+              <span style="font-size:10px;color:#6B7280">生活家</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer">
+          <div style="aspect-ratio:1/1;background:linear-gradient(135deg,#FEF2F2,#FECACA);display:flex;align-items:center;justify-content:center;position:relative">
+            <svg style="width:32px;height:32px;color:#EF4444;opacity:0.35" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            <span style="position:absolute;top:6px;right:6px;background:rgba(239,68,68,0.9);color:white;font-size:9px;padding:2px 7px;border-radius:50px;font-weight:500">几乎全新</span>
+          </div>
+          <div style="padding:8px">
+            <div style="font-size:12px;color:#1F2937;font-weight:500;line-height:1.4">AirPods Pro 2代 蓝牙耳机</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <span style="color:#DC2626;font-weight:700;font-size:14px">¥1,299</span>
+              <span style="color:#9CA3AF;font-size:10px">167想要</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+              <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#EF4444,#F87171)"></div>
+              <span style="font-size:10px;color:#6B7280">音乐控</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer">
+          <div style="aspect-ratio:1/1;background:linear-gradient(135deg,#F0F9FF,#DBEAFE);display:flex;align-items:center;justify-content:center;position:relative">
+            <svg style="width:32px;height:32px;color:#3B82F6;opacity:0.35" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            <span style="position:absolute;top:6px;right:6px;background:rgba(59,130,246,0.9);color:white;font-size:9px;padding:2px 7px;border-radius:50px;font-weight:500">全新</span>
+          </div>
+          <div style="padding:8px">
+            <div style="font-size:12px;color:#1F2937;font-weight:500;line-height:1.4">考研政治全套教材 2025版</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <span style="color:#DC2626;font-weight:700;font-size:14px">¥45</span>
+              <span style="color:#9CA3AF;font-size:10px">78想要</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+              <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#3B82F6,#60A5FA)"></div>
+              <span style="font-size:10px;color:#6B7280">考研党</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer">
+          <div style="aspect-ratio:1/1;background:linear-gradient(135deg,#FFFBEB,#FEF3C7);display:flex;align-items:center;justify-content:center;position:relative">
+            <svg style="width:32px;height:32px;color:#F59E0B;opacity:0.35" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span style="position:absolute;top:6px;right:6px;background:rgba(245,158,11,0.9);color:white;font-size:9px;padding:2px 7px;border-radius:50px;font-weight:500">轻微使用</span>
+          </div>
+          <div style="padding:8px">
+            <div style="font-size:12px;color:#1F2937;font-weight:500;line-height:1.4">优衣库联名T恤 L码 带吊牌</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <span style="color:#DC2626;font-weight:700;font-size:14px">¥59</span>
+              <span style="color:#9CA3AF;font-size:10px">42想要</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+              <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#FBBF24)"></div>
+              <span style="font-size:10px;color:#6B7280">穿搭达人</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer">
+          <div style="aspect-ratio:1/1;background:linear-gradient(135deg,#FDF2F8,#FCE7F3);display:flex;align-items:center;justify-content:center;position:relative">
+            <svg style="width:32px;height:32px;color:#EC4899;opacity:0.35" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <span style="position:absolute;top:6px;right:6px;background:rgba(236,72,153,0.9);color:white;font-size:9px;padding:2px 7px;border-radius:50px;font-weight:500">几乎全新</span>
+          </div>
+          <div style="padding:8px">
+            <div style="font-size:12px;color:#1F2937;font-weight:500;line-height:1.4">四六级真题试卷 含听力</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <span style="color:#DC2626;font-weight:700;font-size:14px">¥18</span>
+              <span style="color:#9CA3AF;font-size:10px">91想要</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+              <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#EC4899,#F472B6)"></div>
+              <span style="font-size:10px;color:#6B7280">英语达人</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer">
+          <div style="aspect-ratio:1/1;background:linear-gradient(135deg,#ECFEFF,#CFFAFE);display:flex;align-items:center;justify-content:center;position:relative">
+            <svg style="width:32px;height:32px;color:#0891B2;opacity:0.35" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span style="position:absolute;top:6px;right:6px;background:rgba(8,145,178,0.9);color:white;font-size:9px;padding:2px 7px;border-radius:50px;font-weight:500">95新</span>
+          </div>
+          <div style="padding:8px">
+            <div style="font-size:12px;color:#1F2937;font-weight:500;line-height:1.4">小米充电宝 20000mAh</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <span style="color:#DC2626;font-weight:700;font-size:14px">¥79</span>
+              <span style="color:#9CA3AF;font-size:10px">55想要</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:6px">
+              <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#0891B2,#06B6D4)"></div>
+              <span style="font-size:10px;color:#6B7280">实用派</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>5列网格效果如何？</h3>
+  <p style="color:#64748B;font-size:14px;line-height:1.6">正方形缩略图 + 5列布局，每张卡片更紧凑。这个排列密度合适吗？</p>
+</div>

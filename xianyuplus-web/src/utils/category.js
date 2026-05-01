@@ -1,23 +1,9 @@
-// Default emoji for products without images
-const productEmojis = ['📦', '🎁', '📚', '🎧', '💻', '👗', '🎮', '🪑', '🏀', '🎸', '📷', '⌚']
-
-// Macaron background colors for product placeholders
-const macaronColors = [
-  '#fce4ec', '#f3e5f5', '#e8e5f9', '#e3f2fd',
-  '#e0f7fa', '#e8f5e9', '#fff9c4', '#fff3e0',
-  '#fbe9e7', '#efebe9', '#f1f8e9', '#e8eaf6'
+// Placeholder gradients for product cards (used by ProductDetail)
+const placeholderColors = [
+  'var(--placeholder-pink)', 'var(--placeholder-cyan)', 'var(--placeholder-orange)',
+  'var(--placeholder-purple)', 'var(--placeholder-green)', 'var(--placeholder-red)',
+  'var(--placeholder-blue)', 'var(--placeholder-yellow)'
 ]
-
-export function getProductEmoji(productId) {
-  if (typeof productId === 'string') {
-    let hash = 0
-    for (let i = 0; i < productId.length; i++) {
-      hash = productId.charCodeAt(i) + ((hash << 5) - hash)
-    }
-    return productEmojis[Math.abs(hash) % productEmojis.length]
-  }
-  return productEmojis[productId % productEmojis.length]
-}
 
 export function getProductColor(productId) {
   if (typeof productId === 'string') {
@@ -25,9 +11,9 @@ export function getProductColor(productId) {
     for (let i = 0; i < productId.length; i++) {
       hash = productId.charCodeAt(i) + ((hash << 5) - hash)
     }
-    return macaronColors[Math.abs(hash) % macaronColors.length]
+    return placeholderColors[Math.abs(hash) % placeholderColors.length]
   }
-  return macaronColors[productId % macaronColors.length]
+  return placeholderColors[productId % placeholderColors.length]
 }
 
 export function conditionText(c) {

@@ -1,6 +1,6 @@
 <template>
   <div class="chat-page">
-    <h2 class="page-title">💬 消息</h2>
+    <h2 class="page-title">消息</h2>
 
     <div class="card">
       <div v-if="loading" style="padding: 40px; text-align: center; color: var(--text-secondary);">
@@ -10,7 +10,7 @@
         <div v-for="conv in conversations" :key="conv.partnerId" class="conv-item" @click="$router.push(`/chat/${conv.partnerId}`)">
           <div class="conv-avatar">
             <img v-if="conv.partnerAvatar" :src="conv.partnerAvatar" class="avatar-img" />
-            <span v-else class="avatar-default">👤</span>
+            <span v-else class="avatar-default">头</span>
             <span v-if="conv.unread > 0" class="unread-dot">{{ conv.unread > 99 ? '99+' : conv.unread }}</span>
           </div>
           <div class="conv-body">
@@ -22,7 +22,7 @@
           </div>
         </div>
         <div v-if="conversations.length === 0" class="empty-state">
-          <div class="empty-icon">💭</div>
+          <div class="empty-icon">-</div>
           <p>暂无消息</p>
         </div>
       </template>
@@ -81,7 +81,7 @@ onMounted(async () => {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--green-50);
+  background: var(--color-background);
   display: flex;
   align-items: center;
   justify-content: center;

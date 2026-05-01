@@ -1,9 +1,7 @@
 <template>
   <div class="notification-bell" @click.stop="togglePanel">
     <div class="bell-icon">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-      </svg>
+      <Bell :size="22" />
       <span v-if="unreadCount > 0" class="badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
     </div>
 
@@ -27,7 +25,7 @@
             @click="handleClick(item)"
           >
             <div class="item-icon" :class="'type-' + item.type">
-              {{ typeIcons[item.type] }}
+              <component :is="typeIconComponents[item.type]" :size="18" />
             </div>
             <div class="item-content">
               <div class="item-title">{{ item.title }}</div>
@@ -47,6 +45,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNotificationStore } from '@/stores/notification'
 import { storeToRefs } from 'pinia'
+import { Bell, Package, MessageCircle, Heart, Info } from 'lucide-vue-next'
 
 const router = useRouter()
 const store = useNotificationStore()
@@ -54,11 +53,11 @@ const { notifications, unreadCount, loading } = storeToRefs(store)
 
 const showPanel = ref(false)
 
-const typeIcons = {
-  1: '📦',
-  2: '💬',
-  3: '❤️',
-  4: '📢'
+const typeIconComponents = {
+  1: Package,
+  2: MessageCircle,
+  3: Heart,
+  4: Info
 }
 
 function togglePanel() {
@@ -78,20 +77,19 @@ async function handleClick(item) {
   }
   closePanel()
 
-  // 根据通知类型跳转
   switch (item.type) {
-    case 1: // 订单状态
+    case 1:
       router.push('/orders')
       break
-    case 2: // 新消息
+    case 2:
       router.push('/chat')
       break
-    case 3: // 商品相关
+    case 3:
       if (item.relatedId) {
         router.push(`/product/${item.relatedId}`)
       }
       break
-    case 4: // 系统通知（举报）
+    case 4:
       if (item.title && item.title.includes('举报')) {
         router.push('/admin/reports')
       }
@@ -123,7 +121,6 @@ function formatTime(dateStr) {
   return date.toLocaleDateString('zh-CN')
 }
 
-// 点击外部关闭面板
 function handleOutsideClick(e) {
   if (showPanel.value && !e.target.closest('.notification-bell')) {
     closePanel()
@@ -154,25 +151,27 @@ onUnmounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  transition: background 0.2s;
+  color: var(--text-secondary);
+  transition: all 0.2s;
 }
 
 .bell-icon:hover {
   background: rgba(0, 0, 0, 0.05);
+  color: var(--color-primary);
 }
 
 .badge {
   position: absolute;
   top: 2px;
   right: 2px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  font-size: 11px;
-  font-weight: 600;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 700;
   color: #fff;
-  background: #ef4444;
-  border-radius: 9px;
+  background: var(--color-accent);
+  border-radius: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -185,8 +184,8 @@ onUnmounted(() => {
   width: 360px;
   max-height: 480px;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hover);
   z-index: 1000;
   overflow: hidden;
   display: flex;
@@ -198,17 +197,18 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-lighter);
 }
 
 .panel-title {
   font-size: 16px;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 .mark-all-btn {
   font-size: 13px;
-  color: var(--green-500);
+  color: var(--color-primary);
   background: none;
   border: none;
   cursor: pointer;
@@ -222,7 +222,7 @@ onUnmounted(() => {
 .panel-empty {
   padding: 40px 16px;
   text-align: center;
-  color: #999;
+  color: var(--text-muted);
   font-size: 14px;
 }
 
@@ -242,15 +242,15 @@ onUnmounted(() => {
 }
 
 .notification-item:hover {
-  background: #f8f9fa;
+  background: var(--bg-page);
 }
 
 .notification-item.unread {
-  background: #f0f7ff;
+  background: var(--color-background);
 }
 
 .notification-item.unread:hover {
-  background: #e8f2ff;
+  background: #fce7f3;
 }
 
 .item-icon {
@@ -260,14 +260,13 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
   flex-shrink: 0;
 }
 
-.item-icon.type-1 { background: #e8f4fd; }
-.item-icon.type-2 { background: #e8f5e9; }
-.item-icon.type-3 { background: #fce4ec; }
-.item-icon.type-4 { background: #fff3e0; }
+.item-icon.type-1 { background: #DBEAFE; color: #3B82F6; }
+.item-icon.type-2 { background: #D1FAE5; color: #10B981; }
+.item-icon.type-3 { background: #FCE7F3; color: #EC4899; }
+.item-icon.type-4 { background: #FEF3C7; color: #F59E0B; }
 
 .item-content {
   flex: 1;
@@ -277,12 +276,13 @@ onUnmounted(() => {
 .item-title {
   font-size: 14px;
   font-weight: 500;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .item-desc {
   font-size: 13px;
-  color: #666;
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -290,7 +290,7 @@ onUnmounted(() => {
 
 .item-time {
   font-size: 12px;
-  color: #999;
+  color: var(--text-muted);
   margin-top: 4px;
 }
 
@@ -303,7 +303,7 @@ onUnmounted(() => {
   border-radius: 50%;
   border: none;
   background: transparent;
-  color: #999;
+  color: var(--text-muted);
   font-size: 16px;
   cursor: pointer;
   display: flex;
@@ -318,8 +318,8 @@ onUnmounted(() => {
 }
 
 .item-delete:hover {
-  background: #fee2e2;
-  color: #ef4444;
+  background: #FCE7F3;
+  color: var(--color-destructive);
 }
 
 .fade-enter-active,

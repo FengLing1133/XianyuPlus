@@ -37,12 +37,12 @@ function showConfirm(title, message, { confirmText = '确认', cancelText = '取
           z-index: 10000; animation: fadeIn 0.2s ease;
         }
         .modal-confirm {
-          background: #fff; border-radius: 14px; padding: 24px;
+          background: #fff; border-radius: 20px; padding: 24px;
           max-width: 400px; width: 90%; box-shadow: 0 16px 48px rgba(0,0,0,0.15);
           animation: scaleIn 0.2s ease;
         }
-        .modal-header { font-size: 17px; font-weight: 600; color: #333; margin-bottom: 10px; }
-        .modal-body { font-size: 14px; color: #666; margin-bottom: 24px; line-height: 1.6; }
+        .modal-header { font-size: 17px; font-weight: 600; color: var(--color-foreground, #831843); margin-bottom: 10px; }
+        .modal-body { font-size: 14px; color: var(--text-secondary, #64748B); margin-bottom: 24px; line-height: 1.6; }
         .modal-footer { display: flex; gap: 10px; justify-content: flex-end; }
         .btn-cancel {
           background: #f5f5f5; color: #666; border-radius: 50px;

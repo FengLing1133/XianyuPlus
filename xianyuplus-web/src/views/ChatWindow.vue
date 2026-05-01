@@ -17,7 +17,7 @@
           </div>
         </div>
         <div v-if="messages.length === 0" class="empty-state" style="padding: 40px 0;">
-          <div class="empty-icon">💭</div>
+          <div class="empty-icon">-</div>
           <p>暂无消息，发送第一条吧</p>
         </div>
       </div>
@@ -130,7 +130,7 @@ function scrollToBottom() {
   padding: 4px 8px;
   border-radius: var(--radius-sm);
 }
-.back-btn:hover { color: var(--green-500); }
+.back-btn:hover { color: var(--color-primary); }
 
 .partner-name {
   font-size: 16px;
@@ -160,7 +160,7 @@ function scrollToBottom() {
 }
 
 .msg-me .msg-bubble {
-  background: var(--green-500);
+  background: var(--color-primary);
   color: #fff;
   border-bottom-right-radius: 4px;
 }
@@ -202,7 +202,7 @@ function scrollToBottom() {
   font-family: inherit;
   transition: border-color var(--transition-fast);
 }
-.msg-input:focus { border-color: var(--green-500); }
+.msg-input:focus { border-color: var(--color-primary); }
 
 .send-btn {
   padding: 10px 24px;

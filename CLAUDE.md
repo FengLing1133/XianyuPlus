@@ -45,7 +45,7 @@ npm run build      # Production build
 
 ```
 xianyu-plus/
-├── common/       — Shared entities, DTOs, enums, exceptions, Result/PageResult utils
+├── common/       — Shared entities, DTOs, enums (UserRole, ProductStatus, OrderStatus…), exceptions, Result/PageResult utils, service interfaces, event classes
 ├── framework/    — Infrastructure: Spring Security + JWT, CORS, MyBatisPlus, Redis config, global exception handler
 ├── service/      — Core business logic: Auth, User, Product, Category, Favorite, Order, Review, Report, Notification, Message, File upload APIs. Contains StartApplication (entry point)
 ├── chat/         — WebSocket chat (Spring WebSocket), ChatWebSocketHandler, ChatHandshakeInterceptor, ChatService
@@ -62,14 +62,16 @@ xianyu-plus/
 - **Business exceptions**: Throw `BusinessException(code, message)` — caught by `GlobalExceptionHandler` (@RestControllerAdvice).
 - **ID generation**: MyBatis-Plus `IdType.ASSIGN_ID` (Snowflake algorithm).
 - **Mapper scanning**: `@MapperScan("com.xianyuplus.**.mapper")` in MyBatisPlusConfig — all mapper interfaces are in the `common` module (`com.xianyuplus.common.mapper`).
+- **Event-driven notifications**: `NotificationEvent` (extends `ApplicationEvent`) is published via `ApplicationEventPublisher`; listeners create notification records asynchronously. Use this pattern instead of calling `NotificationService` directly.
 
 ### Authentication Flow
 
-1. `/api/auth/login`, `/api/auth/register`, GET `/api/product`, GET `/api/category`, `/ws/**`, `/uploads/**` are public.
+1. `/api/auth/login`, `/api/auth/register`, GET `/api/product`, GET `/api/product/{id}`, `/api/category/**` (all methods), GET `/api/review/product/**`, GET `/api/review/seller/*/stats`, `/ws/**`, `/uploads/**` are public.
 2. `/api/admin/**` (including `/api/admin/report/**`) requires ADMIN role (role=1).
 3. All other endpoints require a valid JWT token in `Authorization: Bearer <token>` header.
 4. JWT is generated via `JwtTokenUtil` (HMAC-SHA256, 7-day expiration). Contains userId, username, role in claims.
 5. `JwtTokenFilter` (OncePerRequestFilter) extracts and validates the token on every request.
+6. `@EnableGlobalMethodSecurity(prePostEnabled = true)` is enabled — `@PreAuthorize`/`@PostAuthorize` annotations can be used for method-level access control.
 
 ### WebSocket Chat
 
@@ -87,6 +89,7 @@ xianyu-plus/
 - **File uploads**: max 10MB per file, 20MB per request. Path configured in `application.yml` (`file.upload-path`), served at `/uploads/**`.
 - **SQL logging**: MyBatis-Plus prints all SQL to stdout (`StdOutImpl`), so you'll see every query in the backend console.
 - **Map underscore to camelCase**: Enabled — DB columns like `user_id` auto-map to Java `userId`.
+- **Long ID as string**: `JacksonConfig` serializes all `Long`/`long` values as strings in JSON responses (e.g. `"id": "123456789"` not `"id": 123456789`) to avoid JavaScript precision loss. Frontend should treat IDs as strings.
 
 ### Frontend Structure
 
@@ -98,7 +101,8 @@ xianyuplus-web/src/
 ├── components/        — Layout, AdminLayout, ProductCard, ImageUploader, ReviewForm, ReviewList, ReportForm, NotificationBell
 ├── views/             — Home, Login, Register, ProductDetail, Publish, Profile, SellerProfile, Chat, ChatWindow, Order, Favorite, ViewHistory
 ├── views/admin/       — Dashboard, Users, Products, Orders, Reports
-└── utils/             — toast.js, dialog.js, category.js
+├── utils/             — toast.js, dialog.js, category.js
+└── styles/            — global.css, variables.css (CSS variables for theming)
 ```
 
 - **Layout switching**: App.vue renders `<Layout>` for normal routes, `<AdminLayout>` for `/admin/*` routes.
@@ -113,3 +117,7 @@ xianyuplus-web/src/
 - **Chat routing**: `/chat` shows conversation list, `/chat/:userId` opens a specific chat window (ChatWindow.vue).
 - **SellerProfile**: `/seller/:id` shows seller's published products and profile info.
 - **ViewHistory**: `/history` shows user's recently viewed products, auto-recorded when visiting ProductDetail.
+
+## Testing
+
+No test suite exists — no JUnit tests, no frontend spec files. Verify changes manually.

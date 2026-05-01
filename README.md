@@ -108,6 +108,14 @@ spring:
 
 ### 5. 启动后端
 
+**使用 IntelliJ IDEA：**
+
+1. 打开 IDEA → `File` → `Open` → 选择项目根目录下的 `xianyu-plus/pom.xml`
+2. 选择 `Open as Project`，等待 Maven 依赖下载完成
+3. 找到 `com.xianyuplus.service.StartApplication`，右键 Run 即可启动（端口 8080）
+
+**使用命令行：**
+
 ```bash
 cd xianyu-plus
 

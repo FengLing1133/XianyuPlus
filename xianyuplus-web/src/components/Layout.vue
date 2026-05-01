@@ -3,20 +3,31 @@
     <nav class="navbar">
       <div class="navbar-inner">
         <router-link to="/" class="logo">
-          <span class="logo-icon">🎓</span>
+          <div class="logo-icon-wrapper">
+            <GraduationCap :size="18" color="white" />
+          </div>
           <span class="logo-text">闲鱼Plus</span>
         </router-link>
 
         <div class="nav-links">
-          <router-link to="/" class="nav-link">🏠 首页</router-link>
-          <router-link v-if="userStore.isLoggedIn" to="/publish" class="nav-link">📦 发布商品</router-link>
-          <router-link v-if="userStore.isLoggedIn" to="/profile" class="nav-link">👤 个人中心</router-link>
+          <router-link to="/" class="nav-link" :class="{ active: $route.path === '/' }">
+            <Home :size="16" />
+            <span>首页</span>
+          </router-link>
+          <router-link v-if="userStore.isLoggedIn" to="/publish" class="nav-link" :class="{ active: $route.path === '/publish' }">
+            <Package :size="16" />
+            <span>发布商品</span>
+          </router-link>
+          <router-link v-if="userStore.isLoggedIn" to="/profile" class="nav-link" :class="{ active: $route.path === '/profile' }">
+            <User :size="16" />
+            <span>个人中心</span>
+          </router-link>
         </div>
 
         <div class="nav-actions">
           <template v-if="userStore.isLoggedIn">
             <router-link to="/chat" class="chat-badge" title="消息">
-              <span class="chat-icon">💬</span>
+              <MessageCircle :size="22" />
               <span v-if="unreadCount > 0" class="badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
             </router-link>
 
@@ -24,18 +35,32 @@
 
             <div class="user-menu" @click="showDropdown = !showDropdown" v-click-outside="() => showDropdown = false">
               <img :src="userStore.userInfo?.avatar || ''" class="user-avatar" @error="e => e.target.style.display='none'" />
-              <span v-if="!userStore.userInfo?.avatar" class="avatar-placeholder">👤</span>
+              <span v-if="!userStore.userInfo?.avatar" class="avatar-placeholder">
+                <User :size="16" />
+              </span>
               <span class="user-name">{{ userStore.userInfo?.nickname }}</span>
-              <span class="arrow">▾</span>
+              <ChevronDown :size="14" class="arrow-icon" />
 
               <div v-if="showDropdown" class="dropdown">
-                <router-link to="/profile" class="dropdown-item" @click="showDropdown = false">👤 个人中心</router-link>
-                <router-link to="/favorites" class="dropdown-item" @click="showDropdown = false">⭐ 我的收藏</router-link>
-                <router-link to="/history" class="dropdown-item" @click="showDropdown = false">📖 浏览历史</router-link>
-                <router-link to="/orders" class="dropdown-item" @click="showDropdown = false">📋 我的订单</router-link>
-                <router-link v-if="userStore.isAdmin" to="/admin" class="dropdown-item" @click="showDropdown = false">⚙️ 管理后台</router-link>
+                <router-link to="/profile" class="dropdown-item" @click="showDropdown = false">
+                  <User :size="16" /> 个人中心
+                </router-link>
+                <router-link to="/favorites" class="dropdown-item" @click="showDropdown = false">
+                  <Star :size="16" /> 我的收藏
+                </router-link>
+                <router-link to="/history" class="dropdown-item" @click="showDropdown = false">
+                  <Clock :size="16" /> 浏览历史
+                </router-link>
+                <router-link to="/orders" class="dropdown-item" @click="showDropdown = false">
+                  <ClipboardList :size="16" /> 我的订单
+                </router-link>
+                <router-link v-if="userStore.isAdmin" to="/admin" class="dropdown-item" @click="showDropdown = false">
+                  <Settings :size="16" /> 管理后台
+                </router-link>
                 <div class="dropdown-divider"></div>
-                <button class="dropdown-item" @click="handleLogout">🚪 退出登录</button>
+                <button class="dropdown-item" @click="handleLogout">
+                  <LogOut :size="16" /> 退出登录
+                </button>
               </div>
             </div>
           </template>
@@ -59,25 +84,29 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import request from '@/api/request'
 import NotificationBell from './NotificationBell.vue'
+import {
+  GraduationCap, Home, Package, User, MessageCircle,
+  ChevronDown, Star, Clock, ClipboardList, Settings, LogOut
+} from 'lucide-vue-next'
 
 const router = useRouter()
 const userStore = useUserStore()
-const unreadCount = ref(0)
 const showDropdown = ref(false)
+const unreadCount = ref(0)
 let timer = null
+
+async function fetchUnread() {
+  if (!userStore.token) return
+  try {
+    const res = await request.get('/message/unread/count', { silent: true })
+    unreadCount.value = res.data || 0
+  } catch {}
+}
 
 function handleLogout() {
   userStore.logout()
   showDropdown.value = false
-  router.push('/')
-}
-
-async function fetchUnread() {
-  if (!userStore.isLoggedIn) return
-  try {
-    const res = await request.get('/message/unread', { silent: true })
-    unreadCount.value = res.data.count
-  } catch {}
+  router.push('/login')
 }
 
 const vClickOutside = {
@@ -110,6 +139,7 @@ onUnmounted(() => {
   top: 0;
   z-index: 100;
   height: 60px;
+  border-bottom: 2px solid var(--color-border);
 }
 
 .navbar-inner {
@@ -126,11 +156,20 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
-  color: var(--green-500);
+  color: var(--color-foreground);
 }
-.logo-icon { font-size: 24px; }
+
+.logo-icon-wrapper {
+  width: 34px;
+  height: 34px;
+  background: var(--gradient-logo);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .nav-links {
   display: flex;
@@ -139,36 +178,55 @@ onUnmounted(() => {
 }
 
 .nav-link {
-  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 18px;
   border-radius: var(--radius-pill);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border-light);
+  background: #fff;
   transition: all var(--transition-fast);
 }
-.nav-link:hover,
+
+.nav-link:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.nav-link.active,
 .nav-link.router-link-exact-active {
-  background: var(--green-50);
-  color: var(--green-500);
+  background: var(--gradient-primary);
+  color: #fff;
+  border-color: transparent;
 }
 
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .chat-badge {
   position: relative;
-  font-size: 20px;
   display: flex;
   align-items: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--transition-fast);
 }
+
+.chat-badge:hover {
+  color: var(--color-primary);
+}
+
 .badge {
   position: absolute;
   top: -6px;
   right: -8px;
-  background: var(--price-red);
+  background: var(--color-primary);
   color: #fff;
   font-size: 10px;
   min-width: 16px;
@@ -187,39 +245,47 @@ onUnmounted(() => {
   gap: 6px;
   cursor: pointer;
   position: relative;
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: var(--radius-pill);
+  background: #F9FAFB;
+  border: 1px solid var(--border-light);
+  transition: all var(--transition-fast);
 }
+
 .user-menu:hover {
-  background: var(--bg-page);
+  border-color: var(--color-border);
 }
+
 .user-avatar {
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   object-fit: cover;
 }
+
 .avatar-placeholder {
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: var(--green-50);
+  background: var(--gradient-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  color: white;
 }
+
 .user-name {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-primary);
   max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 500;
 }
-.arrow {
-  font-size: 10px;
-  color: var(--text-secondary);
+
+.arrow-icon {
+  color: var(--text-muted);
 }
 
 .dropdown {
@@ -233,20 +299,25 @@ onUnmounted(() => {
   padding: 8px;
   z-index: 200;
 }
+
 .dropdown-item {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   width: 100%;
   text-align: left;
   padding: 10px 14px;
   border-radius: var(--radius-sm);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-primary);
   background: none;
   transition: background var(--transition-fast);
 }
+
 .dropdown-item:hover {
   background: var(--bg-page);
 }
+
 .dropdown-divider {
   height: 1px;
   background: var(--border-lighter);

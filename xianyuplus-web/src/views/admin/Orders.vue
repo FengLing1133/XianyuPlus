@@ -33,7 +33,7 @@
       <div v-if="loading" style="padding:40px;text-align:center;color:var(--text-secondary);">加载中...</div>
 
       <div v-if="!loading && orders.length === 0" class="empty-state">
-        <div class="empty-icon">📋</div>
+        <div class="empty-icon">无数据</div>
         <p>暂无订单数据</p>
       </div>
 
@@ -111,7 +111,7 @@ function goPage(p) { page.value = p; fetchData() }
 .pill-tag-orange { background: #fff3e0; color: #e65100; }
 .pill-tag-cyan { background: #e8f4fd; color: #0277bd; }
 .pill-tag-teal { background: #e0f7fa; color: #00838f; }
-.pill-tag-green { background: #e8f5e9; color: var(--green-500); }
+.pill-tag-green { background: var(--color-background); color: var(--color-primary); }
 .pill-tag-red { background: #fef0f0; color: var(--price-red); }
 .pill-tag-gray { background: #f5f5f5; color: #666; }
 </style>

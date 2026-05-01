@@ -102,14 +102,14 @@ function remove(index) {
   transition: border-color var(--transition-fast);
 }
 .upload-box:hover {
-  border-color: var(--green-500);
+  border-color: var(--color-primary);
 }
 .upload-icon {
   font-size: 32px;
   color: var(--text-muted);
 }
 .upload-box:hover .upload-icon {
-  color: var(--green-500);
+  color: var(--color-primary);
 }
 
 .tip {

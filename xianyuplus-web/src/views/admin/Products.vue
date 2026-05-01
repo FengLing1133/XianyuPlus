@@ -2,7 +2,7 @@
   <div class="admin-page">
     <div class="card">
       <div class="toolbar">
-        <input v-model="keyword" class="form-input" placeholder="🔍 搜索商品标题..." @change="fetchData" style="max-width: 280px;" />
+        <input v-model="keyword" class="form-input" placeholder="搜索商品标题..." @change="fetchData" style="max-width: 280px;" />
         <select v-model="status" class="form-input form-select" @change="fetchData" style="width: 140px;">
           <option :value="null">全部状态</option>
           <option :value="1">在售</option>
@@ -45,7 +45,7 @@
       <div v-if="loading" style="padding:40px;text-align:center;color:var(--text-secondary);">加载中...</div>
 
       <div v-if="!loading && products.length === 0" class="empty-state">
-        <div class="empty-icon">📦</div>
+        <div class="empty-icon">无数据</div>
         <p>暂无商品数据</p>
       </div>
 

@@ -2,14 +2,14 @@
   <div class="auth-page">
     <div class="auth-card card">
       <div class="auth-header">
-        <div class="auth-icon">🎓</div>
+        <div class="auth-icon">欢迎</div>
         <h2 class="auth-title">欢迎回到闲鱼Plus</h2>
         <p class="auth-subtitle">登录你的账号，继续探索校园好物</p>
       </div>
 
       <form class="auth-form" @submit.prevent="handleLogin">
         <div class="form-group">
-          <label class="form-label">👤 用户名</label>
+          <label class="form-label">用户名</label>
           <input
             v-model="form.username"
             type="text"
@@ -21,7 +21,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">🔒 密码</label>
+          <label class="form-label">密码</label>
           <input
             v-model="form.password"
             type="password"
@@ -109,7 +109,9 @@ async function handleLogin() {
 }
 
 .auth-icon {
-  font-size: 48px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-primary);
   margin-bottom: 12px;
 }
 
@@ -168,7 +170,7 @@ async function handleLogin() {
 }
 
 .auth-link {
-  color: var(--green-500);
+  color: var(--color-primary);
   font-weight: 500;
 }
 

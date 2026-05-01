@@ -1,14 +1,14 @@
 <template>
   <div class="profile-page">
-    <h2 class="page-title">👤 个人中心</h2>
+    <h2 class="page-title">个人中心</h2>
 
     <!-- Avatar & Info Card -->
     <div class="card profile-card">
       <div class="profile-header">
         <div class="avatar-area">
           <img v-if="userStore.userInfo?.avatar" :src="userStore.userInfo.avatar" class="avatar-img" />
-          <span v-else class="avatar-default">👤</span>
-          <button class="btn-pill btn-upload" @click="triggerUpload">📷 更换头像</button>
+          <span v-else class="avatar-default"></span>
+          <button class="btn-pill btn-upload" @click="triggerUpload">更换头像</button>
           <input ref="fileInput" type="file" accept="image/*" style="display:none" @change="handleAvatarChange" />
         </div>
         <div class="info-area">
@@ -25,7 +25,7 @@
               <label class="form-label">手机号</label>
               <input v-model="form.phone" class="form-input" placeholder="你的手机号" />
             </div>
-            <button type="submit" class="btn-pill btn-pill-primary">💾 保存</button>
+            <button type="submit" class="btn-pill btn-pill-primary">保存</button>
           </form>
         </div>
       </div>
@@ -33,7 +33,7 @@
 
     <!-- Password Card -->
     <div class="card" style="margin-top: 20px; padding: 28px 32px;">
-      <h3 class="section-title">🔒 修改密码</h3>
+      <h3 class="section-title">修改密码</h3>
       <form @submit.prevent="changePassword" style="max-width: 400px;">
         <div class="form-group">
           <label class="form-label">原密码</label>
@@ -45,25 +45,25 @@
           <input v-model="pwdForm.newPassword" type="password" class="form-input" placeholder="6-20位新密码" />
           <span v-if="pwdErrors.newPassword" class="form-error">{{ pwdErrors.newPassword }}</span>
         </div>
-        <button type="submit" class="btn-pill btn-pill-primary">🔑 修改密码</button>
+        <button type="submit" class="btn-pill btn-pill-primary">修改密码</button>
       </form>
     </div>
 
     <!-- View History -->
     <router-link to="/history" class="profile-menu-item">
-      <span class="menu-icon">📖</span>
+      <span class="menu-icon"></span>
       <span class="menu-text">浏览历史</span>
       <span class="menu-arrow">›</span>
     </router-link>
 
     <!-- My Products -->
     <div class="card" style="margin-top: 20px; padding: 28px 32px;">
-      <h3 class="section-title">📦 我的发布</h3>
+      <h3 class="section-title">我的发布</h3>
       <div class="product-grid" v-if="myProducts.length > 0">
         <ProductCard v-for="item in myProducts" :key="item.id" :product="item" />
       </div>
       <div v-else class="empty-state" style="padding: 40px 0;">
-        <div class="empty-icon">📭</div>
+        <div class="empty-icon"></div>
         <p>暂无发布</p>
       </div>
     </div>
@@ -172,7 +172,7 @@ async function changePassword() {
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  background: var(--green-50);
+  background: var(--color-background);
   display: flex;
   align-items: center;
   justify-content: center;

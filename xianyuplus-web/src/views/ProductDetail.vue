@@ -18,7 +18,7 @@
             </div>
           </div>
           <div v-else class="no-image" :style="{ background: placeholderColor }">
-            <span class="placeholder-emoji">{{ placeholderEmoji }}</span>
+            <Package :size="48" class="placeholder-icon-svg" />
           </div>
         </div>
 
@@ -37,21 +37,21 @@
           </div>
 
           <div class="seller-row">
-            <span class="seller-avatar">👤</span>
+            <span class="seller-avatar"></span>
             <router-link :to="`/seller/${product.userId}`" class="seller-link">{{ product.sellerName || '卖家' }}</router-link>
           </div>
 
           <div class="stats-row">
-            <span>👁 {{ product.viewCount }}次浏览</span>
-            <span>📅 {{ product.createdAt?.substring(0, 10) }}发布</span>
+            <span>{{ product.viewCount }}次浏览</span>
+            <span>{{ product.createdAt?.substring(0, 10) }}发布</span>
           </div>
 
           <div class="action-row" v-if="!isOwner">
             <button class="btn-pill btn-buy" @click="handleBuy">立即购买</button>
             <button class="btn-pill btn-fav" :class="{ favored: favorited }" @click="handleFavorite">
-              {{ favorited ? '⭐ 已收藏' : '☆ 收藏' }}
+              {{ favorited ? '已收藏' : '收藏' }}
             </button>
-            <button class="btn-pill btn-chat" @click="handleChat">💬 联系卖家</button>
+            <button class="btn-pill btn-chat" @click="handleChat">联系卖家</button>
             <button
               v-if="userStore.token"
               class="btn-pill btn-report"
@@ -63,9 +63,9 @@
             </button>
           </div>
           <div class="action-row" v-else>
-            <button class="btn-pill btn-pill-primary" @click="$router.push(`/edit/${product.id}`)">✏️ 编辑</button>
-            <button class="btn-pill" :style="product.status === 1 ? 'background:#fff3e0;color:#e65100;' : 'background:#e8f5e9;color:#2b9939;'" @click="handleToggleStatus">
-              {{ product.status === 1 ? '⬇️ 下架' : '⬆️ 上架' }}
+            <button class="btn-pill btn-pill-primary" @click="$router.push(`/edit/${product.id}`)">编辑</button>
+            <button class="btn-pill" :style="product.status === 1 ? 'background:#fff3e0;color:#e65100;' : 'background:var(--color-background);color:#EC4899;'" @click="handleToggleStatus">
+              {{ product.status === 1 ? '下架' : '上架' }}
             </button>
           </div>
         </div>
@@ -73,7 +73,7 @@
 
       <!-- Description -->
       <div class="desc-card card">
-        <h3 class="desc-title">📝 商品描述</h3>
+        <h3 class="desc-title">商品描述</h3>
         <div class="desc-body">{{ product.description || '暂无描述' }}</div>
       </div>
 
@@ -91,7 +91,7 @@
     </template>
 
     <div v-else class="empty-state">
-      <div class="empty-icon">🔍</div>
+      <div class="empty-icon"></div>
       <p>商品不存在或已下架</p>
     </div>
 
@@ -111,7 +111,8 @@ import { useUserStore } from '@/stores/user'
 import request from '@/api/request'
 import { Toast } from '@/utils/toast'
 import { Dialog } from '@/utils/dialog'
-import { conditionText, getProductEmoji, getProductColor } from '@/utils/category'
+import { conditionText, getProductColor } from '@/utils/category'
+import { Package } from 'lucide-vue-next'
 import ReviewList from '@/components/ReviewList.vue'
 import ReportForm from '@/components/ReportForm.vue'
 import { checkReported } from '@/api/report'
@@ -130,8 +131,7 @@ const hasReported = ref(false)
 
 const isOwner = computed(() => userStore.userInfo?.id === product.value?.userId)
 const currentImage = computed(() => product.value?.images?.[currentIndex.value]?.url)
-const placeholderEmoji = computed(() => product.value ? getProductEmoji(product.value.id) : '📦')
-const placeholderColor = computed(() => product.value ? getProductColor(product.value.id) : '#f0f0f0')
+const placeholderColor = computed(() => product.value ? getProductColor(product.value.id) : 'var(--placeholder-pink)')
 
 onMounted(async () => {
   const id = String(route.params.id)
@@ -251,7 +251,7 @@ async function handleToggleStatus() {
 }
 
 .thumb.active {
-  border-color: var(--green-500);
+  border-color: var(--color-primary);
 }
 
 .no-image {
@@ -262,8 +262,9 @@ async function handleToggleStatus() {
   align-items: center;
   justify-content: center;
 }
-.placeholder-emoji {
-  font-size: 80px;
+.placeholder-icon-svg {
+  color: var(--color-primary);
+  opacity: 0.3;
 }
 
 .info-section {
@@ -314,7 +315,7 @@ async function handleToggleStatus() {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--green-50);
+  background: var(--color-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -426,7 +427,7 @@ async function handleToggleStatus() {
 }
 
 .seller-link {
-  color: var(--green-500);
+  color: var(--color-primary);
   text-decoration: none;
   font-size: 14px;
 }

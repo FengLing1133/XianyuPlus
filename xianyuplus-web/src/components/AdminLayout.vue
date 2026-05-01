@@ -2,38 +2,37 @@
   <div class="admin-layout">
     <aside class="admin-sidebar">
       <router-link to="/admin" class="admin-logo">
-        <span>🎓</span>
         <span class="logo-text">闲鱼管理</span>
       </router-link>
 
       <nav class="admin-nav">
         <router-link to="/admin" class="admin-nav-item">
-          <span>📊</span> 仪表盘
+          仪表盘
         </router-link>
         <router-link to="/admin/users" class="admin-nav-item">
-          <span>👥</span> 用户管理
+          用户管理
         </router-link>
         <router-link to="/admin/products" class="admin-nav-item">
-          <span>📦</span> 商品管理
+          商品管理
         </router-link>
         <router-link to="/admin/orders" class="admin-nav-item">
-          <span>📋</span> 订单管理
+          订单管理
         </router-link>
         <router-link to="/admin/reports" class="admin-nav-item">
-          <span>🚩</span> 举报管理
+          举报管理
         </router-link>
       </nav>
 
       <div class="sidebar-footer">
         <router-link to="/" class="back-link">
-          <span>↩️</span> 返回前台
+          返回前台
         </router-link>
       </div>
     </aside>
 
     <div class="admin-right">
       <header class="admin-header">
-        <span class="admin-title">📊 管理后台</span>
+        <span class="admin-title">管理后台</span>
         <span class="admin-user">当前管理员：{{ userStore.userInfo?.nickname }}</span>
       </header>
       <main class="admin-main">
@@ -70,7 +69,7 @@ const userStore = useUserStore()
   padding: 20px;
   font-size: 17px;
   font-weight: 700;
-  color: var(--green-500);
+  color: var(--color-primary);
   border-bottom: 1px solid var(--border-lighter);
 }
 .logo-text { color: var(--text-primary); }
@@ -96,8 +95,8 @@ const userStore = useUserStore()
 }
 .admin-nav-item.router-link-exact-active,
 .admin-nav-item.router-link-active {
-  background: var(--green-50);
-  color: var(--green-500);
+  background: var(--color-background);
+  color: var(--color-primary);
   font-weight: 500;
 }
 

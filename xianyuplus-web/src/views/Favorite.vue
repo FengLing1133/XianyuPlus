@@ -1,6 +1,6 @@
 <template>
   <div class="favorite-page">
-    <h2 class="page-title">⭐ 我的收藏</h2>
+    <h2 class="page-title">我的收藏</h2>
 
     <div class="card fav-card">
       <div v-if="loading" style="padding: 40px; text-align: center; color: var(--text-secondary);">加载中...</div>
@@ -18,7 +18,7 @@
         </div>
 
         <div v-if="favorites.length === 0" class="empty-state">
-          <div class="empty-icon">⭐</div>
+          <div class="empty-icon">-</div>
           <p>暂无收藏</p>
         </div>
 
@@ -47,8 +47,8 @@ const loading = ref(true)
 const page = ref(1)
 const total = ref(0)
 
-const emojis = ['📚', '📱', '💻', '👗', '🎮', '🪑', '🎧', '⌚']
-const colors = ['#fce4ec', '#e3f2fd', '#e8f5e9', '#f3e5f5', '#fff9c4', '#fff3e0', '#e0f7fa', '#fbe9e7']
+const emojis = ['书', '手', '电', '衣', '游', '椅', '耳', '表']
+const colors = ['#fce4ec', '#e3f2fd', 'var(--color-background)', '#f3e5f5', '#fff9c4', '#fff3e0', '#e0f7fa', '#fbe9e7']
 const totalPages = computed(() => Math.ceil(total.value / 10))
 
 onMounted(() => fetchData())

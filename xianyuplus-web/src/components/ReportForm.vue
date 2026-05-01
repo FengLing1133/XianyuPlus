@@ -185,12 +185,12 @@ async function submit() {
 }
 
 .reason-option:hover {
-  border-color: var(--green-500);
+  border-color: var(--color-primary);
 }
 
 .reason-option.active {
-  background: var(--green-500);
-  border-color: var(--green-500);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: #fff;
 }
 
@@ -213,7 +213,7 @@ async function submit() {
 
 .desc-section textarea:focus {
   outline: none;
-  border-color: var(--green-500);
+  border-color: var(--color-primary);
 }
 
 .char-count {
@@ -248,7 +248,7 @@ async function submit() {
 .btn-submit {
   padding: 10px 24px;
   border: none;
-  background: #ef4444;
+  background: var(--color-destructive);
   color: #fff;
   border-radius: 8px;
   cursor: pointer;
@@ -256,7 +256,7 @@ async function submit() {
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: #dc2626;
+  opacity: 0.9;
 }
 
 .btn-submit:disabled {

@@ -2,32 +2,32 @@
   <div class="dashboard">
     <div class="stat-grid">
       <div class="stat-card card">
-        <div class="stat-icon">👥</div>
+        <div class="stat-icon">用户</div>
         <div class="stat-value">{{ data.userCount }}</div>
         <div class="stat-label">总用户数</div>
       </div>
       <div class="stat-card card">
-        <div class="stat-icon">📦</div>
+        <div class="stat-icon">商品</div>
         <div class="stat-value">{{ data.productCount }}</div>
         <div class="stat-label">总商品数</div>
       </div>
       <div class="stat-card card">
-        <div class="stat-icon">📋</div>
+        <div class="stat-icon">订单</div>
         <div class="stat-value">{{ data.orderCount }}</div>
         <div class="stat-label">总订单数</div>
       </div>
       <div class="stat-card card">
-        <div class="stat-icon">🆕</div>
+        <div class="stat-icon">新增</div>
         <div class="stat-value">{{ data.todayNewUsers }}</div>
         <div class="stat-label">今日新增用户</div>
       </div>
       <div class="stat-card card">
-        <div class="stat-icon">🔥</div>
+        <div class="stat-icon">热门</div>
         <div class="stat-value">{{ data.todayNewProducts }}</div>
         <div class="stat-label">今日新增商品</div>
       </div>
       <div class="stat-card card" v-if="data.pendingReports > 0">
-        <div class="stat-icon">🚩</div>
+        <div class="stat-icon">举报</div>
         <div class="stat-value">{{ data.pendingReports }}</div>
         <div class="stat-label">待处理举报</div>
         <button class="btn-view-reports" @click="$router.push('/admin/reports')">立即处理</button>
@@ -71,7 +71,7 @@ onMounted(async () => {
 .stat-card:hover { transform: translateY(-2px); }
 
 .stat-icon { font-size: 32px; margin-bottom: 10px; }
-.stat-value { font-size: 32px; font-weight: 700; color: var(--green-500); }
+.stat-value { font-size: 32px; font-weight: 700; color: var(--color-primary); }
 .stat-label { font-size: 14px; color: var(--text-secondary); margin-top: 6px; }
 
 .btn-view-reports {
