@@ -4,8 +4,12 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.xianyuplus.chat.service.ChatService;
 import com.xianyuplus.common.entity.Message;
+import com.xianyuplus.common.entity.Notification;
 import com.xianyuplus.common.service.NotificationService;
+import com.xianyuplus.common.event.NotificationEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -13,11 +17,13 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Component
-public class ChatWebSocketHandler extends TextWebSocketHandler {
+public class ChatWebSocketHandler extends TextWebSocketHandler implements ApplicationListener<NotificationEvent> {
 
     private static final ConcurrentHashMap<Long, WebSocketSession> ONLINE_USERS = new ConcurrentHashMap<>();
 
@@ -91,6 +97,22 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         if (userId != null) {
             ONLINE_USERS.remove(userId);
             redisTemplate.opsForSet().remove("online_users", userId.toString());
+        }
+    }
+
+    @Override
+    public void onApplicationEvent(NotificationEvent event) {
+        Notification notification = event.getNotification();
+        WebSocketSession session = ONLINE_USERS.get(notification.getUserId());
+        if (session != null && session.isOpen()) {
+            try {
+                JSONObject msg = new JSONObject();
+                msg.set("type", "notification");
+                msg.set("data", JSONUtil.parse(notification));
+                session.sendMessage(new TextMessage(msg.toString()));
+            } catch (IOException e) {
+                log.error("推送通知失败", e);
+            }
         }
     }
 

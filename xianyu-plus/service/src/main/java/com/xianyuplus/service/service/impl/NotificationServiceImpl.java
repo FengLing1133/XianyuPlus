@@ -7,7 +7,9 @@ import com.xianyuplus.common.entity.Notification;
 import com.xianyuplus.common.mapper.NotificationMapper;
 import com.xianyuplus.common.utils.Result;
 import com.xianyuplus.common.service.NotificationService;
+import com.xianyuplus.common.event.NotificationEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationMapper notificationMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public Result<?> getList(Long userId, Integer page, Integer size) {
@@ -74,5 +77,6 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setRelatedId(relatedId);
         notification.setIsRead(0);
         notificationMapper.insert(notification);
+        eventPublisher.publishEvent(new NotificationEvent(this, notification));
     }
 }
