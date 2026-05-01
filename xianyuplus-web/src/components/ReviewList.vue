@@ -51,8 +51,8 @@
         <div class="review-actions">
           <!-- 回复按钮（卖家视角） -->
           <button v-if="showReplyButton && !review.sellerReply" class="btn-reply" @click="startReply(review)">回复</button>
-          <!-- 删除按钮（买家或卖家） -->
-          <button v-if="showDeleteButton && (userId === review.buyerId || userId === review.sellerId)" class="btn-delete" @click="handleDelete(review)">删除</button>
+          <!-- 删除按钮（买家删除自己的评价） -->
+          <button v-if="showDeleteButton && String(userId) === String(review.buyerId)" class="btn-delete" @click="handleDelete(review)">删除</button>
         </div>
       </div>
 

@@ -114,9 +114,9 @@ public class ReviewServiceImpl implements ReviewService {
             return Result.error("评价不存在");
         }
 
-        // 验证权限：买家可以删除自己的评价，卖家可以删除针对自己商品的评价
-        if (!review.getBuyerId().equals(userId) && !review.getSellerId().equals(userId)) {
-            return Result.error("无权删除此评价");
+        // 验证权限：只有买家可以删除自己发的评价
+        if (!review.getBuyerId().equals(userId)) {
+            return Result.error("只能删除自己发的评价");
         }
 
         reviewMapper.deleteById(reviewId);
