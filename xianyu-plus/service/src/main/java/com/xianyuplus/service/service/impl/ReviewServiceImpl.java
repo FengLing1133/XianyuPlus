@@ -124,6 +124,34 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
+    public Result<?> deleteReply(Long reviewId) {
+        Long userId = getCurrentUserId();
+
+        Review review = reviewMapper.selectById(reviewId);
+        if (review == null) {
+            return Result.error("评价不存在");
+        }
+
+        // 验证权限：只有卖家可以删除自己的回复
+        if (!review.getSellerId().equals(userId)) {
+            return Result.error("只能删除自己商品的回复");
+        }
+
+        // 验证是否有回复
+        if (review.getSellerReply() == null) {
+            return Result.error("该评价没有回复");
+        }
+
+        // 清空回复内容
+        review.setSellerReply(null);
+        review.setReplyAt(null);
+        reviewMapper.updateById(review);
+
+        return Result.ok();
+    }
+
+    @Override
     public Result<?> getByProduct(Long productId, Integer page, Integer size) {
         Page<Review> pageObj = new Page<>(page, size);
         LambdaQueryWrapper<Review> wrapper = new LambdaQueryWrapper<>();

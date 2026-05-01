@@ -32,6 +32,11 @@ public class ReviewController {
         return reviewService.delete(id);
     }
 
+    @DeleteMapping("/{id}/reply")
+    public Result<?> deleteReply(@PathVariable Long id) {
+        return reviewService.deleteReply(id);
+    }
+
     @GetMapping("/product/{productId}")
     public Result<?> getByProduct(@PathVariable Long productId,
                                   @RequestParam(defaultValue = "1") Integer page,

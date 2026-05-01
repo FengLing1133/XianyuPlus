@@ -42,7 +42,11 @@
 
         <!-- 卖家回复 -->
         <div class="seller-reply" v-if="review.sellerReply">
-          <div class="reply-label">卖家回复：</div>
+          <div class="reply-header">
+            <div class="reply-label">卖家回复：</div>
+            <!-- 卖家删除回复按钮 -->
+            <button v-if="showDeleteButton && String(userId) === String(review.sellerId)" class="btn-delete-reply" @click="handleDeleteReply(review)">删除回复</button>
+          </div>
           <div class="reply-content">{{ review.sellerReply }}</div>
           <div class="reply-time">{{ formatTime(review.replyAt) }}</div>
         </div>
@@ -84,7 +88,7 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { getProductReviews, getSellerReviews, getSellerStats, replyReview, deleteReview } from '@/api/review'
+import { getProductReviews, getSellerReviews, getSellerStats, replyReview, deleteReview, deleteReply } from '@/api/review'
 import { Toast } from '@/utils/toast'
 import { Dialog } from '@/utils/dialog'
 
@@ -174,6 +178,18 @@ async function handleDelete(review) {
   Toast.success('删除成功')
   fetchReviews()
   fetchStats()
+}
+
+async function handleDeleteReply(review) {
+  const ok = await Dialog.confirm({
+    title: '删除回复',
+    message: '确定要删除这条回复吗？'
+  })
+  if (!ok) return
+
+  await deleteReply(review.id)
+  Toast.success('删除成功')
+  fetchReviews()
 }
 
 onMounted(() => {
@@ -330,10 +346,31 @@ watch(() => props.productId, () => {
   margin-top: 12px;
 }
 
+.reply-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
 .reply-label {
   font-size: 13px;
   color: #666;
-  margin-bottom: 4px;
+}
+
+.btn-delete-reply {
+  padding: 4px 12px;
+  border: none;
+  background: none;
+  color: #999;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-delete-reply:hover {
+  background: #fff;
+  color: #ff4d4f;
 }
 
 .reply-content {

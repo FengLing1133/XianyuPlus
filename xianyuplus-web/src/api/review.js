@@ -12,6 +12,10 @@ export function deleteReview(id) {
   return request.delete(`/review/${id}`)
 }
 
+export function deleteReply(id) {
+  return request.delete(`/review/${id}/reply`)
+}
+
 export function getProductReviews(productId, page = 1, size = 10) {
   return request.get(`/review/product/${productId}`, { params: { page, size } })
 }
